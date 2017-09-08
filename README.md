@@ -49,3 +49,20 @@ UserType::Moderator // Returns 1
 ### getDescription(int $value)
 ### getRandomKey
 ### getRandomValue
+
+## Validation
+
+You may validate that an enum value passed to a controller is a valid value for a given enum by using the `EnumValue` rule.
+
+``` php
+public function store(Request $request)
+{
+    $this->validate($request, [
+        'user_type' => ['required', new EnumValue(UserType::class)],
+    ]);
+}
+```
+
+Of course, this works on form request classes too.
+
+Make sure to include `BenSampo\Enum\Rules\EnumValue` and your enum class in the usings.
