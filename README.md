@@ -96,11 +96,15 @@ UserType::getDescription(3); // Returns 'Super admin'
 
 ### getRandomKey(): string
 
+Returns a random key from the enum. Useful for factories.
+
 ``` php
 UserType::getRandomKey(); // Returns 'Administrator', 'Moderator', 'Subscriber' or 'SuperAdministrator'
 ```
 
 ### getRandomValue(): int
+
+Returns a random value from the enum. Useful for factories.
 
 ``` php
 UserType::getRandomValue(); // Returns 0, 1, 2 or 3
