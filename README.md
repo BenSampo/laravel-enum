@@ -32,6 +32,18 @@ final class UserType extends Enum
     const Administrator = 0;
     const Moderator = 1;
     const Subscriber = 2;
+    const SuperAdministrator = 3;
+
+    public static function getDescription(int $value): string
+    {
+        switch ($value) {
+            case self::SuperAdministrator:
+                return 'Super admin';
+            break;
+            default:
+                return self::getKey($value);
+        }
+    }
 }
 ```
 
@@ -42,13 +54,57 @@ UserType::Moderator // Returns 1
 
 ## Methods
 
-### getKeys()
-### getValues()
-### getKey(int $value)
-### getValue(string $key)
-### getDescription(int $value)
-### getRandomKey
-### getRandomValue
+### getKeys(): array
+
+Returns an array of the keys for an enum.
+
+``` php
+UserType::getKeys(); // Returns ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator']
+```
+
+### getValues(): array
+
+Returns an array of the values for an enum.
+
+``` php
+UserType::getValues(); // Returns [0, 1, 2, 3]
+```
+
+### getKey(int $value): string
+
+Returns the key for the given enum value.
+
+``` php
+UserType::getKey(1); // Returns 'Moderator'
+```
+
+### getValue(string $key): int
+
+Returns the value for the given enum key.
+
+``` php
+UserType::getKey('Moderator'); // Returns 1
+```
+
+### getDescription(int $value): string
+
+Returns the description for the enum value.
+
+``` php
+UserType::getDescription(3); // Returns 'Super admin'
+```
+
+### getRandomKey(): string
+
+``` php
+UserType::getRandomKey(); // Returns 'Administrator', 'Moderator', 'Subscriber' or 'SuperAdministrator'
+```
+
+### getRandomValue(): int
+
+``` php
+UserType::getRandomValue(); // Returns 0, 1, 2 or 3
+```
 
 ## Validation
 
