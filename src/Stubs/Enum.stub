@@ -11,7 +11,7 @@ final class DummyClass extends Enum
     const OptionThree = 2;
 
     /**
-     * Get the description for a enum value
+     * Get the description for an enum value
      *
      * @param  int  $value
      * @return string
