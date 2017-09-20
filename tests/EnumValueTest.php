@@ -9,19 +9,19 @@ class EnumValueTest extends TestCase
 {
     public function testValidationPasses()
     {
-        $passes = (new EnumValue(UserType::class))->passes('', 3);
+        $passes1 = (new EnumValue(UserType::class))->passes('', 3);
+        $passes2 = (new EnumValue(UserType::class))->passes('', '3');
 
-        $this->assertTrue($passes);
+        $this->assertTrue($passes1);
+        $this->assertTrue($passes2);
     }
 
     public function testValidationFails()
     {
-        $passes1 = (new EnumValue(UserType::class))->passes('', 7);
-        $passes2 = (new EnumValue(UserType::class))->passes('', 'test');
-        $passes3 = (new EnumValue(UserType::class))->passes('', '3');
+        $fails1 = (new EnumValue(UserType::class))->passes('', 7);
+        $fails2 = (new EnumValue(UserType::class))->passes('', 'test');
 
-        $this->assertFalse($passes1);
-        $this->assertFalse($passes2);
-        $this->assertFalse($passes3);
+        $this->assertFalse($fails1);
+        $this->assertFalse($fails2);
     }
 }
