@@ -26,7 +26,7 @@ class EnumValue implements Rule
      */
     public function passes($attribute, $value)
     {
-        if (is_numeric($value) && in_array($value, $this->validValues)) {
+        if (in_array($value, $this->validValues)) {
             return true;
         } else {
             return false;
