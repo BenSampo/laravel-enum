@@ -10,6 +10,7 @@ final class UserType extends Enum
     const Moderator = 1;
     const Subscriber = 2;
     const SuperAdministrator = 3;
+    const StringTest = 'TEST';
 
     public static function getDescription(int $value): string
     {

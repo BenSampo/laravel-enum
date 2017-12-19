@@ -15,7 +15,7 @@ class EnumTest extends TestCase
     public function testEnumGetKeys()
     {
         $keys = UserType::getKeys();
-        $expectedKeys = ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator'];
+        $expectedKeys = ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator', 'StringTest'];
 
         $this->assertEquals($expectedKeys, $keys);
     }
@@ -23,7 +23,7 @@ class EnumTest extends TestCase
     public function testEnumGetValues()
     {
         $values = UserType::getValues();
-        $expectedValues = [0, 1, 2, 3];
+        $expectedValues = [0, 1, 2, 3, 'TEST'];
 
         $this->assertEquals($expectedValues, $values);
     }
