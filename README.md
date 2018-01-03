@@ -83,7 +83,7 @@ UserType::getKey(1); // Returns 'Moderator'
 Returns the value for the given enum key.
 
 ``` php
-UserType::getKey('Moderator'); // Returns 1
+UserType::getValue('Moderator'); // Returns 1
 ```
 
 ### getDescription(int $value): string
