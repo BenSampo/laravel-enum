@@ -6,14 +6,10 @@ use ReflectionClass;
 
 abstract class Enum
 {
-    private static $constCacheArray = null;
+    private static $constCacheArray = [];
 
     private static function getConstants(): array
     {
-        if (self::$constCacheArray == null) {
-            self::$constCacheArray = [];
-        }
-
         $calledClass = get_called_class();
 
         if (!array_key_exists($calledClass, self::$constCacheArray)) {
