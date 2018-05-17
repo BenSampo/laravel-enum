@@ -52,12 +52,12 @@ abstract class Enum
     public static function getRandomKey(): string
     {
         $keys = self::getKeys();
-        return $keys[array_rand($keys, 1)];
+        return $keys[array_rand($keys)];
     }
 
     public static function getRandomValue(): string
     {
         $values = self::getValues();
-        return $values[array_rand($values, 1)];
+        return $values[array_rand($values)];
     }
 }
