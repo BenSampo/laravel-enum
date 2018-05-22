@@ -1,5 +1,9 @@
 This package adds support for creating enums in PHP and includes a generator for Laravel.
 
+## Guide
+I wrote a blog post about using laravel-enum:
+https://sampo.co.uk/blog/using-enums-in-laravel
+
 ## Install
 
 Via Composer
