@@ -10,10 +10,10 @@ class EnumValueTest extends TestCase
     public function testValidationPasses()
     {
         $passes1 = (new EnumValue(UserType::class))->passes('', 3);
-        $passes3 = (new EnumValue(UserType::class))->passes('', 'TEST');
+        $passes2 = (new EnumValue(UserType::class))->passes('', 'TEST');
 
         $this->assertTrue($passes1);
-        $this->assertTrue($passes3);
+        $this->assertTrue($passes2);
     }
 
     public function testValidationFails()

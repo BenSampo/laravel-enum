@@ -30,19 +30,19 @@ class EnumTest extends TestCase
 
     public function testEnumGetKey()
     {
-        $this->assertEquals(UserType::getKey(1), 'Moderator');
-        $this->assertEquals(UserType::getKey(3), 'SuperAdministrator');
+        $this->assertEquals('Moderator', UserType::getKey(1));
+        $this->assertEquals('SuperAdministrator', UserType::getKey(3));
     }
 
     public function testEnumGetValue()
     {
-        $this->assertEquals(UserType::getValue('Moderator'), 1);
-        $this->assertEquals(UserType::getValue('SuperAdministrator'), 3);
+        $this->assertEquals(1, UserType::getValue('Moderator'));
+        $this->assertEquals(3, UserType::getValue('SuperAdministrator'));
     }
 
     public function testEnumGetDescription()
     {
-        $this->assertEquals(UserType::getDescription(1), 'Moderator');
-        $this->assertEquals(UserType::getDescription(3), 'Super admin');
+        $this->assertEquals('Moderator', UserType::getDescription(1));
+        $this->assertEquals('Super admin', UserType::getDescription(3));
     }
 }
