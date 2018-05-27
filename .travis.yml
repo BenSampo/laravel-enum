@@ -1,0 +1,15 @@
+language: php
+
+cache:
+  directories:
+  - "$HOME/.composer/cache"
+
+matrix:
+  include:
+  - php: 7.2
+    env: LARAVEL=5.5
+
+script:
+- vendor/bin/phpunit -c phpunit.xml tests/
+
+install: composer install --no-interaction
