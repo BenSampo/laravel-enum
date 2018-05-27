@@ -30,17 +30,17 @@ abstract class Enum
         return array_values(self::getConstants());
     }
 
-    public static function getKey(int $value): string
+    public static function getKey($value): string
     {
-        return array_search($value, self::getConstants());
+        return array_search($value, self::getConstants(), true);
     }
 
-    public static function getValue(string $key): int
+    public static function getValue(string $key)
     {
         return self::getConstants()[$key];
     }
 
-    public static function getDescription(int $value): string
+    public static function getDescription($value): string
     {
         return self::getKey($value);
     }

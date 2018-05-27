@@ -12,14 +12,12 @@ final class UserType extends Enum
     const SuperAdministrator = 3;
     const StringTest = 'TEST';
 
-    public static function getDescription(int $value): string
+    public static function getDescription($value): string
     {
-        switch ($value) {
-            case self::SuperAdministrator:
-                return 'Super admin';
-            break;
-            default:
-                return self::getKey($value);
+        if ($value === self::SuperAdministrator) {
+            return 'Super admin';
         }
+
+        return self::getKey($value);
     }
 }

@@ -16,14 +16,12 @@ final class DummyClass extends Enum
      * @param  int  $value
      * @return string
      */
-    public static function getDescription(int $value): string
+    public static function getDescription($value): string
     {
-        switch ($value) {
-            case self::OptionOne:
-                return 'Option one';
-            break;
-            default:
-                return self::getKey($value);
+        if ($value === self::OptionOne) {
+            return 'Option one';
         }
+
+        return self::getKey($value);
     }
 }
