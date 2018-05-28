@@ -15,7 +15,7 @@ class EnumTest extends TestCase
     public function testEnumGetKeys()
     {
         $keys = UserType::getKeys();
-        $expectedKeys = ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator', 'StringTest'];
+        $expectedKeys = ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator', 'StringKey'];
 
         $this->assertEquals($expectedKeys, $keys);
     }
@@ -23,7 +23,7 @@ class EnumTest extends TestCase
     public function testEnumGetValues()
     {
         $values = UserType::getValues();
-        $expectedValues = [0, 1, 2, 3, 'TEST'];
+        $expectedValues = [0, 1, 2, 3, 'StringValue'];
 
         $this->assertEquals($expectedValues, $values);
     }
@@ -32,20 +32,20 @@ class EnumTest extends TestCase
     {
         $this->assertEquals('Moderator', UserType::getKey(1));
         $this->assertEquals('SuperAdministrator', UserType::getKey(3));
-        $this->assertEquals('StringTest', UserType::getKey('TEST'));
+        $this->assertEquals('StringKey', UserType::getKey('StringValue'));
     }
 
     public function testEnumGetValue()
     {
         $this->assertEquals(1, UserType::getValue('Moderator'));
         $this->assertEquals(3, UserType::getValue('SuperAdministrator'));
-        $this->assertEquals('TEST', UserType::getValue('StringTest'));
+        $this->assertEquals('StringValue', UserType::getValue('StringKey'));
     }
 
     public function testEnumGetDescription()
     {
         $this->assertEquals('Moderator', UserType::getDescription(1));
         $this->assertEquals('Super admin', UserType::getDescription(3));
-        $this->assertEquals('StringTest', UserType::getDescription('TEST'));
+        $this->assertEquals('StringKey', UserType::getDescription('StringValue'));
     }
 }
