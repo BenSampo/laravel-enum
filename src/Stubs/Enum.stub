@@ -13,7 +13,7 @@ final class DummyClass extends Enum
     /**
      * Get the description for an enum value
      *
-     * @param  int  $value
+     * @param $value
      * @return string
      */
     public static function getDescription($value): string
