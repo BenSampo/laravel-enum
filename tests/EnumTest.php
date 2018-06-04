@@ -48,4 +48,14 @@ class EnumTest extends TestCase
         $this->assertEquals('Super admin', UserType::getDescription(3));
         $this->assertEquals('StringKey', UserType::getDescription('StringValue'));
     }
+
+    public function testEnumGetRandomKey()
+    {
+        $this->assertContains(UserType::getRandomKey(), UserType::getKeys());
+    }
+
+    public function testEnumGetRandomValue()
+    {
+        $this->assertContains(UserType::getRandomValue(), UserType::getValues());
+    }
 }
