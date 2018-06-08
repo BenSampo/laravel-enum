@@ -7,6 +7,14 @@ This package adds support for creating enums in PHP and includes a generator for
 [![Packagist downloads](https://img.shields.io/packagist/dt/bensampo/laravel-enum.svg?style=flat-square)](https://packagist.org/packages/bensampo/laravel-enum)
 [![MIT Software License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
 
+* [Guide](#guide)
+* [Install](#install)
+* [Generating enums](#generating-enums)
+* [Usage](#usage)
+* [Methods](#methods)
+* [Validation](#validation)
+* [Localization](#localization)
+
 ## Guide
 I wrote a blog post about using laravel-enum:
 https://sampo.co.uk/blog/using-enums-in-laravel
@@ -137,3 +145,60 @@ public function store(Request $request)
 Of course, this works on form request classes too.
 
 Make sure to include `BenSampo\Enum\Rules\EnumValue` and your enum class in the usings.
+
+## Localization
+
+You can translate the strings returned by the `getDescription` method using Laravel's built in [localization](https://laravel.com/docs/5.6/localization) features.
+
+Set up your translation keys files. In this example there is one for English and one for Spanish.
+
+```php
+// resources/lang/en/enums.php
+<?php
+
+use App\Enums\UserType;
+
+return [
+
+    'user-type' => [
+        UserType::Administrator => 'Administrator',
+        UserType::SuperAdministrator => 'Super administrator',
+    ],
+
+];
+```
+
+```php
+// resources/lang/es/enums.php
+<?php
+
+use App\Enums\UserType;
+
+return [
+
+    'user-type' => [
+        UserType::Administrator => 'Administrador',
+        UserType::SuperAdministrator => 'Súper administrador',
+    ],
+
+];
+```
+
+On your enum, change/add the `getDescription` method as follows:
+
+```php
+public static function getDescription(int $value): string
+{
+    $localizedStringKey = 'enums.user-type.' . $value;
+
+    if (strpos(__($localizedStringKey), 'enums.') !== 0) {
+        return __($localizedStringKey);
+    }
+
+    return parent::getDescription($value);
+}
+```
+
+Remember to change `user-type` in the `$localizedStringKey` in the example to the name of your enum.
+
+The `getDescription` method will now look for the value in your localization files. If a value doesn't exist for a given key, the key name is returned instead.
