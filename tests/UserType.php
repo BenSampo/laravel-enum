@@ -18,6 +18,6 @@ final class UserType extends Enum
             return 'Super admin';
         }
 
-        return self::getKey($value);
+        return parent::getDescription($value);
     }
 }

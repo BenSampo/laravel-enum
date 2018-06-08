@@ -42,6 +42,8 @@ php artisan make:enum UserType
 
 Given the following enum:
 ``` php
+<?php
+
 namespace App\Enums;
 
 use BenSampo\Enum\Enum;
@@ -53,15 +55,13 @@ final class UserType extends Enum
     const Subscriber = 2;
     const SuperAdministrator = 3;
 
-    public static function getDescription(int $value): string
+    public static function getDescription($value): string
     {
-        switch ($value) {
-            case self::SuperAdministrator:
-                return 'Super admin';
-            break;
-            default:
-                return self::getKey($value);
+        if ($value === self::SuperAdministrator) {
+            return 'Super admin';
         }
+
+        return parent::getDescription($value);
     }
 }
 ```
