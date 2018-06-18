@@ -58,4 +58,18 @@ class EnumTest extends TestCase
     {
         $this->assertContains(UserType::getRandomValue(), UserType::getValues());
     }
+
+    public function testEnumToArray()
+    {
+        $array = UserType::toArray();
+        $expectedArray = [
+            'Administrator' => 0,
+            'Moderator' => 1,
+            'Subscriber' => 2,
+            'SuperAdministrator' => 3,
+            'StringKey' => 'StringValue',
+        ];
+
+        $this->assertEquals($expectedArray, $array);
+    }
 }

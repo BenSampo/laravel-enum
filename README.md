@@ -129,6 +129,14 @@ Returns a random value from the enum. Useful for factories.
 UserType::getRandomValue(); // Returns 0, 1, 2 or 3
 ```
 
+### toArray(): array
+
+Returns the enum key value pairs as an associative array.
+
+``` php
+UserType::toArray(); // Returns ['Administrator' => 0, 'Moderator' => 1, 'Subscriber' => 2, 'SuperAdministrator' => 3]
+```
+
 ## Validation
 
 You may validate that an enum value passed to a controller is a valid value for a given enum by using the `EnumValue` rule.

@@ -56,4 +56,9 @@ abstract class Enum
         $values = self::getValues();
         return $values[array_rand($values)];
     }
+
+    public static function toArray(): array
+    {
+        return self::getConstants();
+    }
 }
