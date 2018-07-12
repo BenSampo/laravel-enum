@@ -150,9 +150,20 @@ public function store(Request $request)
 }
 ```
 
-Of course, this works on form request classes too.
+You can also validate on keys using the `EnumKey` rule. This is useful if you're taking the enum key as a URL parameter for sorting or filtering for example.
 
-Make sure to include `BenSampo\Enum\Rules\EnumValue` and your enum class in the usings.
+``` php
+public function store(Request $request)
+{
+    $this->validate($request, [
+        'user_type' => ['required', new EnumKey(UserType::class)],
+    ]);
+}
+```
+
+Of course, both of these work on form request classes too.
+
+Make sure to include `BenSampo\Enum\Rules\EnumValue` and/or `BenSampo\Enum\Rules\EnumKey` and your enum class in the usings.
 
 ## Localization
 
