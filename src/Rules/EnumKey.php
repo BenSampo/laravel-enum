@@ -13,7 +13,9 @@ class EnumKey implements Rule
      */
     public function __construct(string $enum)
     {
-        $this->validKeys = resolve($enum)::getKeys();
+        $this->validKeys = array_map(function($key) {
+            return strtolower($key);
+        }, resolve($enum)::getKeys());
     }
 
     /**
@@ -26,6 +28,8 @@ class EnumKey implements Rule
      */
     public function passes($attribute, $value)
     {
+        $value = strtolower($value);
+
         return in_array($value, $this->validKeys, true);
     }
 

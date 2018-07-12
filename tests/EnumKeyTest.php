@@ -10,10 +10,12 @@ class EnumKeyTest extends TestCase
     public function testValidationPasses()
     {
         $passes1 = (new EnumKey(UserType::class))->passes('', 'Administrator');
-        $passes2 = (new EnumKey(UserType::class))->passes('', 'StringKey');
+        $passes2 = (new EnumKey(UserType::class))->passes('', 'administrator');
+        $passes3 = (new EnumKey(UserType::class))->passes('', 'StringKey');
 
         $this->assertTrue($passes1);
         $this->assertTrue($passes2);
+        $this->assertTrue($passes3);
     }
 
     public function testValidationFails()
