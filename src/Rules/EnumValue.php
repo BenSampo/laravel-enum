@@ -28,7 +28,11 @@ class EnumValue implements Rule
      */
     public function passes($attribute, $value)
     {
-        return in_array($value, $this->validValues, $this->strict);
+        if ($this->strict) {
+            return in_array($value, $this->validValues, true);
+        }
+
+        return in_array((string)$value, array_map('strval', $this->validValues), true);
     }
 
     /**

@@ -33,8 +33,10 @@ class EnumValueTest extends TestCase
 
         $this->assertTrue($passes);
 
-        $fails = (new EnumValue(UserType::class, false))->passes('', '10');
+        $fails1 = (new EnumValue(UserType::class, false))->passes('', '10');
+        $fails2 = (new EnumValue(UserType::class, false))->passes('', 'a');
 
-        $this->assertFalse($fails);
+        $this->assertFalse($fails1);
+        $this->assertFalse($fails2);
     }
 }
