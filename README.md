@@ -150,6 +150,12 @@ public function store(Request $request)
 }
 ```
 
+By default type checking is set to strict, but you can bypass this passing `false` to the optional second parameter of the EnumValue class.
+
+```php
+new EnumValue(UserType::class, false) // Turn off strict type checking.
+```
+
 You can also validate on keys using the `EnumKey` rule. This is useful if you're taking the enum key as a URL parameter for sorting or filtering for example.
 
 ``` php

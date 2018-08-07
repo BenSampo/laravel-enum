@@ -7,13 +7,15 @@ use Illuminate\Contracts\Validation\Rule;
 class EnumValue implements Rule
 {
     private $validValues;
+    private $strict;
 
     /**
      * Create a new rule instance.
      */
-    public function __construct(string $enum)
+    public function __construct(string $enum, bool $strict = true)
     {
         $this->validValues = resolve($enum)::getValues();
+        $this->strict = $strict;
     }
 
     /**
@@ -26,7 +28,7 @@ class EnumValue implements Rule
      */
     public function passes($attribute, $value)
     {
-        return in_array($value, $this->validValues, true);
+        return in_array($value, $this->validValues, $this->strict);
     }
 
     /**

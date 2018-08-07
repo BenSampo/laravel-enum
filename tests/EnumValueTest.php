@@ -26,4 +26,15 @@ class EnumValueTest extends TestCase
         $this->assertFalse($fails2);
         $this->assertFalse($fails3);
     }
+
+    public function testCanTurnOffStrictTypeChecking()
+    {
+        $passes = (new EnumValue(UserType::class, false))->passes('', '3');
+
+        $this->assertTrue($passes);
+
+        $fails = (new EnumValue(UserType::class, false))->passes('', '10');
+
+        $this->assertFalse($fails);
+    }
 }
