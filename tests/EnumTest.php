@@ -45,8 +45,9 @@ class EnumTest extends TestCase
     public function testEnumGetDescription()
     {
         $this->assertEquals('Moderator', UserType::getDescription(1));
-        $this->assertEquals('Super admin', UserType::getDescription(3));
-        $this->assertEquals('StringKey', UserType::getDescription('StringValue'));
+        $this->assertEquals('Super administrator', UserType::getDescription(3));
+        $this->assertEquals('Four word key name', UserType::getDescription(4));
+        $this->assertEquals('String key', UserType::getDescription('StringValue'));
     }
 
     public function testEnumGetRandomKey()

@@ -10,14 +10,6 @@ final class UserType extends Enum
     const Moderator = 1;
     const Subscriber = 2;
     const SuperAdministrator = 3;
+    const FourWordKeyName = 4;
     const StringKey = 'StringValue';
-
-    public static function getDescription($value): string
-    {
-        if ($value === self::SuperAdministrator) {
-            return 'Super admin';
-        }
-
-        return parent::getDescription($value);
-    }
 }

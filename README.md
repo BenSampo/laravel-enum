@@ -54,15 +54,6 @@ final class UserType extends Enum
     const Moderator = 1;
     const Subscriber = 2;
     const SuperAdministrator = 3;
-
-    public static function getDescription($value): string
-    {
-        if ($value === self::SuperAdministrator) {
-            return 'Super admin';
-        }
-
-        return parent::getDescription($value);
-    }
 }
 ```
 
@@ -95,6 +86,7 @@ Returns the key for the given enum value.
 
 ``` php
 UserType::getKey(1); // Returns 'Moderator'
+UserType::getKey(UserType::Moderator); // Returns 'Moderator'
 ```
 
 ### getValue(string $key): int
@@ -107,10 +99,11 @@ UserType::getValue('Moderator'); // Returns 1
 
 ### getDescription(int $value): string
 
-Returns the description for the enum value.
+Returns the key in sentence case for the enum value. It's possible to [override the getDescription](#overriding-the-getDescription-method) method to return custom descriptions.
 
 ``` php
-UserType::getDescription(3); // Returns 'Super admin'
+UserType::getDescription(3); // Returns 'Super administrator'
+UserType::getDescription(UserType::SuperAdministrator); // Returns 'Super administrator'
 ```
 
 ### getRandomKey(): string
@@ -227,3 +220,20 @@ public static function getDescription(int $value): string
 Remember to change `user-type` in the `$localizedStringKey` in the example to the name of your enum.
 
 The `getDescription` method will now look for the value in your localization files. If a value doesn't exist for a given key, the key name is returned instead.
+
+## Overriding the getDescription method
+
+If you'd like to return a custom value from the getDescription method, you may do so by overriding the method on your enum:
+
+```php
+public static function getDescription($value): string
+{
+    if ($value === self::SuperAdministrator) {
+        return 'Super admin';
+    }
+
+    return parent::getDescription($value);
+}
+```
+
+Calling `UserType::getDescription(3);` now returns `Super admin` instead of `Super administator`.

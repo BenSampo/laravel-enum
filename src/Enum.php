@@ -42,7 +42,8 @@ abstract class Enum
 
     public static function getDescription($value): string
     {
-        return self::getKey($value);
+        $key = self::getKey($value);
+        return ucfirst(str_replace('_', ' ', snake_case($key)));
     }
 
     public static function getRandomKey(): string

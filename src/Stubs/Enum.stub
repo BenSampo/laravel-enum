@@ -9,19 +9,4 @@ final class DummyClass extends Enum
     const OptionOne = 0;
     const OptionTwo = 1;
     const OptionThree = 2;
-
-    /**
-     * Get the description for an enum value
-     *
-     * @param $value
-     * @return string
-     */
-    public static function getDescription($value): string
-    {
-        if ($value === self::OptionOne) {
-            return 'Option one';
-        }
-
-        return parent::getDescription($value);
-    }
 }
