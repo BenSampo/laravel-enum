@@ -131,6 +131,14 @@ Returns the enum key value pairs as an associative array.
 UserType::toArray(); // Returns ['Administrator' => 0, 'Moderator' => 1, 'Subscriber' => 2, 'SuperAdministrator' => 3]
 ```
 
+### toSelectArray(): array
+
+Returns the enum for use in a select as value => description.
+
+``` php
+UserType::toSelectArray(); // Returns [0 => 'Administrator', 1 => 'Moderator', 2 => 'Subscriber', 3 => 'Super administrator']
+```
+
 ## Validation
 
 You may validate that an enum value passed to a controller is a valid value for a given enum by using the `EnumValue` rule.

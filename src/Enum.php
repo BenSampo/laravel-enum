@@ -118,4 +118,22 @@ abstract class Enum
     {
         return self::getConstants();
     }
+
+    /**
+     * Get the enum as an array formatted for a select.
+     * value => description
+     *
+     * @return array
+     */
+    public static function toSelectArray(): array
+    {
+        $array = self::toArray();
+        $selectArray = [];
+
+        foreach ($array as $key => $value) {
+            $selectArray[$value] = self::getDescription($value);
+        }
+
+        return $selectArray;
+    }
 }

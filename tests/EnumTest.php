@@ -76,6 +76,21 @@ class EnumTest extends TestCase
         $this->assertEquals($expectedArray, $array);
     }
 
+    public function test_enum_to_select_array()
+    {
+        $array = UserType::toSelectArray();
+        $expectedArray = [
+            0 => 'Administrator',
+            1 => 'Moderator',
+            2 => 'Subscriber',
+            3 => 'Super administrator',
+            4 => 'Four word key name',
+            'StringValue' => 'String key',
+        ];
+
+        $this->assertEquals($expectedArray, $array);
+    }
+
     public function test_enum_is_macroable()
     {
         Enum::macro('toFlippedArray', function() {
