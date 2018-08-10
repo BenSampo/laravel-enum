@@ -7,7 +7,7 @@ use BenSampo\Enum\Rules\EnumKey;
 
 class EnumKeyTest extends TestCase
 {
-    public function testValidationPasses()
+    public function test_validation_passes()
     {
         $passes1 = (new EnumKey(UserType::class))->passes('', 'Administrator');
         $passes2 = (new EnumKey(UserType::class))->passes('', 'administrator');
@@ -18,7 +18,7 @@ class EnumKeyTest extends TestCase
         $this->assertTrue($passes3);
     }
 
-    public function testValidationFails()
+    public function test_validation_fails()
     {
         $fails1 = (new EnumKey(UserType::class))->passes('', 'Anything else');
         $fails2 = (new EnumKey(UserType::class))->passes('', 2);

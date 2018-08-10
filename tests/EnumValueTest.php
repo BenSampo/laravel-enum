@@ -7,7 +7,7 @@ use BenSampo\Enum\Rules\EnumValue;
 
 class EnumValueTest extends TestCase
 {
-    public function testValidationPasses()
+    public function test_validation_passes()
     {
         $passes1 = (new EnumValue(UserType::class))->passes('', 3);
         $passes2 = (new EnumValue(UserType::class))->passes('', 'StringValue');
@@ -16,7 +16,7 @@ class EnumValueTest extends TestCase
         $this->assertTrue($passes2);
     }
 
-    public function testValidationFails()
+    public function test_validation_fails()
     {
         $fails1 = (new EnumValue(UserType::class))->passes('', 7);
         $fails2 = (new EnumValue(UserType::class))->passes('', 'OtherString');
@@ -27,7 +27,7 @@ class EnumValueTest extends TestCase
         $this->assertFalse($fails3);
     }
 
-    public function testCanTurnOffStrictTypeChecking()
+    public function test_can_turn_off_strict_type_checking()
     {
         $passes = (new EnumValue(UserType::class, false))->passes('', '3');
 

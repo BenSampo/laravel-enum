@@ -7,13 +7,13 @@ use PHPUnit\Framework\TestCase;
 
 class EnumTest extends TestCase
 {
-    public function testEnumValues()
+    public function test_enum_values()
     {
         $this->assertEquals(0, UserType::Administrator);
         $this->assertEquals(3, UserType::SuperAdministrator);
     }
 
-    public function testEnumGetKeys()
+    public function test_enum_get_keys()
     {
         $keys = UserType::getKeys();
         $expectedKeys = ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator', 'FourWordKeyName', 'StringKey'];
@@ -21,7 +21,7 @@ class EnumTest extends TestCase
         $this->assertEquals($expectedKeys, $keys);
     }
 
-    public function testEnumGetValues()
+    public function test_enum_get_values()
     {
         $values = UserType::getValues();
         $expectedValues = [0, 1, 2, 3, 4, 'StringValue'];
@@ -29,21 +29,21 @@ class EnumTest extends TestCase
         $this->assertEquals($expectedValues, $values);
     }
 
-    public function testEnumGetKey()
+    public function test_enum_get_key()
     {
         $this->assertEquals('Moderator', UserType::getKey(1));
         $this->assertEquals('SuperAdministrator', UserType::getKey(3));
         $this->assertEquals('StringKey', UserType::getKey('StringValue'));
     }
 
-    public function testEnumGetValue()
+    public function test_enum_get_value()
     {
         $this->assertEquals(1, UserType::getValue('Moderator'));
         $this->assertEquals(3, UserType::getValue('SuperAdministrator'));
         $this->assertEquals('StringValue', UserType::getValue('StringKey'));
     }
 
-    public function testEnumGetDescription()
+    public function test_enum_get_description()
     {
         $this->assertEquals('Moderator', UserType::getDescription(1));
         $this->assertEquals('Super administrator', UserType::getDescription(3));
@@ -51,17 +51,17 @@ class EnumTest extends TestCase
         $this->assertEquals('String key', UserType::getDescription('StringValue'));
     }
 
-    public function testEnumGetRandomKey()
+    public function test_enum_get_random_key()
     {
         $this->assertContains(UserType::getRandomKey(), UserType::getKeys());
     }
 
-    public function testEnumGetRandomValue()
+    public function test_enum_get_random_value()
     {
         $this->assertContains(UserType::getRandomValue(), UserType::getValues());
     }
 
-    public function testEnumToArray()
+    public function test_enum_to_array()
     {
         $array = UserType::toArray();
         $expectedArray = [
