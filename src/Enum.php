@@ -131,7 +131,7 @@ abstract class Enum
         $selectArray = [];
 
         foreach ($array as $key => $value) {
-            $selectArray[$value] = self::getDescription($value);
+            $selectArray[$value] = static::getDescription($value);
         }
 
         return $selectArray;
