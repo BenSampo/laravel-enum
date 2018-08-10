@@ -3,9 +3,12 @@
 namespace BenSampo\Enum;
 
 use ReflectionClass;
+use Illuminate\Support\Traits\Macroable;
 
 abstract class Enum
 {
+    use Macroable;
+    
     /**
      * Constants cache
      *

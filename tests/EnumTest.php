@@ -2,6 +2,7 @@
 
 namespace BenSampo\Enum\Tests;
 
+use BenSampo\Enum\Enum;
 use PHPUnit\Framework\TestCase;
 
 class EnumTest extends TestCase
@@ -73,5 +74,15 @@ class EnumTest extends TestCase
         ];
 
         $this->assertEquals($expectedArray, $array);
+    }
+
+    public function test_enum_is_macroable()
+    {
+        Enum::macro('toFlippedArray', function() {
+            return array_flip(self::toArray());
+        });
+
+        $this->assertTrue(UserType::hasMacro('toFlippedArray'));
+        $this->assertEquals(UserType::toFlippedArray(), array_flip(UserType::toArray()));
     }
 }

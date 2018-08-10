@@ -14,6 +14,7 @@ This package adds support for creating enums in PHP and includes a generator for
 * [Methods](#methods)
 * [Validation](#validation)
 * [Localization](#localization)
+* [Extending the Enum base class](#extending-the-enum-base-class)
 
 ## Guide
 I wrote a blog post about using laravel-enum:
@@ -237,3 +238,19 @@ public static function getDescription($value): string
 ```
 
 Calling `UserType::getDescription(3);` now returns `Super admin` instead of `Super administator`.
+
+## Extending the enum base class
+
+The `Enum` base class implements the [Laravel `Macroable`](https://laravel.com/api/5.6/Illuminate/Support/Traits/Macroable.html) trait, meaning it's easy to extend it with your own functions. If you have a function that you often add to each of your enums, you can use a macro.
+
+Let's say we want to be able to get a flipped version of the enum `toArray` method, we can do this using:
+
+```php
+Enum::macro('toFlippedArray', function() {
+    return array_flip(self::toArray());
+});
+```
+
+Now, on each of my enums, I can call it using `UserType::toFlippedArray()`.
+
+It's best to register the macro inside of a service providers' boot method.
