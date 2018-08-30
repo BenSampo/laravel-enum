@@ -49,6 +49,7 @@ class EnumTest extends TestCase
         $this->assertEquals('Super administrator', UserType::getDescription(3));
         $this->assertEquals('Four word key name', UserType::getDescription(4));
         $this->assertEquals('String key', UserType::getDescription('StringValue'));
+        $this->assertEquals('Uppercase', UserType::getDescription(5));
     }
 
     public function test_enum_get_random_key()
