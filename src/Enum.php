@@ -84,6 +84,11 @@ abstract class Enum
     public static function getDescription($value): string
     {
         $key = self::getKey($value);
+        
+        if (ctype_upper($key)) {
+            $key = strtolower($key);
+        }
+        
         return ucfirst(str_replace('_', ' ', snake_case($key)));
     }
 

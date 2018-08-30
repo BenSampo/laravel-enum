@@ -16,7 +16,7 @@ class EnumTest extends TestCase
     public function test_enum_get_keys()
     {
         $keys = UserType::getKeys();
-        $expectedKeys = ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator', 'FourWordKeyName', 'StringKey'];
+        $expectedKeys = ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator', 'FourWordKeyName', 'UPPERCASE', 'StringKey'];
 
         $this->assertEquals($expectedKeys, $keys);
     }
@@ -24,7 +24,7 @@ class EnumTest extends TestCase
     public function test_enum_get_values()
     {
         $values = UserType::getValues();
-        $expectedValues = [0, 1, 2, 3, 4, 'StringValue'];
+        $expectedValues = [0, 1, 2, 3, 4, 5, 'StringValue'];
 
         $this->assertEquals($expectedValues, $values);
     }
@@ -49,6 +49,7 @@ class EnumTest extends TestCase
         $this->assertEquals('Super administrator', UserType::getDescription(3));
         $this->assertEquals('Four word key name', UserType::getDescription(4));
         $this->assertEquals('String key', UserType::getDescription('StringValue'));
+        $this->assertEquals('Uppercase', UserType::getDescription(5));
     }
 
     public function test_enum_get_random_key()
@@ -70,6 +71,7 @@ class EnumTest extends TestCase
             'Subscriber' => 2,
             'SuperAdministrator' => 3,
             'FourWordKeyName' => 4,
+            'UPPERCASE' => 5,
             'StringKey' => 'StringValue',
         ];
 
@@ -85,6 +87,7 @@ class EnumTest extends TestCase
             2 => 'Subscriber',
             3 => 'Super administrator',
             4 => 'Four word key name',
+            5 => 'Uppercase',
             'StringValue' => 'String key',
         ];
 
