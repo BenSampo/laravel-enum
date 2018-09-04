@@ -32,4 +32,13 @@ class EnumLocalizationTest extends TestCase
         $this->app->setLocale('es');
         $this->assertEquals('Súper administrador', UserTypeWithLocale::getDescription(UserType::SuperAdministrator));
     }
+
+    public function testEnumGetDescriptionForMissingLocalizationKey()
+    {
+        $this->app->setLocale('en');
+        $this->assertEquals('Moderator', UserTypeWithLocale::getDescription(UserType::Moderator));
+
+        $this->app->setLocale('es');
+        $this->assertEquals('Moderator', UserTypeWithLocale::getDescription(UserType::Moderator));
+    }
 }
