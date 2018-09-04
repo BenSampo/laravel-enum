@@ -220,22 +220,14 @@ return [
 ];
 ```
 
-On your enum, change/add the `getDescription` method as follows:
-
+Now, you just need to set the translation key `$localizationKey` in your Enum file like following:
+ 
 ```php
-public static function getDescription(int $value): string
+final class UserType extends Enum
 {
-    $localizedStringKey = 'enums.user-type.' . $value;
-
-    if (strpos(__($localizedStringKey), 'enums.') !== 0) {
-        return __($localizedStringKey);
-    }
-
-    return parent::getDescription($value);
-}
+    protected static $localizationKey = 'enums.user-type';
 ```
 
-Remember to change `user-type` in the `$localizedStringKey` in the example to the name of your enum.
 
 The `getDescription` method will now look for the value in your localization files. If a value doesn't exist for a given key, the key name is returned instead.
 

@@ -8,7 +8,14 @@ use Illuminate\Support\Traits\Macroable;
 abstract class Enum
 {
     use Macroable;
-    
+
+    /**
+     * Localization key in Language file
+     *
+     * @var string
+     */
+    protected static $localizationKey = '';
+
     /**
      * Constants cache
      *
@@ -83,12 +90,18 @@ abstract class Enum
      */
     public static function getDescription($value): string
     {
+        $localizedStringKey = static::$localizationKey . '.' . $value;
+
+        if (!empty(static::$localizationKey) && strpos(__($localizedStringKey), static::$localizationKey) !== 0) {
+            return __($localizedStringKey);
+        }
+
         $key = self::getKey($value);
-        
+
         if (ctype_upper($key)) {
             $key = strtolower($key);
         }
-        
+
         return ucfirst(str_replace('_', ' ', snake_case($key)));
     }
 
