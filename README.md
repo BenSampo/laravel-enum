@@ -1,6 +1,15 @@
 # Laravel enum
 
-This package adds support for creating enums in PHP and includes a generator for Laravel.
+Simple, extensible and powerful enumeration implementation for Laravel.
+
+## Features
+
+* Enum key value pairs as class constants
+* Full featured suite of methods
+* Enum artisan generator
+* Validation rules for passing enum key or values as input parameters
+* Localization support
+* Extendible
 
 [![Build Status](https://travis-ci.org/BenSampo/laravel-enum.svg?branch=master)](https://travis-ci.org/BenSampo/laravel-enum)
 [![Packagist Stable Version](https://img.shields.io/packagist/v/bensampo/laravel-enum.svg?style=flat-square&label=stable)](https://packagist.org/packages/bensampo/laravel-enum)
