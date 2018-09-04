@@ -1,7 +1,7 @@
 {
     "name": "bensampo/laravel-enum",
     "type": "library",
-    "description": "This package adds support for creating enums in PHP and includes a generator for Laravel.",
+    "description": "Simple, extensible and powerful enumeration implementation for Laravel.",
     "keywords": [
         "bensampo",
         "enum",
