@@ -14,7 +14,7 @@ class EnumValue implements Rule
      */
     public function __construct(string $enum, bool $strict = true)
     {
-        $this->validValues = resolve($enum)::getValues();
+        $this->validValues = app($enum)::getValues();
         $this->strict = $strict;
     }
 

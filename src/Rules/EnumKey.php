@@ -15,7 +15,7 @@ class EnumKey implements Rule
     {
         $this->validKeys = array_map(function($key) {
             return strtolower($key);
-        }, resolve($enum)::getKeys());
+        }, app($enum)::getKeys());
     }
 
     /**
