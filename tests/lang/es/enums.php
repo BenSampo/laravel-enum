@@ -1,10 +1,10 @@
 <?php
 
-use BenSampo\Enum\Tests\Enums\UserType;
+use BenSampo\Enum\Tests\Enums\UserTypeWithLocale;
 
 return [
     'user-type' => [
-        UserType::Administrator => 'Administrador',
-        UserType::SuperAdministrator => 'Súper administrador',
+        UserTypeWithLocale::Administrator => 'Administrador',
+        UserTypeWithLocale::SuperAdministrator => 'Súper administrador',
     ],
 ];
