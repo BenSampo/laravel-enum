@@ -96,13 +96,7 @@ abstract class Enum
             return __($localizedStringKey);
         }
 
-        $key = self::getKey($value);
-
-        if (ctype_upper($key)) {
-            $key = strtolower($key);
-        }
-
-        return ucfirst(str_replace('_', ' ', snake_case($key)));
+        return self::getFriendlyKeyName(self::getKey($value));
     }
 
     /**
@@ -153,5 +147,14 @@ abstract class Enum
         }
 
         return $selectArray;
+    }
+
+    private static function getFriendlyKeyName($key): string
+    {
+        if (ctype_upper($key)) {
+            $key = strtolower($key);
+        }
+
+        return ucfirst(str_replace('_', ' ', snake_case($key)));
     }
 }
