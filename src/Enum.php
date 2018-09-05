@@ -4,6 +4,7 @@ namespace BenSampo\Enum;
 
 use ReflectionClass;
 use Illuminate\Support\Traits\Macroable;
+use Illuminate\Support\Facades\Lang;
 
 abstract class Enum
 {
@@ -92,7 +93,7 @@ abstract class Enum
     {
         $localizedStringKey = static::$localizationKey . '.' . $value;
 
-        if (!empty(static::$localizationKey) && strpos(__($localizedStringKey), static::$localizationKey) !== 0) {
+        if (Lang::has($localizedStringKey)) {
             return __($localizedStringKey);
         }
 
