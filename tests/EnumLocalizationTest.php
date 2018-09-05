@@ -24,7 +24,7 @@ class EnumLocalizationTest extends TestCase
         $app['path.lang'] = __DIR__."/lang";
     }
 
-    public function testEnumGetDescriptionWithLocalization()
+    public function test_enum_get_description_with_localization()
     {
         $this->app->setLocale('en');
         $this->assertEquals('Super administrator', UserTypeWithLocale::getDescription(UserType::SuperAdministrator));
@@ -33,7 +33,7 @@ class EnumLocalizationTest extends TestCase
         $this->assertEquals('Súper administrador', UserTypeWithLocale::getDescription(UserType::SuperAdministrator));
     }
 
-    public function testEnumGetDescriptionForMissingLocalizationKey()
+    public function test_enum_get_description_for_missing_localization_key()
     {
         $this->app->setLocale('en');
         $this->assertEquals('Moderator', UserTypeWithLocale::getDescription(UserType::Moderator));
