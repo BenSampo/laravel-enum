@@ -1,5 +1,6 @@
 <?php
-use \BenSampo\Enum\Tests\UserType;
+
+use BenSampo\Enum\Tests\Enums\UserType;
 
 return [
     'user-type' => [

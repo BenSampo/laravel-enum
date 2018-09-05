@@ -4,6 +4,7 @@ namespace BenSampo\Enum\Tests;
 
 use PHPUnit\Framework\TestCase;
 use BenSampo\Enum\Rules\EnumValue;
+use BenSampo\Enum\Tests\Enums\UserType;
 
 class EnumValueTest extends TestCase
 {

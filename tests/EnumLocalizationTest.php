@@ -3,6 +3,8 @@
 namespace BenSampo\Enum\Tests;
 
 use Orchestra\Testbench\TestCase;
+use BenSampo\Enum\Tests\Enums\UserType;
+use BenSampo\Enum\Tests\Enums\UserTypeWithLocale;
 
 class EnumLocalizationTest extends TestCase
 {

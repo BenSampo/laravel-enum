@@ -1,13 +1,11 @@
 <?php
 
-namespace BenSampo\Enum\Tests;
+namespace BenSampo\Enum\Tests\Enums;
 
 use BenSampo\Enum\Enum;
 
-final class UserTypeWithLocale extends Enum
+final class UserType extends Enum
 {
-    protected static $localizationKey = 'enums.user-type';
-
     const Administrator = 0;
     const Moderator = 1;
     const Subscriber = 2;
