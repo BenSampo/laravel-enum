@@ -4,11 +4,20 @@ namespace BenSampo\Enum;
 
 use ReflectionClass;
 use Illuminate\Support\Traits\Macroable;
+use Illuminate\Support\Facades\Lang;
+use BenSampo\Enum\Contracts\LocalizedEnum;
 
 abstract class Enum
 {
     use Macroable;
-    
+
+    /**
+     * Localization key in Language file
+     *
+     * @var string
+     */
+    protected static $localizationKey = '';
+
     /**
      * Constants cache
      *
@@ -83,13 +92,31 @@ abstract class Enum
      */
     public static function getDescription($value): string
     {
-        $key = self::getKey($value);
-        
-        if (ctype_upper($key)) {
-            $key = strtolower($key);
+        return 
+            self::getLocalizedDescription($value) ??
+            self::getFriendlyKeyName(self::getKey($value));
+    }
+
+    /**
+     * Get the localized description if localization is enabled 
+     * for the enum and if they key exists in the lang file
+     *
+     * @param string $value
+     * @return string
+     */
+    private static function getLocalizedDescription($value): ?string
+    {
+        if (self::isLocalizable())
+        {
+            $localizedStringKey = static::getLocalizationKey() . '.' . $value;
+
+            if (Lang::has($localizedStringKey))
+            {
+                return __($localizedStringKey);
+            }
         }
-        
-        return ucfirst(str_replace('_', ' ', snake_case($key)));
+
+        return null;
     }
 
     /**
@@ -140,5 +167,40 @@ abstract class Enum
         }
 
         return $selectArray;
+    }
+
+    /**
+     * Transform the key name into a friendly, formatted version
+     *
+     * @param string $key
+     * @return string
+     */
+    private static function getFriendlyKeyName($key): string
+    {
+        if (ctype_upper($key)) {
+            $key = strtolower($key);
+        }
+
+        return ucfirst(str_replace('_', ' ', snake_case($key)));
+    }
+
+    /**
+     * Check that the enum implements the LocalizedEnum interface
+     *
+     * @return boolean
+     */
+    private static function isLocalizable()
+    {
+        return isset(class_implements(static::class)[LocalizedEnum::class]);
+    }
+
+    /**
+     * Get the default localization key
+     *
+     * @return void
+     */
+    public static function getLocalizationKey()
+    {
+        return 'enums.' . static::class;
     }
 }

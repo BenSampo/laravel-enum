@@ -8,11 +8,10 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="false"
         >
     <testsuites>
         <testsuite name="Laravel Enum Test Suite">
-            <directory suffix=".php">./tests/</directory>
+            <directory suffix="Test.php">./tests/</directory>
         </testsuite>
     </testsuites>
 </phpunit>

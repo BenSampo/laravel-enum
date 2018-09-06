@@ -1,6 +1,6 @@
 <?php
 
-namespace BenSampo\Enum\Tests;
+namespace BenSampo\Enum\Tests\Enums;
 
 use BenSampo\Enum\Enum;
 

@@ -186,7 +186,7 @@ Make sure to include `BenSampo\Enum\Rules\EnumValue` and/or `BenSampo\Enum\Rules
 
 You can translate the strings returned by the `getDescription` method using Laravel's built in [localization](https://laravel.com/docs/5.6/localization) features.
 
-Set up your translation keys files. In this example there is one for English and one for Spanish.
+Add a new `enums.php` keys file for each of your supported languages. In this example there is one for English and one for Spanish.
 
 ```php
 // resources/lang/en/enums.php
@@ -196,7 +196,7 @@ use App\Enums\UserType;
 
 return [
 
-    'user-type' => [
+    UserType::class => [
         UserType::Administrator => 'Administrator',
         UserType::SuperAdministrator => 'Super administrator',
     ],
@@ -212,7 +212,7 @@ use App\Enums\UserType;
 
 return [
 
-    'user-type' => [
+    UserType::class => [
         UserType::Administrator => 'Administrador',
         UserType::SuperAdministrator => 'Súper administrador',
     ],
@@ -220,24 +220,19 @@ return [
 ];
 ```
 
-On your enum, change/add the `getDescription` method as follows:
-
+Now, you just need to make sure than your enum implements the `LocalizedEnum` interface as demonstrated below:
+ 
 ```php
-public static function getDescription(int $value): string
+use BenSampo\Enum\Enum;
+use BenSampo\Enum\Contracts\LocalizedEnum;
+
+final class UserType extends Enum implements LocalizedEnum
 {
-    $localizedStringKey = 'enums.user-type.' . $value;
-
-    if (strpos(__($localizedStringKey), 'enums.') !== 0) {
-        return __($localizedStringKey);
-    }
-
-    return parent::getDescription($value);
+    // ...
 }
 ```
 
-Remember to change `user-type` in the `$localizedStringKey` in the example to the name of your enum.
-
-The `getDescription` method will now look for the value in your localization files. If a value doesn't exist for a given key, the key name is returned instead.
+The `getDescription` method will now look for the value in your localization files. If a value doesn't exist for a given key, the default description is returned instead.
 
 ## Overriding the getDescription method
 
