@@ -3,8 +3,9 @@
 namespace BenSampo\Enum\Tests\Enums;
 
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Contracts\LocalizedEnum;
 
-final class UserTypeLocalized extends Enum
+final class UserTypeLocalized extends Enum implements LocalizedEnum
 {
     protected static $localizationKey = 'enums.user-type';
 

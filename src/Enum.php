@@ -5,6 +5,7 @@ namespace BenSampo\Enum;
 use ReflectionClass;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Support\Facades\Lang;
+use BenSampo\Enum\Contracts\LocalizedEnum;
 
 abstract class Enum
 {
@@ -93,7 +94,8 @@ abstract class Enum
     {
         $localizedStringKey = static::$localizationKey . '.' . $value;
 
-        if (Lang::has($localizedStringKey)) {
+        if (self::isLocalizable() && Lang::has($localizedStringKey))
+        {
             return __($localizedStringKey);
         }
 
@@ -150,6 +152,12 @@ abstract class Enum
         return $selectArray;
     }
 
+    /**
+     * Transform the key name into a friendly, formatted version
+     *
+     * @param string $key
+     * @return string
+     */
     private static function getFriendlyKeyName($key): string
     {
         if (ctype_upper($key)) {
@@ -157,5 +165,15 @@ abstract class Enum
         }
 
         return ucfirst(str_replace('_', ' ', snake_case($key)));
+    }
+
+    /**
+     * Check that the enum implements the LocalizedEnum interface
+     *
+     * @return boolean
+     */
+    private static function isLocalizable()
+    {
+        return isset(class_implements(static::class)[LocalizedEnum::class]);
     }
 }
