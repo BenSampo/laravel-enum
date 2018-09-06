@@ -7,8 +7,6 @@ use BenSampo\Enum\Contracts\LocalizedEnum;
 
 final class UserTypeLocalized extends Enum implements LocalizedEnum
 {
-    protected static $localizationKey = 'enums.user-type';
-
     const Moderator = 0;
     const Administrator = 1;
     const SuperAdministrator = 2;

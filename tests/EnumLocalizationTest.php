@@ -22,7 +22,7 @@ class EnumLocalizationTest extends TestCase
      */
     protected function getEnvironmentSetUp($app)
     {
-        $app['path.lang'] = __DIR__."/lang";
+        $app['path.lang'] = __DIR__ . '/lang';
     }
 
     public function test_enum_get_description_with_localization()

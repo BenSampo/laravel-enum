@@ -3,7 +3,7 @@
 use BenSampo\Enum\Tests\Enums\UserTypeLocalized;
 
 return [
-    'user-type' => [
+    UserTypeLocalized::class => [
         UserTypeLocalized::Administrator => 'Administrator',
         UserTypeLocalized::SuperAdministrator => 'Super administrator',
     ],

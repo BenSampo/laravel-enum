@@ -92,14 +92,31 @@ abstract class Enum
      */
     public static function getDescription($value): string
     {
-        $localizedStringKey = static::$localizationKey . '.' . $value;
+        return 
+            self::getLocalizedDescription($value) ??
+            self::getFriendlyKeyName(self::getKey($value));
+    }
 
-        if (self::isLocalizable() && Lang::has($localizedStringKey))
+    /**
+     * Get the localized description if localization is enabled 
+     * for the enum and if they key exists in the lang file
+     *
+     * @param string $value
+     * @return string
+     */
+    private static function getLocalizedDescription($value): ?string
+    {
+        if (self::isLocalizable())
         {
-            return __($localizedStringKey);
+            $localizedStringKey = static::getLocalizationKey() . '.' . $value;
+
+            if (Lang::has($localizedStringKey))
+            {
+                return __($localizedStringKey);
+            }
         }
 
-        return self::getFriendlyKeyName(self::getKey($value));
+        return null;
     }
 
     /**
@@ -175,5 +192,15 @@ abstract class Enum
     private static function isLocalizable()
     {
         return isset(class_implements(static::class)[LocalizedEnum::class]);
+    }
+
+    /**
+     * Get the default localization key
+     *
+     * @return void
+     */
+    public static function getLocalizationKey()
+    {
+        return 'enums.' . static::class;
     }
 }
