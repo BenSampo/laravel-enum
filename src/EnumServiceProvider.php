@@ -2,6 +2,7 @@
 
 namespace BenSampo\Enum;
 
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use BenSampo\Enum\Commands\MakeEnumCommand;
 
@@ -17,6 +18,18 @@ class EnumServiceProvider extends ServiceProvider
                 MakeEnumCommand::class,
             ]);
         }
+
+        Validator::extend('enum_value', function ($attribute, $value, $parameters, $validator) {
+            $enum = array_get($parameters, 0, null);
+            $validValues = app($enum)::getValues();
+
+            $strict = array_get($parameters, 1, true);
+            if ($strict) {
+                return in_array($value, $validValues, true);
+            }
+
+            return in_array((string)$value, array_map('strval', $validValues), true);
+        });
     }
 
     /**
