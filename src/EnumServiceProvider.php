@@ -24,24 +24,13 @@ class EnumServiceProvider extends ServiceProvider
             $validValues = app($enum)::getValues();
 
             $strict = array_get($parameters, 1, true);
-            if ($this->boolean($strict)) {
-                return in_array($value, $validValues, true);
+            $strict = (boolean)json_decode(strtolower($strict));
+            if (!$strict) {
+                return in_array((string)$value, array_map('strval', $validValues), true);
             }
 
-            return in_array((string)$value, array_map('strval', $validValues), true);
+            return in_array($value, $validValues, true);
         });
-    }
-
-    /**
-     * Filter value with boolean filter.
-     *
-     * @param $value
-     *
-     * @return mixed
-     */
-    private function boolean($value)
-    {
-        return filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
