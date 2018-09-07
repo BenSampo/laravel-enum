@@ -5,6 +5,8 @@ namespace BenSampo\Enum;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use BenSampo\Enum\Commands\MakeEnumCommand;
+use BenSampo\Enum\Validations\EnumKey;
+use BenSampo\Enum\Validations\EnumValue;
 
 class EnumServiceProvider extends ServiceProvider
 {
@@ -19,18 +21,8 @@ class EnumServiceProvider extends ServiceProvider
             ]);
         }
 
-        Validator::extend('enum_value', function ($attribute, $value, $parameters, $validator) {
-            $enum = array_get($parameters, 0, null);
-            $validValues = app($enum)::getValues();
-
-            $strict = array_get($parameters, 1, true);
-            $strict = (boolean)json_decode(strtolower($strict));
-            if (!$strict) {
-                return in_array((string)$value, array_map('strval', $validValues), true);
-            }
-
-            return in_array($value, $validValues, true);
-        });
+        Validator::extend('enum_value', EnumValue::class . '@validate', EnumValue::$errorMessage);
+        Validator::extend('enum_key', EnumKey::class . '@validate', EnumKey::$errorMessage);
     }
 
     /**
