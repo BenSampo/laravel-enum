@@ -42,6 +42,6 @@ class EnumValue implements Rule
      */
     public function message()
     {
-        return 'The value you have entered is invalid.';
+        return trans('laravel-enum::validation.enum_value');
     }
 }
