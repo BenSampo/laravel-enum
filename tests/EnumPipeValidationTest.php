@@ -23,6 +23,15 @@ class EnumPipeValidationTest extends ApplicationTestCase
         $this->assertFalse($validator->passes());
     }
 
+    public function test_can_validate_value_using_pipe_validation_without_strict_type_checking()
+    {
+        $validator = Validator::make(['type' => (string) UserType::Administrator], [
+            'type' => 'enum_value:' . UserType::class . ',false',
+        ]);
+
+        $this->assertTrue($validator->passes());
+    }
+
     public function test_can_validate_key_using_pipe_validation()
     {
         $validator = Validator::make(['type' => UserType::getKey(UserType::Administrator)], [
