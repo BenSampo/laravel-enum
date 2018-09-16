@@ -90,7 +90,7 @@ Returns an array of the values for an enum.
 UserType::getValues(); // Returns [0, 1, 2, 3]
 ```
 
-### getKey(int $value): string
+### getKey(string|int $value): string|int
 
 Returns the key for the given enum value.
 
@@ -99,7 +99,7 @@ UserType::getKey(1); // Returns 'Moderator'
 UserType::getKey(UserType::Moderator); // Returns 'Moderator'
 ```
 
-### getValue(string $key): int
+### getValue(string|int $key): string|int
 
 Returns the value for the given enum key.
 
@@ -107,7 +107,27 @@ Returns the value for the given enum key.
 UserType::getValue('Moderator'); // Returns 1
 ```
 
-### getDescription(int $value): string
+### hasKey(string|int $key): bool
+
+Check if the enum contains a given key.
+
+``` php
+UserType::hasKey('Moderator'); // Returns 'True'
+```
+
+### hasValue(string|int $key, bool $strict = true): int
+
+Check if the enum contains a given value.
+
+``` php
+UserType::hasValue(1); // Returns 'True'
+
+// It's possible to disable the strict type checking:
+UserType::hasValue('1'); // Returns 'False'
+UserType::hasValue('1', true); // Returns 'True'
+```
+
+### getDescription(string|int $value): string
 
 Returns the key in sentence case for the enum value. It's possible to [override the getDescription](#overriding-the-getDescription-method) method to return custom descriptions.
 
@@ -116,7 +136,7 @@ UserType::getDescription(3); // Returns 'Super administrator'
 UserType::getDescription(UserType::SuperAdministrator); // Returns 'Super administrator'
 ```
 
-### getRandomKey(): string
+### getRandomKey(): string|int
 
 Returns a random key from the enum. Useful for factories.
 
@@ -124,7 +144,7 @@ Returns a random key from the enum. Useful for factories.
 UserType::getRandomKey(); // Returns 'Administrator', 'Moderator', 'Subscriber' or 'SuperAdministrator'
 ```
 
-### getRandomValue(): int
+### getRandomValue(): string|int
 
 Returns a random value from the enum. Useful for factories.
 
