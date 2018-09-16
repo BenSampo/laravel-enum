@@ -6,16 +6,14 @@ use Illuminate\Contracts\Validation\Rule;
 
 class EnumKey implements Rule
 {
-    private $validKeys;
+    private $enumClass;
 
     /**
      * Create a new rule instance.
      */
     public function __construct(string $enum)
     {
-        $this->validKeys = array_map(function($key) {
-            return strtolower($key);
-        }, app($enum)::getKeys());
+        $this->enumClass = $enum;
     }
 
     /**
@@ -28,9 +26,7 @@ class EnumKey implements Rule
      */
     public function passes($attribute, $value)
     {
-        $value = strtolower($value);
-
-        return in_array($value, $this->validKeys, true);
+        return app($this->enumClass)::hasKey($value);
     }
 
     /**

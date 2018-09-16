@@ -2,29 +2,10 @@
 
 namespace BenSampo\Enum\Tests;
 
-use Orchestra\Testbench\TestCase;
 use BenSampo\Enum\Tests\Enums\UserTypeLocalized;
 
-class EnumLocalizationTest extends TestCase
+class EnumLocalizationTest extends ApplicationTestCase
 {
-    protected function setUp()
-    {
-        parent::setUp();
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-    }
-
-    /**
-     * @param \Illuminate\Foundation\Application $app
-     */
-    protected function getEnvironmentSetUp($app)
-    {
-        $app['path.lang'] = __DIR__ . '/lang';
-    }
-
     public function test_enum_get_description_with_localization()
     {
         $this->app->setLocale('en');

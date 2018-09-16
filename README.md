@@ -90,7 +90,7 @@ Returns an array of the values for an enum.
 UserType::getValues(); // Returns [0, 1, 2, 3]
 ```
 
-### getKey(int $value): string
+### getKey(string|int $value): string|int
 
 Returns the key for the given enum value.
 
@@ -99,7 +99,7 @@ UserType::getKey(1); // Returns 'Moderator'
 UserType::getKey(UserType::Moderator); // Returns 'Moderator'
 ```
 
-### getValue(string $key): int
+### getValue(string|int $key): string|int
 
 Returns the value for the given enum key.
 
@@ -107,7 +107,27 @@ Returns the value for the given enum key.
 UserType::getValue('Moderator'); // Returns 1
 ```
 
-### getDescription(int $value): string
+### hasKey(string|int $key): bool
+
+Check if the enum contains a given key.
+
+``` php
+UserType::hasKey('Moderator'); // Returns 'True'
+```
+
+### hasValue(string|int $key, bool $strict = true): int
+
+Check if the enum contains a given value.
+
+``` php
+UserType::hasValue(1); // Returns 'True'
+
+// It's possible to disable the strict type checking:
+UserType::hasValue('1'); // Returns 'False'
+UserType::hasValue('1', false); // Returns 'True'
+```
+
+### getDescription(string|int $value): string
 
 Returns the key in sentence case for the enum value. It's possible to [override the getDescription](#overriding-the-getDescription-method) method to return custom descriptions.
 
@@ -116,7 +136,7 @@ UserType::getDescription(3); // Returns 'Super administrator'
 UserType::getDescription(UserType::SuperAdministrator); // Returns 'Super administrator'
 ```
 
-### getRandomKey(): string
+### getRandomKey(): string|int
 
 Returns a random key from the enum. Useful for factories.
 
@@ -124,7 +144,7 @@ Returns a random key from the enum. Useful for factories.
 UserType::getRandomKey(); // Returns 'Administrator', 'Moderator', 'Subscriber' or 'SuperAdministrator'
 ```
 
-### getRandomValue(): int
+### getRandomValue(): string|int
 
 Returns a random value from the enum. Useful for factories.
 
@@ -150,6 +170,7 @@ UserType::toSelectArray(); // Returns [0 => 'Administrator', 1 => 'Moderator', 2
 
 ## Validation
 
+### Array Validation
 You may validate that an enum value passed to a controller is a valid value for a given enum by using the `EnumValue` rule.
 
 ``` php
@@ -161,7 +182,7 @@ public function store(Request $request)
 }
 ```
 
-By default type checking is set to strict, but you can bypass this passing `false` to the optional second parameter of the EnumValue class.
+By default, type checking is set to strict, but you can bypass this by passing `false` to the optional second parameter of the EnumValue class.
 
 ```php
 new EnumValue(UserType::class, false) // Turn off strict type checking.
@@ -181,6 +202,17 @@ public function store(Request $request)
 Of course, both of these work on form request classes too.
 
 Make sure to include `BenSampo\Enum\Rules\EnumValue` and/or `BenSampo\Enum\Rules\EnumKey` and your enum class in the usings.
+
+### Pipe Validation
+You can also use the 'pipe' syntax for both the EnumKey and EnumValue rules by using `enum_value` and/or `enum_key` respectively.
+
+**enum_value**_:enum_class,[strict]_  
+**enum_key**_:enum_class_
+
+```php
+'user_type' => 'required|enum_value:' . UserType::class,
+'user_type' => 'required|enum_key:' . UserType::class,
+```
 
 ## Localization
 
@@ -220,7 +252,7 @@ return [
 ];
 ```
 
-Now, you just need to make sure than your enum implements the `LocalizedEnum` interface as demonstrated below:
+Now, you just need to make sure that your enum implements the `LocalizedEnum` interface as demonstrated below:
  
 ```php
 use BenSampo\Enum\Enum;
