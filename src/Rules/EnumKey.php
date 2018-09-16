@@ -26,7 +26,7 @@ class EnumKey implements Rule
      */
     public function passes($attribute, $value)
     {
-        return app($this->enumClass)::hasKey(strtolower($value));
+        return app($this->enumClass)::hasKey($value);
     }
 
     /**

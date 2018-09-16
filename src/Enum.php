@@ -177,8 +177,25 @@ abstract class Enum
     public static function hasKey($key): bool
     {
         $validKeys = array_map('strtolower', self::getKeys());
+        $normalizedKey = strtolower($key);
 
-        return in_array($key, $validKeys, true);
+        return in_array($normalizedKey, $validKeys, true);
+    }
+
+    /**
+     * Check that the enum contains a specific value
+     *
+     * @return bool
+     */
+    public static function hasValue($value, bool $strict = true): bool
+    {
+        $validValues = self::getValues();
+
+        if ($strict) {
+            return in_array($value, $validValues, true);
+        }
+
+        return in_array((string) $value, array_map('strval', $validValues), true);
     }
 
     /**

@@ -6,15 +6,14 @@ use Illuminate\Contracts\Validation\Rule;
 
 class EnumValue implements Rule
 {
-    private $validValues;
-    private $strict;
+    private $enumClass;
 
     /**
      * Create a new rule instance.
      */
     public function __construct(string $enum, bool $strict = true)
     {
-        $this->validValues = app($enum)::getValues();
+        $this->enumClass = $enum;
         $this->strict = $strict;
     }
 
@@ -28,11 +27,7 @@ class EnumValue implements Rule
      */
     public function passes($attribute, $value)
     {
-        if ($this->strict) {
-            return in_array($value, $this->validValues, true);
-        }
-
-        return in_array((string)$value, array_map('strval', $this->validValues), true);
+        return app($this->enumClass)::hasValue($value, $this->strict);
     }
 
     /**
