@@ -170,7 +170,7 @@ UserType::toSelectArray(); // Returns [0 => 'Administrator', 1 => 'Moderator', 2
 
 ## Validation
 
-#### Array Validation
+### Array Validation
 You may validate that an enum value passed to a controller is a valid value for a given enum by using the `EnumValue` rule.
 
 ``` php
@@ -182,7 +182,7 @@ public function store(Request $request)
 }
 ```
 
-By default type checking is set to strict, but you can bypass this passing `false` to the optional second parameter of the EnumValue class.
+By default, type checking is set to strict, but you can bypass this by passing `false` to the optional second parameter of the EnumValue class.
 
 ```php
 new EnumValue(UserType::class, false) // Turn off strict type checking.
@@ -203,19 +203,16 @@ Of course, both of these work on form request classes too.
 
 Make sure to include `BenSampo\Enum\Rules\EnumValue` and/or `BenSampo\Enum\Rules\EnumKey` and your enum class in the usings.
 
-#### Pipe Validation
-Use `enum_value` or `enum_key` for pipe validations.
+### Pipe Validation
+You can also use the 'pipe' syntax for both the EnumKey and EnumValue rules by using `enum_value` and/or `enum_key` respectively.
+
+**enum_value**_:enum_class,[strict]_  
+**enum_key**_:enum_class_
 
 ```php
 'user_type' => 'required|enum_value:' . UserType::class,
+'user_type' => 'required|enum_key:' . UserType::class,
 ```
-
-**enum_value**_:enum_class,[strict]_  
-The field under validation must be one of the provided enum class' values. By default type checking is set to strict, but you can bypass this passing `false` to the optional second parameter.
-
-**enum_key**_:enum_class_  
-The field under validation must be one of the provided enum class' keys.
-
 
 ## Localization
 
