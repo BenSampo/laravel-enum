@@ -15,12 +15,31 @@ class EnumServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->bootCommands();
+        $this->bootValidators();
+    }
+
+    /**
+     * Boot the custom commands
+     *
+     * @return void
+     */
+    private function bootCommands()
+    {
         if ($this->app->runningInConsole()) {
             $this->commands([
                 MakeEnumCommand::class,
             ]);
         }
+    }
 
+    /**
+     * Boot the custom validators
+     *
+     * @return void
+     */
+    private function bootValidators()
+    {
         Validator::extend('enum_value', EnumValue::class . '@validate', EnumValue::$errorMessage);
         Validator::extend('enum_key', EnumKey::class . '@validate', EnumKey::$errorMessage);
     }
