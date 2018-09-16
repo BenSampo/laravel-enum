@@ -2,11 +2,11 @@
 
 namespace BenSampo\Enum;
 
-use Illuminate\Support\Facades\Validator;
+use BenSampo\Enum\Rules\EnumKey;
+use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Validator;
 use BenSampo\Enum\Commands\MakeEnumCommand;
-use BenSampo\Enum\Validations\EnumKey;
-use BenSampo\Enum\Validations\EnumValue;
 
 class EnumServiceProvider extends ServiceProvider
 {
@@ -40,8 +40,22 @@ class EnumServiceProvider extends ServiceProvider
      */
     private function bootValidators()
     {
-        Validator::extend('enum_value', EnumValue::class . '@validate', EnumValue::$errorMessage);
-        Validator::extend('enum_key', EnumKey::class . '@validate', EnumKey::$errorMessage);
+        Validator::extend('enum_key', function($attribute, $value, $parameters, $validator) {
+            $enum = array_get($parameters, 0, null);
+            return (new EnumKey($enum))->passes($attribute, $value);
+        });
+
+        Validator::extend('enum_value', function($attribute, $value, $parameters, $validator) {
+            $enum = array_get($parameters, 0, null);
+            $strict = array_get($parameters, 1, null);
+
+            if ($strict) {
+                $strict = (boolean) json_decode(strtolower($strict));
+                return (new EnumValue($enum, $strict))->passes($attribute, $value);
+            }
+
+            return (new EnumValue($enum))->passes($attribute, $value);
+        });
     }
 
     /**
