@@ -170,6 +170,18 @@ abstract class Enum
     }
 
     /**
+     * Check that the enum contains a specific key
+     *
+     * @return bool
+     */
+    public static function hasKey($key): bool
+    {
+        $validKeys = array_map('strtolower', self::getKeys());
+
+        return in_array($key, $validKeys, true);
+    }
+
+    /**
      * Transform the key name into a friendly, formatted version
      *
      * @param string $key
