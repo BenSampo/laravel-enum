@@ -124,7 +124,7 @@ UserType::hasValue(1); // Returns 'True'
 
 // It's possible to disable the strict type checking:
 UserType::hasValue('1'); // Returns 'False'
-UserType::hasValue('1', true); // Returns 'True'
+UserType::hasValue('1', false); // Returns 'True'
 ```
 
 ### getDescription(string|int $value): string
