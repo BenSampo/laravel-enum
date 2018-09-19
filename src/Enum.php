@@ -66,7 +66,7 @@ abstract class Enum
      * Get the key for a single enum value
      *
      * @param mixed $value
-     * @return string
+     * @return int|string
      */
     public static function getKey($value): string
     {
@@ -77,7 +77,7 @@ abstract class Enum
      * Get the value for a single enum key
      *
      * @param string $key
-     * @return void
+     * @return int|string
      */
     public static function getValue(string $key)
     {
@@ -122,7 +122,7 @@ abstract class Enum
     /**
      * Get a random key from the enum
      *
-     * @return string
+     * @return int|string
      */
     public static function getRandomKey(): string
     {
@@ -133,7 +133,7 @@ abstract class Enum
     /**
      * Get a random value from the enum
      *
-     * @return string
+     * @return int|string
      */
     public static function getRandomValue(): string
     {
@@ -201,7 +201,7 @@ abstract class Enum
     /**
      * Transform the key name into a friendly, formatted version
      *
-     * @param string $key
+     * @param int|string $key
      * @return string
      */
     private static function getFriendlyKeyName($key): string
@@ -226,7 +226,7 @@ abstract class Enum
     /**
      * Get the default localization key
      *
-     * @return void
+     * @return string
      */
     public static function getLocalizationKey()
     {
