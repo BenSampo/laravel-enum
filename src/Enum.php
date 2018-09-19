@@ -12,13 +12,6 @@ abstract class Enum
     use Macroable;
 
     /**
-     * Localization key in Language file
-     *
-     * @var string
-     */
-    protected static $localizationKey = '';
-
-    /**
      * Constants cache
      *
      * @var array
