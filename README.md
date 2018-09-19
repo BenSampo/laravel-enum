@@ -90,7 +90,7 @@ Returns an array of the values for an enum.
 UserType::getValues(); // Returns [0, 1, 2, 3]
 ```
 
-### getKey(string|int $value): string|int
+### getKey(string|int $value): string
 
 Returns the key for the given enum value.
 
@@ -99,7 +99,7 @@ UserType::getKey(1); // Returns 'Moderator'
 UserType::getKey(UserType::Moderator); // Returns 'Moderator'
 ```
 
-### getValue(string|int $key): string|int
+### getValue(string $key): string|int
 
 Returns the value for the given enum key.
 
@@ -107,7 +107,7 @@ Returns the value for the given enum key.
 UserType::getValue('Moderator'); // Returns 1
 ```
 
-### hasKey(string|int $key): bool
+### hasKey(string $key): bool
 
 Check if the enum contains a given key.
 
@@ -115,7 +115,7 @@ Check if the enum contains a given key.
 UserType::hasKey('Moderator'); // Returns 'True'
 ```
 
-### hasValue(string|int $key, bool $strict = true): int
+### hasValue(string|int $value, bool $strict = true): int
 
 Check if the enum contains a given value.
 
@@ -136,7 +136,7 @@ UserType::getDescription(3); // Returns 'Super administrator'
 UserType::getDescription(UserType::SuperAdministrator); // Returns 'Super administrator'
 ```
 
-### getRandomKey(): string|int
+### getRandomKey(): string
 
 Returns a random key from the enum. Useful for factories.
 

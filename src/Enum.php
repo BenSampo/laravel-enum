@@ -165,9 +165,10 @@ abstract class Enum
     /**
      * Check that the enum contains a specific key
      *
+     * @param string $key
      * @return bool
      */
-    public static function hasKey($key): bool
+    public static function hasKey(string $key): bool
     {
         $validKeys = array_map('strtolower', self::getKeys());
         $normalizedKey = strtolower($key);
@@ -178,6 +179,8 @@ abstract class Enum
     /**
      * Check that the enum contains a specific value
      *
+     * @param int|string $value
+     * @param bool $strict (Optional, defaults to True)
      * @return bool
      */
     public static function hasValue($value, bool $strict = true): bool
