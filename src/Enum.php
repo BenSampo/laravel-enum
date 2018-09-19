@@ -58,7 +58,7 @@ abstract class Enum
     /**
      * Get the key for a single enum value
      *
-     * @param mixed $value
+     * @param int|string $value
      * @return int|string
      */
     public static function getKey($value): string
@@ -80,7 +80,7 @@ abstract class Enum
     /**
      * Get the description for an enum value
      *
-     * @param mixed $value
+     * @param int|string $value
      * @return string
      */
     public static function getDescription($value): string
@@ -94,7 +94,7 @@ abstract class Enum
      * Get the localized description if localization is enabled 
      * for the enum and if they key exists in the lang file
      *
-     * @param string $value
+     * @param int|string $value
      * @return string
      */
     private static function getLocalizedDescription($value): ?string
@@ -115,7 +115,7 @@ abstract class Enum
     /**
      * Get a random key from the enum
      *
-     * @return int|string
+     * @return string
      */
     public static function getRandomKey(): string
     {
@@ -128,7 +128,7 @@ abstract class Enum
      *
      * @return int|string
      */
-    public static function getRandomValue(): string
+    public static function getRandomValue()
     {
         $values = self::getValues();
         return $values[array_rand($values)];
@@ -194,10 +194,10 @@ abstract class Enum
     /**
      * Transform the key name into a friendly, formatted version
      *
-     * @param int|string $key
+     * @param string $key
      * @return string
      */
-    private static function getFriendlyKeyName($key): string
+    private static function getFriendlyKeyName(string $key): string
     {
         if (ctype_upper($key)) {
             $key = strtolower($key);
