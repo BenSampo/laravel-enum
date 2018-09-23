@@ -6,8 +6,11 @@ cache:
 
 matrix:
   include:
+  - php: 7.0
+    env: LARAVEL=5.1
+  include:
   - php: 7.2
-    env: LARAVEL=5.5
+    env: LARAVEL=5.7
 
 script:
 - vendor/bin/phpunit -c phpunit.xml tests/
