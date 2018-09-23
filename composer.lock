@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9a5e493ec43331c6e6ef90614e63c113",
+    "content-hash": "bc81e2f2034a66c5917bf3337df12033",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -281,16 +281,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.7.1",
+            "version": "v5.7.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "4a5955e325faa2054420eeb7320cc2c81111a2f2"
+                "reference": "ddb87a87471b452456fbbe1365e1b9ae55483515"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/4a5955e325faa2054420eeb7320cc2c81111a2f2",
-                "reference": "4a5955e325faa2054420eeb7320cc2c81111a2f2",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/ddb87a87471b452456fbbe1365e1b9ae55483515",
+                "reference": "ddb87a87471b452456fbbe1365e1b9ae55483515",
                 "shasum": ""
             },
             "require": {
@@ -378,6 +378,7 @@
                 "league/flysystem-cached-adapter": "Required to use the Flysystem cache (^1.0).",
                 "league/flysystem-rackspace": "Required to use the Flysystem Rackspace driver (^1.0).",
                 "league/flysystem-sftp": "Required to use the Flysystem SFTP driver (^1.0).",
+                "moontoast/math": "Required to use ordered UUIDs (^1.1).",
                 "nexmo/client": "Required to use the Nexmo transport (^1.0).",
                 "pda/pheanstalk": "Required to use the beanstalk queue driver (^3.0).",
                 "predis/predis": "Required to use the redis cache and queue drivers (^1.0).",
@@ -417,30 +418,30 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2018-09-04T18:28:50+00:00"
+            "time": "2018-09-20T14:03:45+00:00"
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.46",
+            "version": "1.0.47",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "f3e0d925c18b92cf3ce84ea5cc58d62a1762a2b2"
+                "reference": "a11e4a75f256bdacf99d20780ce42d3b8272975c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/f3e0d925c18b92cf3ce84ea5cc58d62a1762a2b2",
-                "reference": "f3e0d925c18b92cf3ce84ea5cc58d62a1762a2b2",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/a11e4a75f256bdacf99d20780ce42d3b8272975c",
+                "reference": "a11e4a75f256bdacf99d20780ce42d3b8272975c",
                 "shasum": ""
             },
             "require": {
+                "ext-fileinfo": "*",
                 "php": ">=5.5.9"
             },
             "conflict": {
                 "league/flysystem-sftp": "<1.0.6"
             },
             "require-dev": {
-                "ext-fileinfo": "*",
                 "phpspec/phpspec": "^3.4",
                 "phpunit/phpunit": "^5.7.10"
             },
@@ -501,7 +502,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2018-08-22T07:45:22+00:00"
+            "time": "2018-09-14T15:30:29+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -583,16 +584,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "1.33.0",
+            "version": "1.34.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "55667c1007a99e82030874b1bb14d24d07108413"
+                "reference": "1dbd3cb01c5645f3e7deda7aa46ef780d95fcc33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/55667c1007a99e82030874b1bb14d24d07108413",
-                "reference": "55667c1007a99e82030874b1bb14d24d07108413",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/1dbd3cb01c5645f3e7deda7aa46ef780d95fcc33",
+                "reference": "1dbd3cb01c5645f3e7deda7aa46ef780d95fcc33",
                 "shasum": ""
             },
             "require": {
@@ -634,7 +635,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2018-08-07T08:39:47+00:00"
+            "time": "2018-09-20T19:36:25+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -909,16 +910,16 @@
         },
         {
             "name": "swiftmailer/swiftmailer",
-            "version": "v6.1.2",
+            "version": "v6.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "7d760881d266d63c5e7a1155cbcf2ac656a31ca8"
+                "reference": "8ddcb66ac10c392d3beb54829eef8ac1438595f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/7d760881d266d63c5e7a1155cbcf2ac656a31ca8",
-                "reference": "7d760881d266d63c5e7a1155cbcf2ac656a31ca8",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/8ddcb66ac10c392d3beb54829eef8ac1438595f4",
+                "reference": "8ddcb66ac10c392d3beb54829eef8ac1438595f4",
                 "shasum": ""
             },
             "require": {
@@ -964,7 +965,7 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2018-07-13T07:04:35+00:00"
+            "time": "2018-09-11T07:12:52+00:00"
         },
         {
             "name": "symfony/console",
@@ -2091,21 +2092,21 @@
         },
         {
             "name": "orchestra/testbench",
-            "version": "v3.7.0",
+            "version": "v3.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/orchestral/testbench.git",
-                "reference": "39582871eaa28d4d5fa844f58627acda402ce621"
+                "reference": "254f8f38dc777a914e3c27ee39c9f854db44a670"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/orchestral/testbench/zipball/39582871eaa28d4d5fa844f58627acda402ce621",
-                "reference": "39582871eaa28d4d5fa844f58627acda402ce621",
+                "url": "https://api.github.com/repos/orchestral/testbench/zipball/254f8f38dc777a914e3c27ee39c9f854db44a670",
+                "reference": "254f8f38dc777a914e3c27ee39c9f854db44a670",
                 "shasum": ""
             },
             "require": {
-                "laravel/framework": "~5.7.0",
-                "orchestra/testbench-core": "~3.7.0",
+                "laravel/framework": "~5.7.4",
+                "orchestra/testbench-core": "~3.7.3",
                 "php": ">=7.1",
                 "phpunit/phpunit": "^7.0"
             },
@@ -2139,20 +2140,20 @@
                 "orchestral",
                 "testing"
             ],
-            "time": "2018-08-23T02:31:13+00:00"
+            "time": "2018-09-13T10:35:30+00:00"
         },
         {
             "name": "orchestra/testbench-core",
-            "version": "v3.7.0",
+            "version": "v3.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/orchestral/testbench-core.git",
-                "reference": "21d142febca221382f4a18d3ba7590bf5ed824b8"
+                "reference": "cfddff2e51f868b09aa9e66c67664c0cd32438cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/21d142febca221382f4a18d3ba7590bf5ed824b8",
-                "reference": "21d142febca221382f4a18d3ba7590bf5ed824b8",
+                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/cfddff2e51f868b09aa9e66c67664c0cd32438cc",
+                "reference": "cfddff2e51f868b09aa9e66c67664c0cd32438cc",
                 "shasum": ""
             },
             "require": {
@@ -2160,12 +2161,12 @@
                 "php": ">=7.1"
             },
             "require-dev": {
-                "laravel/framework": "~5.7.0",
+                "laravel/framework": "~5.7.4",
                 "mockery/mockery": "^1.0",
                 "phpunit/phpunit": "^7.0"
             },
             "suggest": {
-                "laravel/framework": "Required for testing (~5.7.0).",
+                "laravel/framework": "Required for testing (~5.7.4).",
                 "mockery/mockery": "Allow to use Mockery for testing (^1.0).",
                 "orchestra/testbench-browser-kit": "Allow to use legacy Laravel BrowserKit for testing (~3.7).",
                 "orchestra/testbench-dusk": "Allow to use Laravel Dusk for testing (~3.7).",
@@ -2203,7 +2204,7 @@
                 "orchestral",
                 "testing"
             ],
-            "time": "2018-09-04T15:43:36+00:00"
+            "time": "2018-09-13T09:05:08+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -2587,20 +2588,23 @@
         },
         {
             "name": "phpunit/php-file-iterator",
-            "version": "2.0.1",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-file-iterator.git",
-                "reference": "cecbc684605bb0cc288828eb5d65d93d5c676d3c"
+                "reference": "050bedf145a257b1ff02746c31894800e5122946"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/cecbc684605bb0cc288828eb5d65d93d5c676d3c",
-                "reference": "cecbc684605bb0cc288828eb5d65d93d5c676d3c",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/050bedf145a257b1ff02746c31894800e5122946",
+                "reference": "050bedf145a257b1ff02746c31894800e5122946",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.1"
             },
             "type": "library",
             "extra": {
@@ -2630,7 +2634,7 @@
                 "filesystem",
                 "iterator"
             ],
-            "time": "2018-06-11T11:44:00+00:00"
+            "time": "2018-09-13T20:33:42+00:00"
         },
         {
             "name": "phpunit/php-text-template",
@@ -2773,16 +2777,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.3.4",
+            "version": "7.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "0356331bf62896dc56e3a15030b23b73f38b2935"
+                "reference": "7b331efabbb628c518c408fdfcaf571156775de2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/0356331bf62896dc56e3a15030b23b73f38b2935",
-                "reference": "0356331bf62896dc56e3a15030b23b73f38b2935",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/7b331efabbb628c518c408fdfcaf571156775de2",
+                "reference": "7b331efabbb628c518c408fdfcaf571156775de2",
                 "shasum": ""
             },
             "require": {
@@ -2853,7 +2857,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-09-05T09:58:53+00:00"
+            "time": "2018-09-08T15:14:29+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

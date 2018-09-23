@@ -32,6 +32,7 @@ matrix:
 before_install:
   - composer self-update --stable --no-interaction
   - composer require laravel/framework:$LARAVEL illuminate/support:$LARAVEL orchestra/testbench:$TESTBENCH phpunit/phpunit:$PHPUNIT --no-update --no-interaction --dev
+  - composer config platform.php $PHP
 
 install: composer install --no-interaction
 
