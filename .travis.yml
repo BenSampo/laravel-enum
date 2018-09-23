@@ -25,7 +25,7 @@ matrix:
     - php: 7.0
       env: LARAVEL=5.6.* TESTBENCH=3.6.* PHPUNIT=7.0.*
     - php: 7.0
-      env: LARAVEL=5.7.* TESTBENCH=3.7.* PHPUNIT=7.0.*
+      env: LARAVEL=5.7.* TESTBENCH=3.7.* PHPUNIT=7.3.*
     - php: 7.2
       env: LARAVEL=5.0.* TESTBENCH=3.0.* PHPUNIT=4.8.*
 
