@@ -31,11 +31,10 @@ matrix:
 
 before_install:
   - composer self-update --stable --no-interaction
+  - echo "require laravel/framework:$LARAVEL illuminate/support:$LARAVEL orchestra/testbench:$TESTBENCH phpunit/phpunit:$PHPUNIT --no-update --no-interaction --dev"
   - composer require laravel/framework:$LARAVEL illuminate/support:$LARAVEL orchestra/testbench:$TESTBENCH phpunit/phpunit:$PHPUNIT --no-update --no-interaction --dev
 
-install: 
-  - travis_retry composer install --no-suggest --no-interaction
-  - composer info
+install: composer install --no-interaction
 
 script:
 - vendor/bin/phpunit -c phpunit.xml tests/
