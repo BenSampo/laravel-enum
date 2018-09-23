@@ -31,7 +31,8 @@ matrix:
 
 before_install:
   - composer self-update --stable --no-interaction
-  - composer require laravel/framework:$LARAVEL illuminate/support:$LARAVEL orchestra/testbench:$TESTBENCH phpunit/phpunit:$PHPUNIT --no-update --no-interaction --dev
+  - composer require laravel/framework:$LARAVEL orchestra/testbench:$TESTBENCH phpunit/phpunit:$PHPUNIT --no-update --no-interaction --dev
+  - composer require illuminate/support:$LARAVEL
 
 install: travis_retry composer install --no-interaction --prefer-dist --no-suggest
 
