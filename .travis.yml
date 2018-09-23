@@ -7,9 +7,9 @@ cache:
 matrix:
   include:
   - php: 7.0
-    env: LARAVEL=5.1
+    env: LARAVEL=5.1 TESTBENCH=3.1.* PHPUNIT=5.7.*
   - php: 7.2
-    env: LARAVEL=5.7
+    env: LARAVEL=5.7 TESTBENCH=3.7.* PHPUNIT=7.3.*
 
 script:
 - vendor/bin/phpunit -c phpunit.xml tests/
