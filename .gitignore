@@ -20,3 +20,5 @@ Homestead.json
 .rocketeer/
 
 .idea/
+
+composer.lock
