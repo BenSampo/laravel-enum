@@ -10,7 +10,4 @@ final class UserType extends Enum
     const Moderator = 1;
     const Subscriber = 2;
     const SuperAdministrator = 3;
-    const FourWordKeyName = 4;
-    const UPPERCASE = 5;
-    const StringKey = 'StringValue';
 }

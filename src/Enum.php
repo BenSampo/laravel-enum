@@ -202,7 +202,7 @@ abstract class Enum
      */
     private static function getFriendlyKeyName(string $key): string
     {
-        if (ctype_upper($key)) {
+        if (ctype_upper(str_replace('_', '', $key))) {
             $key = strtolower($key);
         }
 

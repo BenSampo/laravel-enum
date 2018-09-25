@@ -5,6 +5,7 @@ namespace BenSampo\Enum\Tests;
 use PHPUnit\Framework\TestCase;
 use BenSampo\Enum\Rules\EnumKey;
 use BenSampo\Enum\Tests\Enums\UserType;
+use BenSampo\Enum\Tests\Enums\StringValues;
 
 class EnumKeyTest extends TestCase
 {
@@ -12,7 +13,7 @@ class EnumKeyTest extends TestCase
     {
         $passes1 = (new EnumKey(UserType::class))->passes('', 'Administrator');
         $passes2 = (new EnumKey(UserType::class))->passes('', 'administrator');
-        $passes3 = (new EnumKey(UserType::class))->passes('', 'StringKey');
+        $passes3 = (new EnumKey(StringValues::class))->passes('', 'Administrator');
 
         $this->assertTrue($passes1);
         $this->assertTrue($passes2);

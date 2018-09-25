@@ -5,6 +5,8 @@ namespace BenSampo\Enum\Tests;
 use BenSampo\Enum\Enum;
 use PHPUnit\Framework\TestCase;
 use BenSampo\Enum\Tests\Enums\UserType;
+use BenSampo\Enum\Tests\Enums\StringValues;
+use BenSampo\Enum\Tests\Enums\MixedKeyFormats;
 
 class EnumTest extends TestCase
 {
@@ -17,7 +19,7 @@ class EnumTest extends TestCase
     public function test_enum_get_keys()
     {
         $keys = UserType::getKeys();
-        $expectedKeys = ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator', 'FourWordKeyName', 'UPPERCASE', 'StringKey'];
+        $expectedKeys = ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator'];
 
         $this->assertEquals($expectedKeys, $keys);
     }
@@ -25,7 +27,7 @@ class EnumTest extends TestCase
     public function test_enum_get_values()
     {
         $values = UserType::getValues();
-        $expectedValues = [0, 1, 2, 3, 4, 5, 'StringValue'];
+        $expectedValues = [0, 1, 2, 3];
 
         $this->assertEquals($expectedValues, $values);
     }
@@ -34,23 +36,31 @@ class EnumTest extends TestCase
     {
         $this->assertEquals('Moderator', UserType::getKey(1));
         $this->assertEquals('SuperAdministrator', UserType::getKey(3));
-        $this->assertEquals('StringKey', UserType::getKey('StringValue'));
+    }
+
+    public function test_enum_get_key_using_string_value()
+    {
+        $this->assertEquals('Administrator', StringValues::getKey('administrator'));
     }
 
     public function test_enum_get_value()
     {
         $this->assertEquals(1, UserType::getValue('Moderator'));
         $this->assertEquals(3, UserType::getValue('SuperAdministrator'));
-        $this->assertEquals('StringValue', UserType::getValue('StringKey'));
+    }
+    
+    public function test_enum_get_value_using_string_key()
+    {
+        $this->assertEquals('administrator', StringValues::getValue('Administrator'));
     }
 
     public function test_enum_get_description()
     {
-        $this->assertEquals('Moderator', UserType::getDescription(1));
-        $this->assertEquals('Super administrator', UserType::getDescription(3));
-        $this->assertEquals('Four word key name', UserType::getDescription(4));
-        $this->assertEquals('String key', UserType::getDescription('StringValue'));
-        $this->assertEquals('Uppercase', UserType::getDescription(5));
+        $this->assertEquals('Normal', MixedKeyFormats::getDescription(MixedKeyFormats::Normal));
+        $this->assertEquals('Multi word key name', MixedKeyFormats::getDescription(MixedKeyFormats::MultiWordKeyName));
+        $this->assertEquals('Uppercase', MixedKeyFormats::getDescription(MixedKeyFormats::UPPERCASE));
+        $this->assertEquals('Uppercase snake case', MixedKeyFormats::getDescription(MixedKeyFormats::UPPERCASE_SNAKE_CASE));
+        $this->assertEquals('Lowercase snake case', MixedKeyFormats::getDescription(MixedKeyFormats::lowercase_snake_case));
     }
 
     public function test_enum_get_random_key()
@@ -71,9 +81,6 @@ class EnumTest extends TestCase
             'Moderator' => 1,
             'Subscriber' => 2,
             'SuperAdministrator' => 3,
-            'FourWordKeyName' => 4,
-            'UPPERCASE' => 5,
-            'StringKey' => 'StringValue',
         ];
 
         $this->assertEquals($expectedArray, $array);
@@ -87,9 +94,17 @@ class EnumTest extends TestCase
             1 => 'Moderator',
             2 => 'Subscriber',
             3 => 'Super administrator',
-            4 => 'Four word key name',
-            5 => 'Uppercase',
-            'StringValue' => 'String key',
+        ];
+
+        $this->assertEquals($expectedArray, $array);
+    }
+
+    public function test_enum_to_select_array_with_string_values()
+    {
+        $array = StringValues::toSelectArray();
+        $expectedArray = [
+            'administrator' => 'Administrator',
+            'moderator' => 'Moderator',
         ];
 
         $this->assertEquals($expectedArray, $array);

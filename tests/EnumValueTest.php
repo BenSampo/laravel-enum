@@ -5,13 +5,14 @@ namespace BenSampo\Enum\Tests;
 use PHPUnit\Framework\TestCase;
 use BenSampo\Enum\Rules\EnumValue;
 use BenSampo\Enum\Tests\Enums\UserType;
+use BenSampo\Enum\Tests\Enums\StringValues;
 
 class EnumValueTest extends TestCase
 {
     public function test_validation_passes()
     {
         $passes1 = (new EnumValue(UserType::class))->passes('', 3);
-        $passes2 = (new EnumValue(UserType::class))->passes('', 'StringValue');
+        $passes2 = (new EnumValue(StringValues::class))->passes('', 'administrator');
 
         $this->assertTrue($passes1);
         $this->assertTrue($passes2);
