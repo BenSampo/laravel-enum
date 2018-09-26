@@ -36,6 +36,6 @@ class EnumKey implements Rule
      */
     public function message()
     {
-        return 'The key you have entered is invalid.';
+        return trans('laravel-enum::validation.enum_key');
     }
 }

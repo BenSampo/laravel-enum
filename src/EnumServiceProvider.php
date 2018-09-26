@@ -31,6 +31,11 @@ class EnumServiceProvider extends ServiceProvider
                 MakeEnumCommand::class,
             ]);
         }
+
+        $this->loadTranslationsFrom(
+            __DIR__ . '/lang',
+            'laravel-enum'
+        );
     }
 
     /**
