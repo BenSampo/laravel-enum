@@ -86,7 +86,7 @@ abstract class Enum
     public static function getDescription($value): string
     {
         return 
-            self::getLocalizedDescription($value) ??
+            self::getLocalizedDescription($value) ?:
             self::getFriendlyKeyName(self::getKey($value));
     }
 
@@ -97,7 +97,7 @@ abstract class Enum
      * @param int|string $value
      * @return string
      */
-    private static function getLocalizedDescription($value): ?string
+    private static function getLocalizedDescription($value): string
     {
         if (self::isLocalizable())
         {
@@ -109,7 +109,7 @@ abstract class Enum
             }
         }
 
-        return null;
+        return '';
     }
 
     /**
