@@ -19,8 +19,8 @@
         }
     ],
     "require": {
-        "illuminate/support": "~5.1",
-        "php" : "~7.0"
+        "illuminate/support": "~5.4",
+        "php" : "~7.1"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^2.3",

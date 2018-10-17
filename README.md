@@ -29,6 +29,11 @@ Simple, extensible and powerful enumeration implementation for Laravel.
 I wrote a blog post about using laravel-enum:
 https://sampo.co.uk/blog/using-enums-in-laravel
 
+## Requirements
+
+Laravel 5.4 or newer  
+PHP 7.1 or newer
+
 ## Install
 
 Via Composer
