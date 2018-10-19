@@ -16,6 +16,7 @@ class EnumServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->bootCommands();
+
         $this->bootValidators();
     }
 
@@ -41,27 +42,23 @@ class EnumServiceProvider extends ServiceProvider
     private function bootValidators()
     {
         Validator::extend('enum_key', function($attribute, $value, $parameters, $validator) {
-            $enum = array_get($parameters, 0, null);
+            $enum = $parameters[0] ?? null;
+
             return (new EnumKey($enum))->passes($attribute, $value);
         });
 
         Validator::extend('enum_value', function($attribute, $value, $parameters, $validator) {
-            $enum = array_get($parameters, 0, null);
-            $strict = array_get($parameters, 1, null);
+            $enum = $parameters[0] ?? null;
 
-            if ($strict) {
-                $strict = (boolean) json_decode(strtolower($strict));
-                return (new EnumValue($enum, $strict))->passes($attribute, $value);
+            $strict = $parameters[1] ?? null;
+
+            if (! $strict) {
+                return (new EnumValue($enum))->passes($attribute, $value);
             }
 
-            return (new EnumValue($enum))->passes($attribute, $value);
-        });
-    }
+            $strict = !! json_decode(strtolower($strict));
 
-    /**
-     * Register any package services.
-     */
-    public function register()
-    {
+            return (new EnumValue($enum, $strict))->passes($attribute, $value);
+        });
     }
 }
