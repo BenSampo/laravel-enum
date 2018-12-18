@@ -18,6 +18,7 @@ Simple, extensible and powerful enumeration implementation for Laravel.
 
 * [Guide](#guide)
 * [Install](#install)
+* [Enum library](enum-library.md)
 * [Generating enums](#generating-enums)
 * [Usage](#usage)
 * [Methods](#methods)
@@ -46,6 +47,11 @@ If you're using Laravel < 5.5 you'll need to add the service provider to `config
 ``` php
 'BenSampo\Enum\EnumServiceProvider'
 ```
+
+## Enum library
+Browse and download from a list of commonly used, community contributed enums.
+
+[Enum library →](enum-library.md)
 
 ## Generating enums
 
