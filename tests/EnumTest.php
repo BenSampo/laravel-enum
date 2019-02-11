@@ -46,9 +46,7 @@ class EnumTest extends TestCase
     public function test_enum_get_value()
     {
         $this->assertEquals(1, UserType::getValue('Moderator'));
-        $this->assertEquals(1, UserType::getValue('moderator'));
         $this->assertEquals(3, UserType::getValue('SuperAdministrator'));
-        $this->assertEquals(3, UserType::getValue('superadministrator'));
     }
     
     public function test_enum_get_value_using_string_key()
