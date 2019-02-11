@@ -74,10 +74,7 @@ abstract class Enum
      */
     public static function getValue(string $key)
     {
-        $normalizedConstants = array_change_key_case(self::getConstants(), CASE_LOWER);
-        $normalizedKey = strtolower($key);
-
-        return $normalizedConstants[$normalizedKey];
+        return self::getConstants()[$key];
     }
 
     /**
@@ -173,10 +170,7 @@ abstract class Enum
      */
     public static function hasKey(string $key): bool
     {
-        $validKeys = array_map('strtolower', self::getKeys());
-        $normalizedKey = strtolower($key);
-
-        return in_array($normalizedKey, $validKeys, true);
+        return in_array($key, self::getKeys(), true);
     }
 
     /**
