@@ -92,7 +92,7 @@ abstract class Enum
 
     /**
      * Get the localized description if localization is enabled 
-     * for the enum and if they key exists in the lang file
+     * for the enum and if the key exists in the lang file
      *
      * @param int|string $value
      * @return string
@@ -136,6 +136,7 @@ abstract class Enum
 
     /**
      * Return the enum as an array
+     * key => value
      *
      * @return array
      */
