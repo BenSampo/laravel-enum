@@ -16,23 +16,23 @@ abstract class Enum
      *
      * @var array
      */
-    private static $constCacheArray = [];
+    protected static $constCacheArray = [];
 
     /**
      * Get all of the constants on the class
      *
      * @return array
      */
-    private static function getConstants(): array
+    protected static function getConstants(): array
     {
         $calledClass = get_called_class();
 
-        if (!array_key_exists($calledClass, self::$constCacheArray)) {
+        if (!array_key_exists($calledClass, static::$constCacheArray)) {
             $reflect = new ReflectionClass($calledClass);
-            self::$constCacheArray[$calledClass] = $reflect->getConstants();
+            static::$constCacheArray[$calledClass] = $reflect->getConstants();
         }
 
-        return self::$constCacheArray[$calledClass];
+        return static::$constCacheArray[$calledClass];
     }
 
     /**
@@ -42,7 +42,7 @@ abstract class Enum
      */
     public static function getKeys(): array
     {
-        return array_keys(self::getConstants());
+        return array_keys(static::getConstants());
     }
 
     /**
@@ -52,7 +52,7 @@ abstract class Enum
      */
     public static function getValues(): array
     {
-        return array_values(self::getConstants());
+        return array_values(static::getConstants());
     }
 
     /**
@@ -63,7 +63,7 @@ abstract class Enum
      */
     public static function getKey($value): string
     {
-        return array_search($value, self::getConstants(), true);
+        return array_search($value, static::getConstants(), true);
     }
 
     /**
@@ -74,7 +74,7 @@ abstract class Enum
      */
     public static function getValue(string $key)
     {
-        return self::getConstants()[$key];
+        return static::getConstants()[$key];
     }
 
     /**
@@ -86,8 +86,8 @@ abstract class Enum
     public static function getDescription($value): string
     {
         return 
-            self::getLocalizedDescription($value) ??
-            self::getFriendlyKeyName(self::getKey($value));
+            static::getLocalizedDescription($value) ??
+            static::getFriendlyKeyName(static::getKey($value));
     }
 
     /**
@@ -97,9 +97,9 @@ abstract class Enum
      * @param int|string $value
      * @return string
      */
-    private static function getLocalizedDescription($value): ?string
+    protected static function getLocalizedDescription($value): ?string
     {
-        if (self::isLocalizable())
+        if (static::isLocalizable())
         {
             $localizedStringKey = static::getLocalizationKey() . '.' . $value;
 
@@ -119,7 +119,7 @@ abstract class Enum
      */
     public static function getRandomKey(): string
     {
-        $keys = self::getKeys();
+        $keys = static::getKeys();
         return $keys[array_rand($keys)];
     }
 
@@ -130,7 +130,7 @@ abstract class Enum
      */
     public static function getRandomValue()
     {
-        $values = self::getValues();
+        $values = static::getValues();
         return $values[array_rand($values)];
     }
 
@@ -141,7 +141,7 @@ abstract class Enum
      */
     public static function toArray(): array
     {
-        return self::getConstants();
+        return static::getConstants();
     }
 
     /**
@@ -152,7 +152,7 @@ abstract class Enum
      */
     public static function toSelectArray(): array
     {
-        $array = self::toArray();
+        $array = static::toArray();
         $selectArray = [];
 
         foreach ($array as $key => $value) {
@@ -170,7 +170,7 @@ abstract class Enum
      */
     public static function hasKey(string $key): bool
     {
-        return in_array($key, self::getKeys(), true);
+        return in_array($key, static::getKeys(), true);
     }
 
     /**
@@ -182,7 +182,7 @@ abstract class Enum
      */
     public static function hasValue($value, bool $strict = true): bool
     {
-        $validValues = self::getValues();
+        $validValues = static::getValues();
 
         if ($strict) {
             return in_array($value, $validValues, true);
@@ -197,7 +197,7 @@ abstract class Enum
      * @param string $key
      * @return string
      */
-    private static function getFriendlyKeyName(string $key): string
+    protected static function getFriendlyKeyName(string $key): string
     {
         if (ctype_upper(str_replace('_', '', $key))) {
             $key = strtolower($key);
@@ -211,7 +211,7 @@ abstract class Enum
      *
      * @return boolean
      */
-    private static function isLocalizable()
+    protected static function isLocalizable()
     {
         return isset(class_implements(static::class)[LocalizedEnum::class]);
     }
