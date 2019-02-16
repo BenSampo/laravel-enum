@@ -1,15 +1,23 @@
+dist: xenial
+
 language: php
 
-cache:
-  directories:
-  - "$HOME/.composer/cache"
+php:
+- 7.1
+- 7.2
+- 7.3
 
-matrix:
-  include:
-  - php: 7.1
-    env: LARAVEL=5.4
+env:
+  matrix:
+  - COMPOSER_FLAGS="--prefer-lowest"
+  - COMPOSER_FLAGS=""
+
+install:
+- travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --no-suggest
 
 script:
 - vendor/bin/phpunit -c phpunit.xml tests/
 
-install: composer install --no-interaction
+cache:
+  directories:
+    - $HOME/.composer/cache
