@@ -170,10 +170,7 @@ abstract class Enum
      */
     public static function hasKey(string $key): bool
     {
-        $validKeys = array_map('strtolower', self::getKeys());
-        $normalizedKey = strtolower($key);
-
-        return in_array($normalizedKey, $validKeys, true);
+        return in_array($key, self::getKeys(), true);
     }
 
     /**
