@@ -12,41 +12,11 @@ abstract class Enum
     use Macroable;
 
     /**
-     * The value of one the enum constants.
-     *
-     * @var mixed
-     */
-    protected $value;
-
-    /**
      * Constants cache
      *
      * @var array
      */
     protected static $constCacheArray = [];
-
-    /**
-     * The constructor needs to be hidden so that an enum
-     * instance can't created with invalid values
-     *
-     * @param mixed $value
-     */
-    protected function __construct($value)
-    {
-        $this->value = $value;
-    }
-
-    /**
-     * Checks the equality of the value against the enum instance.
-     *
-     * @param mixed $value
-     * @return void
-     */
-    public function equals($value)
-    {
-        static::validateValue($value);
-        return $this->value === $value;
-    }
 
     /**
      * Get all of the constants on the class
@@ -140,21 +110,6 @@ abstract class Enum
         }
 
         return null;
-    }
-
-    /**
-     * Validates that the given value exists in the constants
-     * definition/list.
-     *
-     * @param mixed $value
-     * @throws InvalidArgumentException
-     */
-    protected static function validateValue($value)
-    {
-        if (!static::hasValue($value)) {
-            $values = implode(', ', static::getValues());
-            throw new \InvalidArgumentException("Value {$value} doesn't exist in [{$values}]");
-        }
     }
 
     /**
