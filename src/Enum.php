@@ -5,10 +5,11 @@ namespace BenSampo\Enum;
 use ReflectionClass;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Traits\Macroable;
+use BenSampo\Enum\Contracts\EnumContract;
 use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 
-abstract class Enum
+abstract class Enum implements EnumContract
 {
     use Macroable {
         // Because this class also defines a '__callStatic' method, a new name has to be given to the trait's '__callStatic' method.
@@ -47,7 +48,7 @@ abstract class Enum
      * Return an enum instance
      *
      * @param mixed $enumValue
-     * @return self
+     * @return EnumContract
      */
     public function __construct($enumValue)
     {
@@ -87,9 +88,9 @@ abstract class Enum
      * Checks the equality of the value against the enum instance.
      *
      * @param mixed $enumValue
-     * @return void
+     * @return bool
      */
-    public function is($enumValue)
+    public function is($enumValue): bool
     {
         if (!static::hasValue($enumValue)) {
             throw new InvalidEnumMemberException($enumValue, $this);
@@ -102,9 +103,9 @@ abstract class Enum
      * Return an enum instance
      *
      * @param mixed $enumValue
-     * @return static
+     * @return EnumContract
      */
-    public static function getInstance($enumValue): Enum
+    public static function getInstance($enumValue): EnumContract
     {
         return new static($enumValue);
     }
@@ -303,7 +304,7 @@ abstract class Enum
      *
      * @return boolean
      */
-    protected static function isLocalizable()
+    protected static function isLocalizable(): bool
     {
         return isset(class_implements(static::class)[LocalizedEnum::class]);
     }
@@ -313,7 +314,7 @@ abstract class Enum
      *
      * @return string
      */
-    public static function getLocalizationKey()
+    public static function getLocalizationKey(): string
     {
         return 'enums.' . static::class;
     }
