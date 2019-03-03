@@ -6,6 +6,8 @@ Simple, extensible and powerful enumeration implementation for Laravel.
 
 * Enum key value pairs as class constants
 * Full featured suite of methods
+* Enum Instantiation
+* Type hinting
 * Enum artisan generator
 * Validation rules for passing enum key or values as input parameters
 * Localization support
@@ -21,7 +23,8 @@ Simple, extensible and powerful enumeration implementation for Laravel.
 * [Enum library](enum-library.md)
 * [Generating enums](#generating-enums)
 * [Usage](#usage)
-* [Methods](#methods)
+* [Static Methods](#static-methods)
+* [Instantiation](#instantiation)
 * [Validation](#validation)
 * [Localization](#localization)
 * [Extending the Enum base class](#extending-the-enum-base-class)
@@ -83,7 +86,7 @@ Values can now be accessed like so:
 UserType::Moderator // Returns 1
 ```
 
-## Methods
+## Static Methods
 
 ### getKeys(): array
 
@@ -177,6 +180,75 @@ Returns the enum for use in a select as value => description.
 
 ``` php
 UserType::toSelectArray(); // Returns [0 => 'Administrator', 1 => 'Moderator', 2 => 'Subscriber', 3 => 'Super administrator']
+```
+
+### getInstance(string|int $enumValue): Enum
+
+Returns an instance of the called enum. Read more about [enum instantiation](#instantiation).
+
+``` php
+UserType::getInstance(UserType::Administrator);
+```
+
+## Instantiation
+It can be useful to instantiate enums in order to pass them between functions with the benefit of type hinting. Additionally, it's impossible to instantiate an enum with an invalid value, therefore you can be certain that the passed value is always valid.
+
+For convenience, enums can be instantiated in multiple ways:
+
+``` php
+// Standard new PHP class, passing the desired enum value as a parameter
+$enumInstance = new UserType(UserType::Administrator);
+
+// Static getInstance method, again passing the desired enum value as a parameter
+$enumInstance = UserType::getInstance(UserType::Administrator);
+
+// Statically calling the key name as a method
+$enumInstance = UserType::Administrator();
+```
+
+### Instance Properties
+
+Once you have an enum instance, you can access the `key`, `value` and `description` as properties. This is particularly useful if you're passing an enum instance to a blade view.
+
+``` php
+$userType = UserType::getInstance(UserType::SuperAdministrator);
+
+$userType->key; // SuperAdministrator
+$userType->value; // 0
+$userType->description; // Super Administrator
+```
+
+### Instance Equality
+
+You can check the equality of an instance against a valid enum value by passing it to the `is` method.
+
+``` php
+$userType = UserType::getInstance(UserType::SuperAdministrator);
+
+$userType->is(UserType::SuperAdministrator); // Returns true
+$userType->is(UserType::Moderator); // Returns false
+$userType->is(UserType::InvalidKey); // Throws InvalidEnumMemberException exception
+```
+
+### Type Hinting
+
+One of the benefits of enum instances is that it enables you to use type hinting, as shown below.
+
+``` php
+function canPerformAction(UserType $userType)
+{
+    if ($userType->is(UserType::SuperAdministrator)) {
+        return true;
+    }
+
+    return false;
+}
+
+$userType1 = UserType::getInstance(UserType::SuperAdministrator);
+$userType2 = UserType::getInstance(UserType::Moderator);
+
+canPerformAction($userType1); // Returns true
+canPerformAction($userType2); // Returns false
 ```
 
 ## Validation
