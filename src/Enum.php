@@ -85,7 +85,7 @@ abstract class Enum
      */
     public static function getDescription($value): string
     {
-        return 
+        return
             static::getLocalizedDescription($value) ??
             static::getFriendlyKeyName(static::getKey($value));
     }
