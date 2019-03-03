@@ -39,4 +39,25 @@ class EnumInstanceTest extends TestCase
 
         StringValues::getInstance(UserType::Subscriber)->is('InvalidValue');
     }
+
+    public function test_can_get_the_value_for_an_enum_instance()
+    {
+        $userType = UserType::getInstance(UserType::Administrator);
+
+        $this->assertEquals($userType->value, UserType::Administrator);
+    }
+
+    public function test_can_get_the_key_for_an_enum_instance()
+    {
+        $userType = UserType::getInstance(UserType::Administrator);
+
+        $this->assertEquals($userType->key, UserType::getKey(UserType::Administrator));
+    }
+
+    public function test_can_get_the_description_for_an_enum_instance()
+    {
+        $userType = UserType::getInstance(UserType::Administrator);
+
+        $this->assertEquals($userType->description, UserType::getDescription(UserType::Administrator));
+    }
 }

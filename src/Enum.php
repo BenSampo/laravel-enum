@@ -13,11 +13,25 @@ abstract class Enum
     use Macroable;
 
     /**
+     * The key of one the enum members.
+     *
+     * @var mixed
+     */
+    public $key;
+
+    /**
      * The value of one the enum members.
      *
      * @var mixed
      */
-    protected $value;
+    public $value;
+
+    /**
+     * The description of one the enum members.
+     *
+     * @var mixed
+     */
+    public $description;
 
     /**
      * Constants cache
@@ -39,17 +53,8 @@ abstract class Enum
         }
         
         $this->value = $enumValue;
-    }
-
-    /**
-     * Return an enum instance
-     *
-     * @param mixed $enumValue
-     * @return static
-     */
-    public static function getInstance($enumValue): Enum
-    {
-        return new static($enumValue);
+        $this->key = static::getKey($enumValue);
+        $this->description = static::getDescription($enumValue);
     }
 
     /**
@@ -65,6 +70,17 @@ abstract class Enum
         }
 
         return $this->value === $enumValue;
+    }
+
+    /**
+     * Return an enum instance
+     *
+     * @param mixed $enumValue
+     * @return static
+     */
+    public static function getInstance($enumValue): Enum
+    {
+        return new static($enumValue);
     }
 
     /**
