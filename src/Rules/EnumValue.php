@@ -15,6 +15,10 @@ class EnumValue implements Rule
     {
         $this->enumClass = $enum;
         $this->strict = $strict;
+
+        if (! class_exists($this->enumClass)) {
+            throw new \InvalidArgumentException("Cannot validate against the enum, the class {$this->enumClass} doesn't exist.");
+        }
     }
 
     /**
@@ -27,7 +31,7 @@ class EnumValue implements Rule
      */
     public function passes($attribute, $value)
     {
-        return app($this->enumClass)::hasValue($value, $this->strict);
+        return $this->enumClass::hasValue($value, $this->strict);
     }
 
     /**

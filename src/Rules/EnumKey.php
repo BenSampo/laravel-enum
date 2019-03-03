@@ -14,6 +14,10 @@ class EnumKey implements Rule
     public function __construct(string $enum)
     {
         $this->enumClass = $enum;
+
+        if (! class_exists($this->enumClass)) {
+            throw new \InvalidArgumentException("Cannot validate against the enum, the class {$this->enumClass} doesn't exist.");
+        }
     }
 
     /**
@@ -26,7 +30,7 @@ class EnumKey implements Rule
      */
     public function passes($attribute, $value)
     {
-        return app($this->enumClass)::hasKey($value);
+        return $this->enumClass::hasKey($value);
     }
 
     /**

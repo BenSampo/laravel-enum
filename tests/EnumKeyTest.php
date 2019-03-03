@@ -30,4 +30,11 @@ class EnumKeyTest extends TestCase
         $this->assertFalse($fails2);
         $this->assertFalse($fails3);
     }
+
+    public function test_an_exception_is_thrown_if_an_non_existing_class_is_passed()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        (new EnumKey('PathToAClassThatDoesntExist'))->passes('', 'Test');
+    }
 }
