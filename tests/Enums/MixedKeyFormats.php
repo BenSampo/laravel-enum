@@ -3,12 +3,9 @@
 namespace BenSampo\Enum\Tests\Enums;
 
 use BenSampo\Enum\Enum;
-use BenSampo\Enum\EnumInstanceTrait;
 
 final class MixedKeyFormats extends Enum
 {
-    use EnumInstanceTrait;
-
     const Normal = 1;
     const MultiWordKeyName = 2;
     const UPPERCASE = 3;

@@ -3,13 +3,21 @@
 namespace BenSampo\Enum;
 
 use ReflectionClass;
-use Illuminate\Support\Traits\Macroable;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Traits\Macroable;
 use BenSampo\Enum\Contracts\LocalizedEnum;
+use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 
 abstract class Enum
 {
     use Macroable;
+
+    /**
+     * The value of one the enum members.
+     *
+     * @var mixed
+     */
+    protected $value;
 
     /**
      * Constants cache
@@ -17,6 +25,47 @@ abstract class Enum
      * @var array
      */
     protected static $constCacheArray = [];
+
+    /**
+     * Return an enum instance
+     *
+     * @param mixed $enumValue
+     * @return self
+     */
+    public function __construct($enumValue)
+    {
+        if (!static::hasValue($enumValue)) {
+            throw new InvalidEnumMemberException($enumValue, $this);
+        }
+        
+        $this->value = $enumValue;
+    }
+
+    /**
+     * Return an enum instance
+     *
+     * @param mixed $enumValue
+     * @return static
+     */
+    public static function getInstance($enumValue): Enum
+    {
+        return new static($enumValue);
+    }
+
+    /**
+     * Checks the equality of the value against the enum instance.
+     *
+     * @param mixed $enumValue
+     * @return void
+     */
+    public function is($enumValue)
+    {
+        if (!static::hasValue($enumValue)) {
+            throw new InvalidEnumMemberException($enumValue, $this);
+        }
+
+        return $this->value === $enumValue;
+    }
 
     /**
      * Get all of the constants on the class
