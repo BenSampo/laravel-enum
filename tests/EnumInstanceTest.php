@@ -60,4 +60,16 @@ class EnumInstanceTest extends TestCase
 
         $this->assertEquals($userType->description, UserType::getDescription(UserType::Administrator));
     }
+
+    public function test_can_get_enum_instance_by_calling_an_enum_key_as_a_static_method()
+    {
+        $this->assertInstanceOf(UserType::class, UserType::Administrator());
+    }
+
+    public function test_an_exception_is_thrown_when_trying_to_get_enum_instance_by_calling_an_enum_key_as_a_static_method_which_does_not_exist()
+    {
+        $this->expectException(\BadMethodCallException::class);
+        
+        UserType::KeyWhichDoesNotExist();
+    }
 }

@@ -10,7 +10,10 @@ use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 
 abstract class Enum
 {
-    use Macroable;
+    use Macroable {
+        // Because this class also defines a '__callStatic' method, a new name has to be given to the trait's '__callStatic' method.
+        __callStatic as macroCallStatic;
+    }
 
     /**
      * The key of one the enum members.
@@ -55,6 +58,29 @@ abstract class Enum
         $this->value = $enumValue;
         $this->key = static::getKey($enumValue);
         $this->description = static::getDescription($enumValue);
+    }
+
+    /**
+     * Attempt to instantiate an enum by calling the enum key as a static method.
+     * This function defers to the macroable __callStatic function if a macro is found using the static method called.
+     *
+     * @param string $method
+     * @param mixed $parameters
+     * @return mixed
+     */
+    public static function __callStatic($method, $parameters)
+    {
+        if (static::hasMacro($method))
+        {
+            return static::macroCallStatic($method, $parameters);
+        }
+
+        if (static::hasKey($method)) {
+            $enumValue = static::getValue($method);
+            return new static($enumValue);
+        }
+
+        throw new \BadMethodCallException("Cannot create an enum instance for $method. The enum value $method does not exist.");
     }
 
     /**
