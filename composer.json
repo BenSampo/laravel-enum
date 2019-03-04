@@ -24,7 +24,7 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.0",
-        "phpunit/phpunit": "8.0.*",
+        "phpunit/phpunit": "7.5.*",
         "laravel/framework": "5.8.*",
         "orchestra/testbench": "3.8.*"
     },
