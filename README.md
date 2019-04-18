@@ -1,8 +1,14 @@
-# Laravel enum
+<p align="center"><img src="branding/logo.svg?raw=true" alt="Laravel Enum" width="250" style="margin-bottom: 20px"></p>
+<p align="center">
+<a href="https://travis-ci.org/BenSampo/laravel-enum"><img src="https://travis-ci.org/BenSampo/laravel-enum.svg?branch=master" alt="Build Status"></a>
+<a href="https://packagist.org/packages/bensampo/laravel-enum"><img src="https://img.shields.io/packagist/v/bensampo/laravel-enum.svg?style=flat-square&label=stable" alt="Packagist Stable Version"></a>
+<a href="https://packagist.org/packages/bensampo/laravel-enum"><img src="https://img.shields.io/packagist/dt/bensampo/laravel-enum.svg?style=flat-square" alt="Packagist downloads"></a>
+<a href="LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT Software License"></a>
+</p>
+
+## About Laravel Enum
 
 Simple, extensible and powerful enumeration implementation for Laravel.
-
-## Features
 
 * Enum key value pairs as class constants
 * Full featured suite of methods
@@ -13,10 +19,9 @@ Simple, extensible and powerful enumeration implementation for Laravel.
 * Localization support
 * Extendible
 
-[![Build Status](https://travis-ci.org/BenSampo/laravel-enum.svg?branch=master)](https://travis-ci.org/BenSampo/laravel-enum)
-[![Packagist Stable Version](https://img.shields.io/packagist/v/bensampo/laravel-enum.svg?style=flat-square&label=stable)](https://packagist.org/packages/bensampo/laravel-enum)
-[![Packagist downloads](https://img.shields.io/packagist/dt/bensampo/laravel-enum.svg?style=flat-square)](https://packagist.org/packages/bensampo/laravel-enum)
-[![MIT Software License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
+Created by [Ben Sampson](https://sampo.co.uk)
+
+## Jump to
 
 * [Guide](#guide)
 * [Install](#install)
