@@ -1,4 +1,4 @@
-<p align="center"><img src="branding/logo.svg?raw=true" alt="Laravel Enum" width="250" style="margin-bottom: 20px"></p>
+<p align="center"><img src="https://github.com/BenSampo/laravel-enum/raw/master/branding/logo.svg?sanitize=true" alt="Laravel Enum" width="250" style="margin-bottom: 20px"></p>
 <p align="center">
 <a href="https://travis-ci.org/BenSampo/laravel-enum"><img src="https://travis-ci.org/BenSampo/laravel-enum.svg?branch=master" alt="Build Status"></a>
 <a href="https://packagist.org/packages/bensampo/laravel-enum"><img src="https://img.shields.io/packagist/v/bensampo/laravel-enum.svg?style=flat-square&label=stable" alt="Packagist Stable Version"></a>
