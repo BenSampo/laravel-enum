@@ -12,8 +12,9 @@ Simple, extensible and powerful enumeration implementation for Laravel.
 
 * Enum key value pairs as class constants
 * Full featured suite of methods
-* Enum Instantiation
+* Enum instantiation
 * Type hinting
+* Attribute casting
 * Enum artisan generator
 * Validation rules for passing enum key or values as input parameters
 * Localization support
@@ -28,8 +29,9 @@ Created by [Ben Sampson](https://sampo.co.uk)
 * [Enum library](enum-library.md)
 * [Generating enums](#generating-enums)
 * [Usage](#usage)
-* [Static Methods](#static-methods)
+* [Static methods](#static-methods)
 * [Instantiation](#instantiation)
+* [Attribute casting](#attribute-casting)
 * [Validation](#validation)
 * [Localization](#localization)
 * [Extending the Enum base class](#extending-the-enum-base-class)
@@ -91,7 +93,7 @@ Values can now be accessed like so:
 UserType::Moderator // Returns 1
 ```
 
-## Static Methods
+## Static methods
 
 ### getKeys(): array
 
@@ -254,6 +256,51 @@ $userType2 = UserType::getInstance(UserType::Moderator);
 
 canPerformAction($userType1); // Returns true
 canPerformAction($userType2); // Returns false
+```
+
+
+## Attribute casting
+You may cast model attributes to enums using the `CastsEnums` trait. This will cast the attribute to an enum instance when getting and back to the enum value when setting.
+
+Similar to how standard attribute casting works, you simply define which attributes you want to cast to which enum as an array on the model.
+
+```php
+use BenSampo\Enum\Traits\CastsEnums;
+use BenSampo\Enum\Tests\Enums\UserType;
+use Illuminate\Database\Eloquent\Model;
+
+class Example extends Model
+{
+    use CastsEnums;
+    
+    protected $enumCasts = [
+        // 'attribute_name' => Enum::class
+        'user_type' => UserType::class,
+    ];
+}
+```
+
+### Getting
+A `UserType` enum instance will be returned when getting the `user_type` attribute.
+
+```php
+$example = Example::first();
+$example->user_type // Instance of UserType
+```
+
+Review the [methods and properties available on enum instances](#instantiation) to get the most out of attribute casting.
+
+### Setting
+You can set the value by either passing the enum value or another enum instance.
+
+```php
+$example = Example::first();
+
+// Set using enum value
+$example->user_type = UserType::Moderator;
+
+// Set using enum instance
+$example->user_type = UserType::Moderator();
 ```
 
 ## Validation
