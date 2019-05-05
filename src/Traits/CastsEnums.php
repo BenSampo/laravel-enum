@@ -14,11 +14,13 @@ trait CastsEnums
      */
     public function getAttributeValue($key)
     {
+        $value = parent::getAttributeValue($key);
+
         if ($this->hasEnumCast($key)) {
-            return $this->castToEnum($key);
+            $value = $this->castToEnum($key, $value);
         }
 
-        return parent::getAttributeValue($key);
+        return $value;
     }
 
     /**
@@ -62,10 +64,9 @@ trait CastsEnums
      * @param mixed $key
      * @return Enum|null
      */
-    protected function castToEnum($key): ?Enum
+    protected function castToEnum($key, $value): ?Enum
     {
         $enum = $this->enumCasts[$key];
-        $value = $this->getAttributeFromArray($key);
 
         if ($value === null || $value instanceOf Enum) {
             return $value;
