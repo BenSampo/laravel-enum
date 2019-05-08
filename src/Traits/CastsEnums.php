@@ -53,7 +53,7 @@ trait CastsEnums
      * @param  string  $key
      * @return bool
      */
-    public function hasEnumCast($key)
+    public function hasEnumCast($key): bool
     {
         return array_key_exists($key, $this->enumCasts);
     }
@@ -61,11 +61,13 @@ trait CastsEnums
     /**
      * Casts the given key to an enum instance
      *
-     * @param mixed $key
-     * @return Enum|null
+     * @param  string  $key
+     * @param  mixed  $value
+     * @return \BenSampo\Enum\Enum|null
      */
     protected function castToEnum($key, $value): ?Enum
     {
+        /** @var \BenSampo\Enum\Enum $enum */
         $enum = $this->enumCasts[$key];
 
         if ($value === null || $value instanceOf Enum) {
