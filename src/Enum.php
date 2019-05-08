@@ -17,38 +17,38 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * The key of one the enum members.
+     * The key of one of the enum members.
      *
      * @var mixed
      */
     public $key;
 
     /**
-     * The value of one the enum members.
+     * The value of one of the enum members.
      *
      * @var mixed
      */
     public $value;
 
     /**
-     * The description of one the enum members.
+     * The description of one of the enum members.
      *
      * @var mixed
      */
     public $description;
 
     /**
-     * Constants cache
+     * Constants cache.
      *
      * @var array
      */
     protected static $constCacheArray = [];
 
     /**
-     * Return an enum instance
+     * Construct an Enum instance.
      *
-     * @param mixed $enumValue
-     * @return EnumContract
+     * @param  mixed  $enumValue
+     * @return void
      */
     public function __construct($enumValue)
     {
@@ -63,10 +63,11 @@ abstract class Enum implements EnumContract
 
     /**
      * Attempt to instantiate an enum by calling the enum key as a static method.
+     *
      * This function defers to the macroable __callStatic function if a macro is found using the static method called.
      *
-     * @param string $method
-     * @param mixed $parameters
+     * @param  string  $method
+     * @param  mixed  $parameters
      * @return mixed
      */
     public static function __callStatic($method, $parameters)
@@ -87,7 +88,7 @@ abstract class Enum implements EnumContract
     /**
      * Checks the equality of the value against the enum instance.
      *
-     * @param mixed $enumValue
+     * @param  mixed  $enumValue
      * @return bool
      */
     public function is($enumValue): bool
@@ -100,18 +101,18 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Return an enum instance
+     * Return a new Enum instance,
      *
-     * @param mixed $enumValue
-     * @return EnumContract
+     * @param  mixed  $enumValue
+     * @return static
      */
-    public static function getInstance($enumValue): EnumContract
+    public static function getInstance($enumValue): Enum
     {
         return new static($enumValue);
     }
 
     /**
-     * Get all of the constants on the class
+     * Get all of the constants defined on the class.
      *
      * @return array
      */
@@ -128,7 +129,7 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Get all of the enum keys
+     * Get all of the enum keys.
      *
      * @return array
      */
@@ -138,7 +139,7 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Get all of the enum values
+     * Get all of the enum values.
      *
      * @return array
      */
@@ -148,10 +149,10 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Get the key for a single enum value
+     * Get the key for a single enum value.
      *
-     * @param int|string $value
-     * @return int|string
+     * @param  mixed  $value
+     * @return string
      */
     public static function getKey($value): string
     {
@@ -161,8 +162,8 @@ abstract class Enum implements EnumContract
     /**
      * Get the value for a single enum key
      *
-     * @param string $key
-     * @return int|string
+     * @param  string  $key
+     * @return mixed
      */
     public static function getValue(string $key)
     {
@@ -172,7 +173,7 @@ abstract class Enum implements EnumContract
     /**
      * Get the description for an enum value
      *
-     * @param int|string $value
+     * @param  mixed  $value
      * @return string
      */
     public static function getDescription($value): string
@@ -183,11 +184,13 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Get the localized description if localization is enabled 
-     * for the enum and if the key exists in the lang file
+     * Get the localized description of a value.
      *
-     * @param int|string $value
-     * @return string
+     * This works only if localization is enabled
+     * for the enum and if the key exists in the lang file.
+     *
+     * @param  mixed  $value
+     * @return string|null
      */
     protected static function getLocalizedDescription($value): ?string
     {
@@ -205,30 +208,33 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Get a random key from the enum
+     * Get a random key from the enum.
      *
      * @return string
      */
     public static function getRandomKey(): string
     {
         $keys = static::getKeys();
+
         return $keys[array_rand($keys)];
     }
 
     /**
-     * Get a random value from the enum
+     * Get a random value from the enum.
      *
-     * @return int|string
+     * @return mixed
      */
     public static function getRandomValue()
     {
         $values = static::getValues();
+
         return $values[array_rand($values)];
     }
 
     /**
-     * Return the enum as an array
-     * key => value
+     * Return the enum as an array.
+     *
+     * [string $key => mixed $value]
      *
      * @return array
      */
@@ -239,7 +245,8 @@ abstract class Enum implements EnumContract
 
     /**
      * Get the enum as an array formatted for a select.
-     * value => description
+     *
+     * [mixed $value => string description]
      *
      * @return array
      */
@@ -256,9 +263,9 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Check that the enum contains a specific key
+     * Check that the enum contains a specific key.
      *
-     * @param string $key
+     * @param  string  $key
      * @return bool
      */
     public static function hasKey(string $key): bool
@@ -269,8 +276,8 @@ abstract class Enum implements EnumContract
     /**
      * Check that the enum contains a specific value
      *
-     * @param int|string $value
-     * @param bool $strict (Optional, defaults to True)
+     * @param  mixed  $value
+     * @param  bool  $strict (Optional, defaults to True)
      * @return bool
      */
     public static function hasValue($value, bool $strict = true): bool
@@ -285,9 +292,9 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Transform the key name into a friendly, formatted version
+     * Transform the key name into a friendly, formatted version.
      *
-     * @param string $key
+     * @param  string  $key
      * @return string
      */
     protected static function getFriendlyKeyName(string $key): string
@@ -300,9 +307,9 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Check that the enum implements the LocalizedEnum interface
+     * Check that the enum implements the LocalizedEnum interface.
      *
-     * @return boolean
+     * @return bool
      */
     protected static function isLocalizable(): bool
     {
@@ -310,7 +317,7 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Get the default localization key
+     * Get the default localization key.
      *
      * @return string
      */

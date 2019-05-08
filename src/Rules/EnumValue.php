@@ -6,14 +6,26 @@ use Illuminate\Contracts\Validation\Rule;
 
 class EnumValue implements Rule
 {
-    private $enumClass;
+    /**
+     * @var string|\BenSampo\Enum\Enum
+     */
+    protected $enumClass;
+
+    /**
+     * @var bool
+     */
+    protected $strict;
 
     /**
      * Create a new rule instance.
+     *
+     * @param  string  $enumClass
+     * @param  bool  $strict
+     * @return void
      */
-    public function __construct(string $enum, bool $strict = true)
+    public function __construct(string $enumClass, bool $strict = true)
     {
-        $this->enumClass = $enum;
+        $this->enumClass = $enumClass;
         $this->strict = $strict;
 
         if (! class_exists($this->enumClass)) {
@@ -24,9 +36,8 @@ class EnumValue implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
-     * @param mixed  $value
-     *
+     * @param  string  $attribute
+     * @param  mixed  $value
      * @return bool
      */
     public function passes($attribute, $value)
@@ -37,7 +48,7 @@ class EnumValue implements Rule
     /**
      * Get the validation error message.
      *
-     * @return string
+     * @return string|array
      */
     public function message()
     {
