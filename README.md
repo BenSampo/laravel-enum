@@ -18,34 +18,38 @@ Simple, extensible and powerful enumeration implementation for Laravel.
 * Enum artisan generator
 * Validation rules for passing enum key or values as input parameters
 * Localization support
-* Extendible
+* Extendable via Macros
 
 Created by [Ben Sampson](https://sampo.co.uk)
 
-## Jump to
+## Jump To
 
 * [Guide](#guide)
-* [Install](#install)
-* [Enum library](enum-library.md)
-* [Generating enums](#generating-enums)
-* [Usage](#usage)
-* [Static methods](#static-methods)
-* [Instantiation](#instantiation)
-* [Attribute casting](#attribute-casting)
+* [Installation](#installation)
+* [Enum Library](enum-library.md)
+* [Basic Usage](#basic-usage)
+    * [Enum definition](#enum-definition)
+    * [Instantiation](#instantiation)
+    * [Instance Properties](#instance-properties)
+    * [Instance Equality](#instance-equality)
+    * [Type Hinting](#instance-equality)
+* [Attribute Casting](#attribute-casting)
 * [Validation](#validation)
 * [Localization](#localization)
-* [Extending the Enum base class](#extending-the-enum-base-class)
+* [Overriding the getDescription method](#overriding-the-getdescription-method)
+* [Extending the Enum Base Class](#extending-the-enum-base-class)
+* [Enum Class Reference](#enum-class-reference)
 
 ## Guide
-I wrote a blog post about using laravel-enum:
-https://sampo.co.uk/blog/using-enums-in-laravel
+
+I wrote a blog post about using laravel-enum: https://sampo.co.uk/blog/using-enums-in-laravel
 
 ## Requirements
 
-Laravel 5.4 or newer  
-PHP 7.1 or newer
+- Laravel `5.4` or newer  
+- PHP `7.1` or newer
 
-## Install
+## Installation
 
 Via Composer
 
@@ -58,20 +62,24 @@ If you're using Laravel < 5.5 you'll need to add the service provider to `config
 'BenSampo\Enum\EnumServiceProvider'
 ```
 
-## Enum library
+## Enum Library
+
 Browse and download from a list of commonly used, community contributed enums.
 
 [Enum library →](enum-library.md)
 
-## Generating enums
+## Basic Usage
+
+### Enum Definition
+
+You can use the following Artisan command to generate a new enum class:
 
 ```php
 php artisan make:enum UserType
 ```
 
-## Usage
+Now, you just need to add the possible values your enum can have as constants.
 
-Given the following enum:
 ``` php
 <?php
 
@@ -88,117 +96,20 @@ final class UserType extends Enum
 }
 ```
 
-Values can now be accessed like so:
-``` php
-UserType::Moderator // Returns 1
+That's it! Note that because the enum values are defined as plain constants,
+you can simple access them like any other class constant.
+
+```php
+UserType::Administrator // Has a value of 0
 ```
 
-## Static methods
+### Instantiation
 
-### getKeys(): array
+It can be useful to instantiate enums in order to pass them between functions
+with the benefit of type hinting.
 
-Returns an array of the keys for an enum.
-
-``` php
-UserType::getKeys(); // Returns ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator']
-```
-
-### getValues(): array
-
-Returns an array of the values for an enum.
-
-``` php
-UserType::getValues(); // Returns [0, 1, 2, 3]
-```
-
-### getKey(string|int $value): string
-
-Returns the key for the given enum value.
-
-``` php
-UserType::getKey(1); // Returns 'Moderator'
-UserType::getKey(UserType::Moderator); // Returns 'Moderator'
-```
-
-### getValue(string $key): string|int
-
-Returns the value for the given enum key.
-
-``` php
-UserType::getValue('Moderator'); // Returns 1
-```
-
-### hasKey(string $key): bool
-
-Check if the enum contains a given key.
-
-``` php
-UserType::hasKey('Moderator'); // Returns 'True'
-```
-
-### hasValue(string|int $value, bool $strict = true): int
-
-Check if the enum contains a given value.
-
-``` php
-UserType::hasValue(1); // Returns 'True'
-
-// It's possible to disable the strict type checking:
-UserType::hasValue('1'); // Returns 'False'
-UserType::hasValue('1', false); // Returns 'True'
-```
-
-### getDescription(string|int $value): string
-
-Returns the key in sentence case for the enum value. It's possible to [override the getDescription](#overriding-the-getDescription-method) method to return custom descriptions.
-
-``` php
-UserType::getDescription(3); // Returns 'Super administrator'
-UserType::getDescription(UserType::SuperAdministrator); // Returns 'Super administrator'
-```
-
-### getRandomKey(): string
-
-Returns a random key from the enum. Useful for factories.
-
-``` php
-UserType::getRandomKey(); // Returns 'Administrator', 'Moderator', 'Subscriber' or 'SuperAdministrator'
-```
-
-### getRandomValue(): string|int
-
-Returns a random value from the enum. Useful for factories.
-
-``` php
-UserType::getRandomValue(); // Returns 0, 1, 2 or 3
-```
-
-### toArray(): array
-
-Returns the enum key value pairs as an associative array.
-
-``` php
-UserType::toArray(); // Returns ['Administrator' => 0, 'Moderator' => 1, 'Subscriber' => 2, 'SuperAdministrator' => 3]
-```
-
-### toSelectArray(): array
-
-Returns the enum for use in a select as value => description.
-
-``` php
-UserType::toSelectArray(); // Returns [0 => 'Administrator', 1 => 'Moderator', 2 => 'Subscriber', 3 => 'Super administrator']
-```
-
-### getInstance(string|int $enumValue): Enum
-
-Returns an instance of the called enum. Read more about [enum instantiation](#instantiation).
-
-``` php
-UserType::getInstance(UserType::Administrator);
-```
-
-## Instantiation
-It can be useful to instantiate enums in order to pass them between functions with the benefit of type hinting. Additionally, it's impossible to instantiate an enum with an invalid value, therefore you can be certain that the passed value is always valid.
+Additionally, it's impossible to instantiate an enum with an invalid value,
+therefore you can be certain that the passed value is always valid.
 
 For convenience, enums can be instantiated in multiple ways:
 
@@ -209,13 +120,13 @@ $enumInstance = new UserType(UserType::Administrator);
 // Static getInstance method, again passing the desired enum value as a parameter
 $enumInstance = UserType::getInstance(UserType::Administrator);
 
-// Statically calling the key name as a method
+// Statically calling the key name as a method, utilizing __callStatic magic
 $enumInstance = UserType::Administrator();
 ```
 
 ### Instance Properties
 
-Once you have an enum instance, you can access the `key`, `value` and `description` as properties. This is particularly useful if you're passing an enum instance to a blade view.
+Once you have an enum instance, you can access the `key`, `value` and `description` as properties.
 
 ``` php
 $userType = UserType::getInstance(UserType::SuperAdministrator);
@@ -224,6 +135,8 @@ $userType->key; // SuperAdministrator
 $userType->value; // 0
 $userType->description; // Super Administrator
 ```
+
+This is particularly useful if you're passing an enum instance to a blade view.
 
 ### Instance Equality
 
@@ -258,8 +171,8 @@ canPerformAction($userType1); // Returns true
 canPerformAction($userType2); // Returns false
 ```
 
+## Attribute Casting
 
-## Attribute casting
 You may cast model attributes to enums using the `CastsEnums` trait. This will cast the attribute to an enum instance when getting and back to the enum value when setting.
 
 Similar to how standard attribute casting works, you simply define which attributes you want to cast to which enum as an array on the model.
@@ -280,8 +193,8 @@ class Example extends Model
 }
 ```
 
-### Getting
-A `UserType` enum instance will be returned when getting the `user_type` attribute.
+Now, when you access the `user_type` attribute of your `Example` model,
+the underlying value will be returned as a `UserType` enum. 
 
 ```php
 $example = Example::first();
@@ -290,7 +203,6 @@ $example->user_type // Instance of UserType
 
 Review the [methods and properties available on enum instances](#instantiation) to get the most out of attribute casting.
 
-### Setting
 You can set the value by either passing the enum value or another enum instance.
 
 ```php
@@ -306,6 +218,7 @@ $example->user_type = UserType::Moderator();
 ## Validation
 
 ### Array Validation
+
 You may validate that an enum value passed to a controller is a valid value for a given enum by using the `EnumValue` rule.
 
 ``` php
@@ -339,6 +252,7 @@ Of course, both of these work on form request classes too.
 Make sure to include `BenSampo\Enum\Rules\EnumValue` and/or `BenSampo\Enum\Rules\EnumKey` and your enum class in the usings.
 
 ### Pipe Validation
+
 You can also use the 'pipe' syntax for both the EnumKey and EnumValue rules by using `enum_value` and/or `enum_key` respectively.
 
 **enum_value**_:enum_class,[strict]_  
@@ -418,7 +332,7 @@ public static function getDescription($value): string
 
 Calling `UserType::getDescription(3);` now returns `Super admin` instead of `Super administator`.
 
-## Extending the enum base class
+## Extending the Enum Base Class
 
 The `Enum` base class implements the [Laravel `Macroable`](https://laravel.com/api/5.6/Illuminate/Support/Traits/Macroable.html) trait, meaning it's easy to extend it with your own functions. If you have a function that you often add to each of your enums, you can use a macro.
 
@@ -433,3 +347,107 @@ Enum::macro('toFlippedArray', function() {
 Now, on each of my enums, I can call it using `UserType::toFlippedArray()`.
 
 It's best to register the macro inside of a service providers' boot method.
+
+## Enum Class Reference
+
+### static getKeys(): array
+
+Returns an array of the keys for an enum.
+
+``` php
+UserType::getKeys(); // Returns ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator']
+```
+
+### static getValues(): array
+
+Returns an array of the values for an enum.
+
+``` php
+UserType::getValues(); // Returns [0, 1, 2, 3]
+```
+
+### static getKey(mixed $value): string
+
+Returns the key for the given enum value.
+
+``` php
+UserType::getKey(1); // Returns 'Moderator'
+UserType::getKey(UserType::Moderator); // Returns 'Moderator'
+```
+
+### static getValue(string $key): mixed
+
+Returns the value for the given enum key.
+
+``` php
+UserType::getValue('Moderator'); // Returns 1
+```
+
+### static hasKey(string $key): bool
+
+Check if the enum contains a given key.
+
+``` php
+UserType::hasKey('Moderator'); // Returns 'True'
+```
+
+### static hasValue(mixed $value, bool $strict = true): bool
+
+Check if the enum contains a given value.
+
+``` php
+UserType::hasValue(1); // Returns 'True'
+
+// It's possible to disable the strict type checking:
+UserType::hasValue('1'); // Returns 'False'
+UserType::hasValue('1', false); // Returns 'True'
+```
+
+### static getDescription(mixed $value): string
+
+Returns the key in sentence case for the enum value. It's possible to [override the getDescription](#overriding-the-getDescription-method) method to return custom descriptions.
+
+``` php
+UserType::getDescription(3); // Returns 'Super administrator'
+UserType::getDescription(UserType::SuperAdministrator); // Returns 'Super administrator'
+```
+
+### static getRandomKey(): string
+
+Returns a random key from the enum. Useful for factories.
+
+``` php
+UserType::getRandomKey(); // Returns 'Administrator', 'Moderator', 'Subscriber' or 'SuperAdministrator'
+```
+
+### static getRandomValue(): mixed
+
+Returns a random value from the enum. Useful for factories.
+
+``` php
+UserType::getRandomValue(); // Returns 0, 1, 2 or 3
+```
+
+### static toArray(): array
+
+Returns the enum key value pairs as an associative array.
+
+``` php
+UserType::toArray(); // Returns ['Administrator' => 0, 'Moderator' => 1, 'Subscriber' => 2, 'SuperAdministrator' => 3]
+```
+
+### static toSelectArray(): array
+
+Returns the enum for use in a select as value => description.
+
+``` php
+UserType::toSelectArray(); // Returns [0 => 'Administrator', 1 => 'Moderator', 2 => 'Subscriber', 3 => 'Super administrator']
+```
+
+### static getInstance(mixed $enumValue): Enum
+
+Returns an instance of the called enum. Read more about [enum instantiation](#instantiation).
+
+``` php
+UserType::getInstance(UserType::Administrator);
+```
