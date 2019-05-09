@@ -197,6 +197,53 @@ Returns an instance of the called enum. Read more about [enum instantiation](#in
 UserType::getInstance(UserType::Administrator);
 ```
 
+### getInstances(): array
+
+Returns an array of all possible instances of the called enum, keyed by the constant names.
+
+```php
+var_dump(UserType::getInstances());
+
+array(4) {
+  'Administrator' =>
+  class BenSampo\Enum\Tests\Enums\UserType#415 (3) {
+    public $key =>
+    string(13) "Administrator"
+    public $value =>
+    int(0)
+    public $description =>
+    string(13) "Administrator"
+  }
+  'Moderator' =>
+  class BenSampo\Enum\Tests\Enums\UserType#396 (3) {
+    public $key =>
+    string(9) "Moderator"
+    public $value =>
+    int(1)
+    public $description =>
+    string(9) "Moderator"
+  }
+  'Subscriber' =>
+  class BenSampo\Enum\Tests\Enums\UserType#393 (3) {
+    public $key =>
+    string(10) "Subscriber"
+    public $value =>
+    int(2)
+    public $description =>
+    string(10) "Subscriber"
+  }
+  'SuperAdministrator' =>
+  class BenSampo\Enum\Tests\Enums\UserType#102 (3) {
+    public $key =>
+    string(18) "SuperAdministrator"
+    public $value =>
+    int(3)
+    public $description =>
+    string(19) "Super administrator"
+  }
+}
+```
+
 ## Instantiation
 It can be useful to instantiate enums in order to pass them between functions with the benefit of type hinting. Additionally, it's impossible to instantiate an enum with an invalid value, therefore you can be certain that the passed value is always valid.
 

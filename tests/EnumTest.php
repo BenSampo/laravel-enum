@@ -119,4 +119,24 @@ class EnumTest extends TestCase
         $this->assertTrue(UserType::hasMacro('toFlippedArray'));
         $this->assertEquals(UserType::toFlippedArray(), array_flip(UserType::toArray()));
     }
+
+    public function test_enum_get_instances()
+    {
+        /** @var StringValues $administrator */
+        /** @var StringValues $moderator */
+        [
+            'Administrator' => $administrator,
+            'Moderator' => $moderator
+        ] = StringValues::getInstances();
+
+        $this->assertTrue(
+            $administrator->is(StringValues::Administrator)
+        );
+
+        $this->assertTrue(
+            $moderator->is(StringValues::Moderator)
+        );
+
+        var_dump(UserType::getInstances());
+    }
 }

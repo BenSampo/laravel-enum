@@ -112,6 +112,21 @@ abstract class Enum implements EnumContract
     }
 
     /**
+     * Return instances of all the contained values.
+     *
+     * @return static[]
+     */
+    public static function getInstances(): array
+    {
+        return array_map(
+            function($constantValue) {
+                return new static($constantValue);
+            },
+            static::getConstants()
+        );
+    }
+
+    /**
      * Get all of the constants defined on the class.
      *
      * @return array
