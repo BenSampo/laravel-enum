@@ -71,7 +71,7 @@ class EnumAnnotateCommand extends Command
         $docBlock .= " */\n";
 
         $shortName = $reflection->getShortName();
-        $fileName = $reflection->getFileName();
+        $fileName = '/' . $reflection->getFileName();
         $contents = $this->filesystem->get($fileName);
 
         $classDeclaration = "class {$shortName}";
