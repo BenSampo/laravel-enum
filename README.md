@@ -213,6 +213,11 @@ $enumInstance = UserType::getInstance(UserType::Administrator);
 $enumInstance = UserType::Administrator();
 ```
 
+If you want your IDE to autocomplete the static instantiation helpers, you can
+generate PHPDoc annotations through an artisan command.
+
+    php artisan enum:annotate "App\Enums\UserType"
+
 ### Instance Properties
 
 Once you have an enum instance, you can access the `key`, `value` and `description` as properties. This is particularly useful if you're passing an enum instance to a blade view.
