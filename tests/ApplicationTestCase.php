@@ -2,9 +2,10 @@
 
 namespace BenSampo\Enum\Tests;
 
+use Orchestra\Testbench\TestCase;
 use BenSampo\Enum\EnumServiceProvider;
 
-class ApplicationTestCase extends \Orchestra\Testbench\TestCase
+class ApplicationTestCase extends TestCase
 {
     protected function getPackageProviders($app)
     {

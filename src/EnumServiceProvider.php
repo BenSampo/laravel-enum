@@ -7,6 +7,7 @@ use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use BenSampo\Enum\Commands\MakeEnumCommand;
+use BenSampo\Enum\Commands\EnumAnnotateCommand;
 
 class EnumServiceProvider extends ServiceProvider
 {
@@ -18,7 +19,6 @@ class EnumServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->bootCommands();
-
         $this->bootValidators();
     }
 
@@ -31,6 +31,7 @@ class EnumServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
+                EnumAnnotateCommand::class,
                 MakeEnumCommand::class,
             ]);
         }
