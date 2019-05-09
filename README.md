@@ -35,6 +35,7 @@ Created by [Ben Sampson](https://sampo.co.uk)
 * [Validation](#validation)
 * [Localization](#localization)
 * [Extending the Enum base class](#extending-the-enum-base-class)
+* [PHPStan Integration](#phpstan-integration)
 
 ## Guide
 I wrote a blog post about using laravel-enum:
@@ -433,3 +434,16 @@ Enum::macro('toFlippedArray', function() {
 Now, on each of my enums, I can call it using `UserType::toFlippedArray()`.
 
 It's best to register the macro inside of a service providers' boot method.
+
+## PHPStan integration
+
+If you are using [PHPStan](https://github.com/phpstan/phpstan) for static
+analysis, you can enable the extension for proper recognition of the
+magic instantiation methods.
+
+Add the following to your projects `phpstan.neon` includes:
+
+```neon
+includes:
+- vendor/bensampo/laravel-enum/extension.neon
+```
