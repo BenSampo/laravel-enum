@@ -5,7 +5,7 @@ namespace BenSampo\Enum\Commands;
 use ReflectionClass;
 use BenSampo\Enum\Enum;
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Filesystem\Filesystem;
+use \Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
 
 class EnumAnnotateCommand extends Command
@@ -25,12 +25,12 @@ class EnumAnnotateCommand extends Command
     protected $description = 'Generate annotations for an enum class';
 
     /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
+     * @var \Illuminate\Filesystem\Filesystem
      */
     protected $filesystem;
 
     /**
-     * @param  \Illuminate\Contracts\Filesystem\Filesystem  $filesystem
+     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
      * @return void
      */
     public function __construct(Filesystem $filesystem)
@@ -71,15 +71,22 @@ class EnumAnnotateCommand extends Command
         $docBlock .= " */\n";
 
         $shortName = $reflection->getShortName();
-        $fileName = '/' . $reflection->getFileName();
+        $fileName = $reflection->getFileName();
         $contents = $this->filesystem->get($fileName);
 
         $classDeclaration = "class {$shortName}";
+
+        if($reflection->isFinal()){
+            $classDeclaration = "final {$classDeclaration}";
+        } elseif($reflection->isAbstract()){
+            $classDeclaration = "abstract {$classDeclaration}";
+        }
+
         $classDeclarationOffset = strpos($contents, $classDeclaration);
         // Make sure we don't replace too much
         $contents = substr_replace(
             $contents,
-            "{$docBlock}\nclass {$shortName}",
+            $docBlock . $classDeclaration,
             $classDeclarationOffset,
             strlen($classDeclaration)
         );
