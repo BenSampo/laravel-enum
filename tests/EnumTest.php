@@ -136,7 +136,5 @@ class EnumTest extends TestCase
         $this->assertTrue(
             $moderator->is(StringValues::Moderator)
         );
-
-        var_dump(UserType::getInstances());
     }
 }
