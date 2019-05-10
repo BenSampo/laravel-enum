@@ -7,6 +7,13 @@ use BenSampo\Enum\Enum;
 trait CastsEnums
 {
     /**
+     * Map attribute names to enum classes.
+     *
+     * @var array
+     */
+    protected $enumCasts;
+
+    /**
      * Get a plain attribute (not a relationship).
      *
      * @param  string  $key
