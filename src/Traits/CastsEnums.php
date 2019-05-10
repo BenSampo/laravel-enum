@@ -4,15 +4,11 @@ namespace BenSampo\Enum\Traits;
 
 use BenSampo\Enum\Enum;
 
+/**
+ * @property array $enumCasts Map attribute names to enum classes.
+ */
 trait CastsEnums
 {
-    /**
-     * Map attribute names to enum classes.
-     *
-     * @var array
-     */
-    protected $enumCasts;
-
     /**
      * Get a plain attribute (not a relationship).
      *
