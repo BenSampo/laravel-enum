@@ -128,7 +128,9 @@ $enumInstance = UserType::Administrator();
 If you want your IDE to autocomplete the static instantiation helpers, you can
 generate PHPDoc annotations through an artisan command.
 
-    php artisan enum:annotate "App\Enums\UserType"
+```php
+php artisan enum:annotate "App\Enums\UserType"
+```
 
 ### Instance Properties
 
