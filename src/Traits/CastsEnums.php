@@ -35,9 +35,12 @@ trait CastsEnums
      */
     public function setAttribute($key, $value)
     {
-        $value = parent::getAttributeValue($key);
-
         if ($value !== null && $this->hasEnumCast($key)) {
+
+            if ($this->hasCast($key)) {
+                $value = $this->castAttribute($key, $value);
+            }
+
             $enum = $this->enumCasts[$key];
 
             if ($value instanceOf $enum) {
