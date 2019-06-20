@@ -86,6 +86,14 @@ abstract class Enum implements EnumContract
     }
 
     /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return (string) $this->value;
+    }
+
+    /**
      * Checks the equality of the value against the enum instance.
      *
      * @param  mixed  $enumValue
