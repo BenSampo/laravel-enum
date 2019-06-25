@@ -137,4 +137,19 @@ class EnumTest extends TestCase
             $moderator->is(StringValues::Moderator)
         );
     }
+
+    public function test_enum_can_be_cast_to_string()
+    {
+        $enumWithZeroIntegerValue = new UserType(UserType::Administrator);
+        $enumWithPositiveIntegerValue = new UserType(UserType::SuperAdministrator);
+        $enumWithStringValue = new StringValues(StringValues::Moderator);
+
+        // Numbers should be cast to strings
+        $this->assertSame('0', (string) $enumWithZeroIntegerValue);
+        $this->assertSame('3', (string) $enumWithPositiveIntegerValue);
+
+        // Strings should just be returned
+        $this->assertSame(StringValues::Moderator, (string) $enumWithStringValue);
+
+    }
 }
