@@ -20,10 +20,10 @@
     ],
     "require": {
         "illuminate/support": "5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|5.9.*",
-        "php" : "~7.1"
+        "php" : "~7.1",
+        "hanneskod/classtools": "~1.0"
     },
     "require-dev": {
-        "hanneskod/classtools": "~1.0",
         "laravel/framework": "5.8.*",
         "orchestra/testbench": "3.8.*",
         "phpstan/phpstan": "^0.11.6",
