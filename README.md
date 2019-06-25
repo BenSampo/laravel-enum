@@ -146,6 +146,17 @@ $userType->description; // Super Administrator
 
 This is particularly useful if you're passing an enum instance to a blade view.
 
+### Instance Casting
+
+Enum instances can be cast to strings as they implement the `__toString()` magic method.  
+This also means they can be echo'd, for example in blade views.
+
+```php
+$userType = UserType::getInstance(UserType::SuperAdministrator);
+
+(string) $userType // '0'
+```
+
 ### Instance Equality
 
 You can check the equality of an instance against a valid enum value by passing it to the `is` method.
