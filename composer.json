@@ -23,6 +23,7 @@
         "php" : "~7.1"
     },
     "require-dev": {
+        "hanneskod/classtools": "~1.0",
         "laravel/framework": "5.8.*",
         "orchestra/testbench": "3.8.*",
         "phpstan/phpstan": "^0.11.6",
