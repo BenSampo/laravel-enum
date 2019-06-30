@@ -5,8 +5,8 @@ namespace BenSampo\Enum\Tests\Enums\Annotate;
 use BenSampo\Enum\Enum;
 
 /**
- * @method static static Administrator
- * @method static static Moderator
+ * @method static static Administrator()
+ * @method static static Moderator()
  */
 final class AnnotateTestOneEnum extends Enum
 {

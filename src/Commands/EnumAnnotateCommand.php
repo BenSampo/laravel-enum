@@ -2,18 +2,17 @@
 
 namespace BenSampo\Enum\Commands;
 
-use hanneskod\classtools\Iterator\ClassIterator;
-use ReflectionClass;
 use BenSampo\Enum\Enum;
-use Illuminate\Console\Command;
-use \Illuminate\Filesystem\Filesystem;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlockFactory;
+use phpDocumentor\Reflection\Types\Static_;
+use ReflectionClass;
 use Symfony\Component\Finder\Finder;
 
-class EnumAnnotateCommand extends Command
+class EnumAnnotateCommand extends AbstractAnnotationCommand
 {
     const DEFAULT_SCAN_FOLDER = 'Enums';
+    const PARENT_CLASS = Enum::class;
 
     /**
      * The console command name.
@@ -30,98 +29,6 @@ class EnumAnnotateCommand extends Command
     protected $description = 'Generate annotations for enum classes';
 
     /**
-     * @var \Illuminate\Filesystem\Filesystem
-     */
-    protected $filesystem;
-
-    /**
-     * @param \Illuminate\Filesystem\Filesystem $filesystem
-     * @return void
-     */
-    public function __construct(Filesystem $filesystem)
-    {
-        parent::__construct();
-
-        $this->filesystem = $filesystem;
-    }
-
-    protected function getArguments(): array
-    {
-        return [
-            ['class', InputArgument::OPTIONAL, 'The class name to generate annotations for'],
-        ];
-    }
-
-    protected function getOptions(): array
-    {
-        return [
-            ['folder', null, InputOption::VALUE_OPTIONAL, 'The folder to scan for enums to annotate'],
-        ];
-    }
-
-    /**
-     * Handle the command call.
-     *
-     * @return void
-     * @throws \ReflectionException
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    public function handle()
-    {
-        if ($this->argument('class')) {
-            $this->annotateClass($this->argument('class'));
-            return;
-        }
-
-        $this->annotateFolder($this->getScanPath());
-    }
-
-    /**
-     * Annotate any `Enum` classes in a given folder
-     *
-     * @param string $path
-     *
-     * @return void
-     * @throws \ReflectionException
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    private function annotateFolder(string $path)
-    {
-        $finder = new Finder();
-        $classes = new ClassIterator(
-            $finder->files()->in($path)->name('*.php')
-        );
-
-        $classes->enableAutoloading();
-
-        /** @var ReflectionClass $reflection */
-        foreach ($classes as $reflection) {
-            if ($reflection->isSubclassOf(Enum::class)) {
-                $this->annotateClass($reflection->getName());
-            }
-        }
-    }
-
-    /**
-     * Annotate a specific class by name
-     *
-     * @param string $className
-     * @return void
-     * @throws \ReflectionException
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    private function annotateClass(string $className)
-    {
-        if (!is_subclass_of($className, Enum::class)) {
-            $this->error("The given class must be an instance of BenSampo\Enum\Enum: $className.");
-            return;
-        }
-
-        $reflection = new ReflectionClass($className);
-        $this->annotate($reflection);
-    }
-
-    /**
      * Apply annotations to a reflected class
      *
      * @param ReflectionClass $reflectionClass
@@ -129,48 +36,53 @@ class EnumAnnotateCommand extends Command
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function annotate(ReflectionClass $reflectionClass)
+    protected function annotate(ReflectionClass $reflectionClass)
     {
-        $docBlock = "/**\n";
-        foreach ($reflectionClass->getConstants() as $name => $value) {
-            $docBlock .= " * @method static static {$name}\n";
-        }
-        $docBlock .= " */\n";
+        $factory = DocBlockFactory::createInstance();
 
-        $shortName = $reflectionClass->getShortName();
-        $fileName = $reflectionClass->getFileName();
-        $contents = $this->filesystem->get($fileName);
+        $existingDocBlock = null;
 
-        $classDeclaration = "class {$shortName}";
-
-        if ($reflectionClass->isFinal()) {
-            $classDeclaration = "final {$classDeclaration}";
-        } elseif ($reflectionClass->isAbstract()) {
-            $classDeclaration = "abstract {$classDeclaration}";
+        if (strlen($reflectionClass->getDocComment()) !== 0) {
+            $existingDocBlock = $docBlock = $factory->create($reflectionClass);
+            $existingDocBlock = $this->removeExistingStaticMethods($existingDocBlock, $reflectionClass->getConstants());
         }
 
-        $classDeclarationOffset = strpos($contents, $classDeclaration);
-        // Make sure we don't replace too much
-        $contents = substr_replace(
-            $contents,
-            $docBlock . $classDeclaration,
-            $classDeclarationOffset,
-            strlen($classDeclaration)
+        $newDocblock = $this->mergeTagsIntoDocblock(
+            $this->getStaticEnumMethods($reflectionClass->getConstants()),
+            $existingDocBlock
         );
 
-        $this->filesystem->put($fileName, $contents);
-        $this->info("Wrote new phpDocBlock to {$fileName}.");
+        $this->updateClassDocblock($reflectionClass, $newDocblock);
     }
 
-    /**
-     * @return string
-     */
-    private function getScanPath(): string
+    private function removeExistingStaticMethods(DocBlock $docBlock, array $constants): DocBlock
     {
-        if (!$this->option('folder')) {
-            return app_path(self::DEFAULT_SCAN_FOLDER);
+        $existingMethods = $docBlock->getTagsByName('method');
+
+        foreach ($constants as $name => $value) {
+            /** @var DocBlock\Tags\Method $method */
+            foreach ($existingMethods as $method) {
+                if ($method->getName() === $name) {
+                    $docBlock->removeTag($method);
+                }
+            }
         }
 
-        return $this->option('folder');
+        return $docBlock;
+    }
+
+    private function getStaticEnumMethods(array $constants): array
+    {
+        return array_map(function (string $name) {
+            return new DocBlock\Tags\Method($name, [], new Static_(), true);
+        }, array_keys($constants));
+    }
+
+    protected function getClassFinder(): Finder
+    {
+        $finder = new Finder();
+        $scanPath = $this->option('folder') ?? app_path(self::DEFAULT_SCAN_FOLDER);
+
+        return $finder->files()->in($scanPath)->name('*.php');
     }
 }

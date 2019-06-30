@@ -138,7 +138,6 @@ You can annotate a single class by specifying the class name
 ```php
 php artisan enum:annotate "App\Enums\UserType"
 ```
-
 ### Instance Properties
 
 Once you have an enum instance, you can access the `key`, `value` and `description` as properties.
@@ -239,6 +238,14 @@ $example->user_type = UserType::Moderator;
 
 // Set using enum instance
 $example->user_type = UserType::Moderator();
+```
+
+### Model Annotation
+The package can automatically generate docblocks for your `Model` classes to provide type hinting & completion in your ide.
+By default all Model in the root of `app` will be annotated (you can change the folder by passing a path to `--folder`)
+
+```php
+php artisan enum:model-annotate
 ```
 
 ## Validation

@@ -1,6 +1,6 @@
 <?php
 
-namespace BenSampo\Enum\Tests\Models;
+namespace BenSampo\Enum\Tests\Models\Annotate;
 
 use BenSampo\Enum\Traits\CastsEnums;
 use BenSampo\Enum\Tests\Enums\UserType;

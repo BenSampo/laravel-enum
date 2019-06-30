@@ -2,6 +2,7 @@
 
 namespace BenSampo\Enum;
 
+use BenSampo\Enum\Commands\ModelAnnotateCommand;
 use BenSampo\Enum\Rules\EnumKey;
 use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Support\ServiceProvider;
@@ -32,6 +33,7 @@ class EnumServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 EnumAnnotateCommand::class,
+                ModelAnnotateCommand::class,
                 MakeEnumCommand::class,
             ]);
         }
