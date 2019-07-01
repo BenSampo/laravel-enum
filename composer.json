@@ -22,7 +22,7 @@
         "php": "~7.1",
         "hanneskod/classtools": "~1.0",
         "illuminate/support": "5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|5.9.*",
-        "phpdocumentor/reflection-docblock": "^4.3"
+        "zendframework/zend-code": "^3.3"
     },
     "require-dev": {
         "laravel/framework": "5.8.*",

@@ -3,11 +3,16 @@
 namespace BenSampo\Enum\Commands;
 
 use BenSampo\Enum\Docblock\EnumPropertyType;
+use BenSampo\Enum\Tests\Models\Example;
 use Illuminate\Database\Eloquent\Model;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;
+use Zend\Code\Generator\DocBlock\Tag\PropertyTag;
+use Zend\Code\Generator\DocBlock\Tag\TagInterface;
+use Zend\Code\Generator\DocBlockGenerator;
+use Zend\Code\Reflection\DocBlockReflection;
 
 class ModelAnnotateCommand extends AbstractAnnotationCommand
 {
@@ -42,18 +47,15 @@ class ModelAnnotateCommand extends AbstractAnnotationCommand
         }
 
         $casts = $reflectionClass->getDefaultProperties()['enumCasts'] ?? [];
-        $factory = DocBlockFactory::createInstance();
 
-        $existingDocBlock = null;
+        $docBlock = DocBlockGenerator::fromArray([]);
 
         if (strlen($reflectionClass->getDocComment()) !== 0) {
-            $existingDocBlock = $docBlock = $factory->create($reflectionClass);
-            $existingDocBlock = $this->removeExistingCastPropertyTags($existingDocBlock, $casts);
+            $docBlock = DocBlockGenerator::fromReflection(new DocBlockReflection($reflectionClass));
         }
 
-        $newDocblock = $this->mergeTagsIntoDocblock($this->getCastPropertyTags($casts), $existingDocBlock);
-
-        $this->updateClassDocblock($reflectionClass, $newDocblock);
+        $docBlock->setTags($this->getDocblockTags($docBlock, $casts));
+        $this->updateClassDocblock($reflectionClass, $docBlock);
     }
 
     protected function getClassFinder(): Finder
@@ -67,30 +69,17 @@ class ModelAnnotateCommand extends AbstractAnnotationCommand
         return $finder->files()->in($this->option('folder'))->name('*.php');
     }
 
-    private function removeExistingCastPropertyTags(DocBlock $docBlock, array $casts): DocBlock
+    private function getDocblockTags(DocBlockGenerator $docBlock, array $casts): array
     {
-        $existingProperties = $docBlock->getTagsByName('property');
+        $existingTags = array_filter($docBlock->getTags(), function (TagInterface $tag) use ($casts) {
+            return !$tag instanceof PropertyTag || !in_array($tag->getPropertyName(), array_keys($casts), true);
+        });
 
-        foreach ($casts as $property => $className) {
-            /** @var DocBlock\Tags\Property $property */
-            foreach ($existingProperties as $property) {
-                if ($property->getVariableName() == $property) {
-                    $docBlock->removeTag($property);
-                }
-            }
-        }
-
-        return $docBlock;
-    }
-
-    private function getCastPropertyTags(array $enumCasts): array
-    {
-        $casts = [];
-
-        foreach ($enumCasts as $property => $className) {
-            $casts[] = new DocBlock\Tags\Property($property, new EnumPropertyType($className));
-        }
-
-        return $casts;
+        return collect($casts)
+            ->map(function ($className, $propertyName) {
+                return new PropertyTag($propertyName, [sprintf('\%s', $className), 'null']);
+            })
+            ->merge($existingTags)
+            ->toArray();
     }
 }

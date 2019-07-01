@@ -14,6 +14,7 @@ use ReflectionException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Finder\Finder;
+use Zend\Code\Generator\DocBlockGenerator;
 
 abstract class AbstractAnnotationCommand extends Command
 {
@@ -111,7 +112,7 @@ abstract class AbstractAnnotationCommand extends Command
      * @param DocBlock        $docBlock
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    protected function updateClassDocblock(ReflectionClass $reflectionClass, DocBlock $docBlock)
+    protected function updateClassDocblock(ReflectionClass $reflectionClass, DocBlockGenerator $docBlock)
     {
         $shortName = $reflectionClass->getShortName();
         $fileName = $reflectionClass->getFileName();
@@ -125,9 +126,6 @@ abstract class AbstractAnnotationCommand extends Command
             $classDeclaration = "abstract {$classDeclaration}";
         }
 
-        $newDocblock = (new DocBlock\Serializer())->getDocComment($docBlock);
-
-
         // Remove existing docblock
         preg_replace(
             sprintf('#(\/\*(?:[^*]|\n|(?:\*(?:[^\/]|\n)))*\*\/)?[\n]%s#ms', preg_quote($classDeclaration)),
@@ -139,7 +137,7 @@ abstract class AbstractAnnotationCommand extends Command
         // Make sure we don't replace too much
         $contents = substr_replace(
             $contents,
-            sprintf("%s\n%s", $newDocblock, $classDeclaration),
+            $docBlock->generate(). $classDeclaration,
             $classDeclarationOffset,
             strlen($classDeclaration)
         );

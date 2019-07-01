@@ -8,6 +8,11 @@ use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\Types\Static_;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;
+use Zend\Code\Generator\DocBlock\Tag\MethodTag;
+use Zend\Code\Generator\DocBlock\Tag\PropertyTag;
+use Zend\Code\Generator\DocBlock\Tag\TagInterface;
+use Zend\Code\Generator\DocBlockGenerator;
+use Zend\Code\Reflection\DocBlockReflection;
 
 class EnumAnnotateCommand extends AbstractAnnotationCommand
 {
@@ -38,44 +43,29 @@ class EnumAnnotateCommand extends AbstractAnnotationCommand
      */
     protected function annotate(ReflectionClass $reflectionClass)
     {
-        $factory = DocBlockFactory::createInstance();
-
-        $existingDocBlock = null;
+        $docBlock = DocBlockGenerator::fromArray([]);
 
         if (strlen($reflectionClass->getDocComment()) !== 0) {
-            $existingDocBlock = $docBlock = $factory->create($reflectionClass);
-            $existingDocBlock = $this->removeExistingStaticMethods($existingDocBlock, $reflectionClass->getConstants());
+            $docBlock = DocBlockGenerator::fromReflection(new DocBlockReflection($reflectionClass));
         }
 
-        $newDocblock = $this->mergeTagsIntoDocblock(
-            $this->getStaticEnumMethods($reflectionClass->getConstants()),
-            $existingDocBlock
-        );
+        $docBlock->setTags($this->getDocblockTags($docBlock, $reflectionClass->getConstants()));
 
-        $this->updateClassDocblock($reflectionClass, $newDocblock);
+        $this->updateClassDocblock($reflectionClass, $docBlock);
     }
 
-    private function removeExistingStaticMethods(DocBlock $docBlock, array $constants): DocBlock
+    private function getDocblockTags(DocBlockGenerator $docBlock, array $constants): array
     {
-        $existingMethods = $docBlock->getTagsByName('method');
+        $existingTags = array_filter($docBlock->getTags(), function (TagInterface $tag) use ($constants) {
+            return !$tag instanceof MethodTag || !in_array($tag->getMethodName(), $constants, true);
+        });
 
-        foreach ($constants as $name => $value) {
-            /** @var DocBlock\Tags\Method $method */
-            foreach ($existingMethods as $method) {
-                if ($method->getName() === $name) {
-                    $docBlock->removeTag($method);
-                }
-            }
-        }
-
-        return $docBlock;
-    }
-
-    private function getStaticEnumMethods(array $constants): array
-    {
-        return array_map(function (string $name) {
-            return new DocBlock\Tags\Method($name, [], new Static_(), true);
-        }, array_keys($constants));
+        return collect($constants)
+            ->map(function ($value, $constantName) {
+                return new MethodTag($constantName, ['static'], null, true);
+            })
+            ->merge($existingTags)
+            ->toArray();
     }
 
     protected function getClassFinder(): Finder
