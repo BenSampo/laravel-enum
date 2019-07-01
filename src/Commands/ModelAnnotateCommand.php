@@ -46,16 +46,7 @@ class ModelAnnotateCommand extends AbstractAnnotationCommand
             return;
         }
 
-        $casts = $reflectionClass->getDefaultProperties()['enumCasts'] ?? [];
-
-        $docBlock = DocBlockGenerator::fromArray([]);
-
-        if (strlen($reflectionClass->getDocComment()) !== 0) {
-            $docBlock = DocBlockGenerator::fromReflection(new DocBlockReflection($reflectionClass));
-        }
-
-        $docBlock->setTags($this->getDocblockTags($docBlock, $casts));
-        $this->updateClassDocblock($reflectionClass, $docBlock);
+        $this->updateClassDocblock($reflectionClass, $this->getDocBlock($reflectionClass));
     }
 
     protected function getClassFinder(): Finder
@@ -69,9 +60,11 @@ class ModelAnnotateCommand extends AbstractAnnotationCommand
         return $finder->files()->in($this->option('folder'))->name('*.php');
     }
 
-    private function getDocblockTags(DocBlockGenerator $docBlock, array $casts): array
+    protected function getDocblockTags(array $originalTags, ReflectionClass $reflectionClass): array
     {
-        $existingTags = array_filter($docBlock->getTags(), function (TagInterface $tag) use ($casts) {
+        $casts = $reflectionClass->getDefaultProperties()['enumCasts'] ?? [];
+
+        $existingTags = array_filter($originalTags, function (TagInterface $tag) use ($casts) {
             return !$tag instanceof PropertyTag || !in_array($tag->getPropertyName(), array_keys($casts), true);
         });
 

@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Finder\Finder;
 use Zend\Code\Generator\DocBlockGenerator;
+use Zend\Code\Reflection\DocBlockReflection;
 
 abstract class AbstractAnnotationCommand extends Command
 {
@@ -95,7 +96,7 @@ abstract class AbstractAnnotationCommand extends Command
      */
     protected function annotateClass(string $className)
     {
-        if (!is_subclass_of($className, Enum::class)) {
+        if (!is_subclass_of($className, static::PARENT_CLASS)) {
             throw new InvalidArgumentException(
                 sprintf('The given class must be an instance of %s: %s', static::PARENT_CLASS, $className)
             );
@@ -127,9 +128,9 @@ abstract class AbstractAnnotationCommand extends Command
         }
 
         // Remove existing docblock
-        preg_replace(
-            sprintf('#(\/\*(?:[^*]|\n|(?:\*(?:[^\/]|\n)))*\*\/)?[\n]%s#ms', preg_quote($classDeclaration)),
-            $classDeclaration,
+        $contents = preg_replace(
+            sprintf('#([\n]?\/\*(?:[^*]|\n|(?:\*(?:[^\/]|\n)))*\*\/)?[\n]?%s#ms', preg_quote($classDeclaration)),
+            "\n" . $classDeclaration,
             $contents
         );
 
@@ -137,7 +138,7 @@ abstract class AbstractAnnotationCommand extends Command
         // Make sure we don't replace too much
         $contents = substr_replace(
             $contents,
-            $docBlock->generate(). $classDeclaration,
+            sprintf("%s%s", $docBlock->generate(), $classDeclaration),
             $classDeclarationOffset,
             strlen($classDeclaration)
         );
@@ -146,25 +147,35 @@ abstract class AbstractAnnotationCommand extends Command
         $this->info("Wrote new phpDocBlock to {$fileName}.");
     }
 
-    /**
-     * Merge new docblock tags into the existing docblock, if it exists.
-     *
-     * @param array         $tags
-     * @param DocBlock|null $existingDocblock
-     * @return DocBlock
-     */
-    protected function mergeTagsIntoDocblock(array $tags, ?DocBlock $existingDocblock = null): DocBlock
+    protected function getDocBlock(ReflectionClass $reflectionClass): DocBlockGenerator
     {
-        if ($existingDocblock === null) {
-            return new DocBlock('', null, $tags);
+        $docBlock = DocBlockGenerator::fromArray([]);
+
+        $originalDocBlock = null;
+
+        if ($reflectionClass->getDocComment()) {
+            $originalDocBlock = DocBlockGenerator::fromReflection(
+                new DocBlockReflection(ltrim($reflectionClass->getDocComment()))
+            );
+
+            if ($originalDocBlock->getShortDescription()) {
+                $docBlock->setShortDescription($originalDocBlock->getShortDescription());
+            }
+
+            if ($originalDocBlock->getLongDescription()) {
+                $docBlock->setLongDescription($originalDocBlock->getLongDescription());
+            }
         }
 
-        return new DocBlock(
-            $existingDocblock->getSummary(),
-            $existingDocblock->getDescription(),
-            array_merge($existingDocblock->getTags(), $tags)
-        );
+        $docBlock->setTags($this->getDocblockTags(
+            $originalDocBlock ? $originalDocBlock->getTags() : [],
+            $reflectionClass
+        ));
+
+        return $docBlock;
     }
+
+    abstract protected function getDocblockTags(array $originalTags, ReflectionClass $reflectionClass): array;
 
     /**
      * @param ReflectionClass $reflectionClass

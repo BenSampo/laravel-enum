@@ -44,19 +44,21 @@ class EnumAnnotateCommand extends AbstractAnnotationCommand
     protected function annotate(ReflectionClass $reflectionClass)
     {
         $docBlock = DocBlockGenerator::fromArray([]);
+        $originalDocBlock =  null;
 
         if (strlen($reflectionClass->getDocComment()) !== 0) {
-            $docBlock = DocBlockGenerator::fromReflection(new DocBlockReflection($reflectionClass));
+            $originalDocBlock = DocBlockGenerator::fromReflection(new DocBlockReflection($reflectionClass));
+            $docBlock->setShortDescription($originalDocBlock->getShortDescription());
         }
 
-        $docBlock->setTags($this->getDocblockTags($docBlock, $reflectionClass->getConstants()));
-
-        $this->updateClassDocblock($reflectionClass, $docBlock);
+        $this->updateClassDocblock($reflectionClass, $this->getDocBlock($reflectionClass));
     }
 
-    private function getDocblockTags(DocBlockGenerator $docBlock, array $constants): array
+    protected function getDocblockTags(array $originalTags, ReflectionClass $reflectionClass): array
     {
-        $existingTags = array_filter($docBlock->getTags(), function (TagInterface $tag) use ($constants) {
+        $constants = $reflectionClass->getConstants();
+
+        $existingTags = array_filter($originalTags, function (TagInterface $tag) use ($constants) {
             return !$tag instanceof MethodTag || !in_array($tag->getMethodName(), $constants, true);
         });
 
