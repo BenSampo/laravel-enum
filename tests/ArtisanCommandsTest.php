@@ -3,6 +3,7 @@
 namespace BenSampo\Enum\Tests;
 
 use BenSampo\Enum\Tests\Enums\Annotate\AnnotateTestOneEnum;
+use BenSampo\Enum\Tests\Enums\MixedKeyFormatsAnnotated;
 use BenSampo\Enum\Tests\Models\AnnotatedExample;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Filesystem\Filesystem;
@@ -85,6 +86,19 @@ class ArtisanCommandsTest extends ApplicationTestCase
         $this->artisan('enum:annotate-model', ['class' => AnnotatedExample::class])->assertExitCode(0);
 
         $newClass = $fileSystem->get(__DIR__ . '/Models/AnnotatedExample.php');
+        $this->assertSame($original, $newClass);
+    }
+
+    public function test_annotate_enum_with_existing_docblock_is_not_changed()
+    {
+        /** @var Filesystem $fileSystem */
+        $fileSystem = $this->app[Filesystem::class];
+
+        $original = $fileSystem->get(__DIR__ . '/Enums/MixedKeyFormatsAnnotated.php');
+
+        $this->artisan('enum:annotate', ['class' => MixedKeyFormatsAnnotated::class])->assertExitCode(0);
+
+        $newClass = $fileSystem->get(__DIR__ . '/Enums/MixedKeyFormatsAnnotated.php');
         $this->assertSame($original, $newClass);
     }
 }

@@ -55,7 +55,7 @@ class EnumAnnotateCommand extends AbstractAnnotationCommand
         $constants = $reflectionClass->getConstants();
 
         $existingTags = array_filter($originalTags, function (TagInterface $tag) use ($constants) {
-            return !$tag instanceof MethodTag || !in_array($tag->getMethodName(), $constants, true);
+            return !$tag instanceof MethodTag || !in_array($tag->getMethodName(), array_keys($constants), true);
         });
 
         return collect($constants)
