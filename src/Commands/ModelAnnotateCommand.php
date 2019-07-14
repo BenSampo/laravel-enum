@@ -24,7 +24,7 @@ class ModelAnnotateCommand extends AbstractAnnotationCommand
      *
      * @var string
      */
-    protected $description = 'Generate annotations for models that have enums';
+    protected $description = 'Generate DocBlock annotations for models that have enums';
 
     /**
      * Apply annotations to a reflected class

@@ -27,7 +27,7 @@ class EnumAnnotateCommand extends AbstractAnnotationCommand
      *
      * @var string
      */
-    protected $description = 'Generate annotations for enum classes';
+    protected $description = 'Generate DocBlock annotations for enum classes';
 
     /**
      * Apply annotations to a reflected class
