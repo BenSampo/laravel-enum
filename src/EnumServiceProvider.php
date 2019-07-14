@@ -2,13 +2,13 @@
 
 namespace BenSampo\Enum;
 
-use BenSampo\Enum\Commands\ModelAnnotateCommand;
 use BenSampo\Enum\Rules\EnumKey;
 use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use BenSampo\Enum\Commands\MakeEnumCommand;
 use BenSampo\Enum\Commands\EnumAnnotateCommand;
+use BenSampo\Enum\Commands\ModelAnnotateCommand;
 
 class EnumServiceProvider extends ServiceProvider
 {

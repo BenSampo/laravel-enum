@@ -2,17 +2,13 @@
 
 namespace BenSampo\Enum\Commands;
 
-use BenSampo\Enum\Enum;
-use phpDocumentor\Reflection\DocBlock;
-use phpDocumentor\Reflection\DocBlockFactory;
-use phpDocumentor\Reflection\Types\Static_;
 use ReflectionClass;
+use BenSampo\Enum\Enum;
 use Symfony\Component\Finder\Finder;
-use Zend\Code\Generator\DocBlock\Tag\MethodTag;
-use Zend\Code\Generator\DocBlock\Tag\PropertyTag;
-use Zend\Code\Generator\DocBlock\Tag\TagInterface;
 use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Reflection\DocBlockReflection;
+use Zend\Code\Generator\DocBlock\Tag\MethodTag;
+use Zend\Code\Generator\DocBlock\Tag\TagInterface;
 
 class EnumAnnotateCommand extends AbstractAnnotationCommand
 {

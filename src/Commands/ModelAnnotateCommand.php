@@ -2,17 +2,11 @@
 
 namespace BenSampo\Enum\Commands;
 
-use BenSampo\Enum\Docblock\EnumPropertyType;
-use BenSampo\Enum\Tests\Models\Example;
-use Illuminate\Database\Eloquent\Model;
-use phpDocumentor\Reflection\DocBlock;
-use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;
+use Illuminate\Database\Eloquent\Model;
 use Zend\Code\Generator\DocBlock\Tag\PropertyTag;
 use Zend\Code\Generator\DocBlock\Tag\TagInterface;
-use Zend\Code\Generator\DocBlockGenerator;
-use Zend\Code\Reflection\DocBlockReflection;
 
 class ModelAnnotateCommand extends AbstractAnnotationCommand
 {

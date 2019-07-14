@@ -3,19 +3,18 @@ declare(strict_types=1);
 
 namespace BenSampo\Enum\Commands;
 
-use BenSampo\Enum\Enum;
-use hanneskod\classtools\Iterator\ClassIterator;
-use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
-use InvalidArgumentException;
-use phpDocumentor\Reflection\DocBlock;
 use ReflectionClass;
 use ReflectionException;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
+use InvalidArgumentException;
+use Illuminate\Console\Command;
 use Symfony\Component\Finder\Finder;
+use Illuminate\Filesystem\Filesystem;
+use phpDocumentor\Reflection\DocBlock;
 use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Reflection\DocBlockReflection;
+use hanneskod\classtools\Iterator\ClassIterator;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 
 abstract class AbstractAnnotationCommand extends Command
 {
