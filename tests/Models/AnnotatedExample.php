@@ -6,7 +6,13 @@ use BenSampo\Enum\Traits\CastsEnums;
 use BenSampo\Enum\Tests\Enums\UserType;
 use Illuminate\Database\Eloquent\Model;
 
-class Example extends Model
+/**
+ * Description should be kept
+ *
+ * @property \BenSampo\Enum\Tests\Enums\UserType|null $user_type
+ * @see https://github.com/BenSampo/laravel-enum/pull/71
+ */
+class AnnotatedExample extends Model
 {
     use CastsEnums;
 

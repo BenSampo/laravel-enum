@@ -39,6 +39,7 @@ Created by [Ben Sampson](https://sampo.co.uk)
 * [Overriding the getDescription method](#overriding-the-getdescription-method)
 * [Extending the Enum Base Class](#extending-the-enum-base-class)
 * [PHPStan Integration](#phpstan-integration)
+* [Artisan Command List](#artisan-command-list)
 * [Enum Class Reference](#enum-class-reference)
 
 ## Guide
@@ -138,7 +139,6 @@ You can annotate a single class by specifying the class name
 ```php
 php artisan enum:annotate "App\Enums\UserType"
 ```
-
 ### Instance Properties
 
 Once you have an enum instance, you can access the `key`, `value` and `description` as properties.
@@ -239,6 +239,15 @@ $example->user_type = UserType::Moderator;
 
 // Set using enum instance
 $example->user_type = UserType::Moderator();
+```
+
+### Model Annotation
+The package can automatically generate DocBlocks for your `Model` classes to provide type hinting & completion in your IDE.
+
+By default all `Model` classes in the root of `app` will be annotated (you can change the folder by passing a path to `--folder`)
+
+```php
+php artisan enum:annotate-model
 ```
 
 ## Validation
@@ -386,6 +395,20 @@ Add the following to your projects `phpstan.neon` includes:
 includes:
 - vendor/bensampo/laravel-enum/extension.neon
 ```
+
+## Artisan Command List
+
+### `php artisan make:enum`
+Create a new enum class  
+[Find out more](#enum-definition)
+
+### `php artisan enum:annotate`
+Generate DocBlock annotations for enum classes  
+[Find out more](#instantiation)
+
+### `php artisan enum:annotate-model`
+Generate DocBlock annotations for models that have enums  
+[Find out more](#model-annotation)
 
 ## Enum Class Reference
 
