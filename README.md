@@ -241,8 +241,8 @@ $example->user_type = UserType::Moderator();
 ```
 
 ### Model Annotation
-The package can automatically generate docblocks for your `Model` classes to provide type hinting & completion in your ide.
-By default all Model in the root of `app` will be annotated (you can change the folder by passing a path to `--folder`)
+The package can automatically generate docblocks for your `Model` classes to provide type hinting & completion in your IDE.
+By default all `Model` classes in the root of `app` will be annotated (you can change the folder by passing a path to `--folder`)
 
 ```php
 php artisan enum:model-annotate
