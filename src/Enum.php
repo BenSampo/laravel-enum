@@ -3,6 +3,7 @@
 namespace BenSampo\Enum;
 
 use ReflectionClass;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Traits\Macroable;
 use BenSampo\Enum\Contracts\EnumContract;
@@ -326,7 +327,7 @@ abstract class Enum implements EnumContract
             $key = strtolower($key);
         }
 
-        return ucfirst(str_replace('_', ' ', snake_case($key)));
+        return ucfirst(str_replace('_', ' ', Str::snake($key)));
     }
 
     /**
