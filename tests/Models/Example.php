@@ -10,6 +10,10 @@ class Example extends Model
 {
     use CastsEnums;
 
+    protected $casts = [
+        'user_type' => 'int',
+    ];
+
     protected $enumCasts = [
         'user_type' => UserType::class,
     ];
