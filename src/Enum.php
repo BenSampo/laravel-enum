@@ -2,13 +2,13 @@
 
 namespace BenSampo\Enum;
 
-use ReflectionClass;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Traits\Macroable;
 use BenSampo\Enum\Contracts\EnumContract;
 use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Str;
+use Illuminate\Support\Traits\Macroable;
+use ReflectionClass;
 
 abstract class Enum implements EnumContract
 {
@@ -56,7 +56,7 @@ abstract class Enum implements EnumContract
         if (!static::hasValue($enumValue)) {
             throw new InvalidEnumMemberException($enumValue, $this);
         }
-        
+
         $this->value = $enumValue;
         $this->key = static::getKey($enumValue);
         $this->description = static::getDescription($enumValue);
@@ -107,6 +107,19 @@ abstract class Enum implements EnumContract
         }
 
         return $this->value === $enumValue;
+    }
+
+    /**
+     * Checks if the enum instance's value exists is one of the passed array
+     *
+     * @param array $values
+     * @param bool  $strict
+     *
+     * @return bool
+     */
+    public function in(array $values, bool $strict = true): bool
+    {
+        return in_array($this->value, $values, $strict);
     }
 
     /**
