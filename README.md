@@ -176,6 +176,15 @@ $userType->is(UserType::Moderator); // Returns false
 $userType->is(UserType::InvalidKey); // Throws InvalidEnumMemberException exception
 ```
 
+You can also check to see if the instance's value matches against an array of possible values using the `in` method.
+
+```php
+$userType = UserType::getInstance(UserType::SuperAdministrator);
+
+$userType->in([UserType::Moderator, UserType::SuperAdministrator]); // Returns true
+$userType->in([UserType::Moderator, UserType::Subscriber]); // Returns false
+```
+
 ### Type Hinting
 
 One of the benefits of enum instances is that it enables you to use type hinting, as shown below.
