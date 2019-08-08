@@ -73,8 +73,7 @@ abstract class Enum implements EnumContract
      */
     public static function __callStatic($method, $parameters)
     {
-        if (static::hasMacro($method))
-        {
+        if (static::hasMacro($method)) {
             return static::macroCallStatic($method, $parameters);
         }
 
@@ -141,7 +140,7 @@ abstract class Enum implements EnumContract
     public static function getInstances(): array
     {
         return array_map(
-            function($constantValue) {
+            function ($constantValue) {
                 return new static($constantValue);
             },
             static::getConstants()
@@ -231,12 +230,10 @@ abstract class Enum implements EnumContract
      */
     protected static function getLocalizedDescription($value): ?string
     {
-        if (static::isLocalizable())
-        {
+        if (static::isLocalizable()) {
             $localizedStringKey = static::getLocalizationKey() . '.' . $value;
 
-            if (Lang::has($localizedStringKey))
-            {
+            if (Lang::has($localizedStringKey)) {
                 return __($localizedStringKey);
             }
         }

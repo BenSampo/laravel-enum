@@ -16,7 +16,8 @@ install:
 - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --no-suggest
 
 script:
-- vendor/bin/phpunit -c phpunit.xml tests/
+- composer test
+- composer check-style
 
 cache:
   directories:

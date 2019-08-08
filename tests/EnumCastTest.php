@@ -39,7 +39,6 @@ class EnumCastTest extends TestCase
 
         $model = app(Example::class);
         $model->user_type = 5;
-
     }
 
     public function test_getting_model_value_returns_enum_instance()

@@ -112,7 +112,7 @@ class EnumTest extends TestCase
 
     public function test_enum_is_macroable()
     {
-        Enum::macro('toFlippedArray', function() {
+        Enum::macro('toFlippedArray', function () {
             return array_flip(self::toArray());
         });
 
