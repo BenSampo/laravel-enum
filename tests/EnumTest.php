@@ -164,6 +164,5 @@ class EnumTest extends TestCase
 
         // Strings should just be returned
         $this->assertSame(StringValues::Moderator, (string) $enumWithStringValue);
-
     }
 }
