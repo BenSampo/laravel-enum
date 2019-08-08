@@ -185,10 +185,14 @@ $admin->is('random-value');            // Throws InvalidEnumMemberException exce
 You can also check to see if the instance's value matches against an array of possible values using the `in` method.
 
 ```php
-$userType = UserType::getInstance(UserType::SuperAdministrator);
+$admin = UserType::getInstance(UserType::Administrator);
 
-$userType->in([UserType::Moderator, UserType::SuperAdministrator]); // Returns true
-$userType->in([UserType::Moderator, UserType::Subscriber]); // Returns false
+$admin->in([UserType::Moderator, UserType::Administrator]);     // Returns true
+$admin->in([UserType::Moderator(), UserType::Administrator()]); // Returns true
+
+$admin->in([UserType::Moderator, UserType::Subscriber]);        // Returns false
+
+$admin->in(['random-value']);                                   // Throws InvalidEnumMemberException exception
 ```
 
 ### Type Hinting
