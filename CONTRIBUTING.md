@@ -10,8 +10,7 @@ Hey, thank you for contributing. Here are some tips to make it easy for you.
 1. Think about how the changes you are about to make can be tested, write tests before coding 
 1. Run tests, make sure they fail
 1. Write the actual code to make the tests pass
-1. Commit with a concise title line and a few more lines detailing the change
-1. Open a pull request detailing your changes
+1. Open a pull request detailing your changes. Make sure to follow the [template](.github/PULL_REQUEST_TEMPLATE.md)
 
 ## Testing
 
