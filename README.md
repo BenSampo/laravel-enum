@@ -173,7 +173,7 @@ $admin = UserType::getInstance(UserType::Administrator);
 
 $admin->is(UserType::Administrator);   // true
 $admin->is($admin);                    // true
-$admin->is(new UserType(UserType::Administrator)); // true
+$admin->is(UserType::Administrator()); // true
 
 $admin->is(UserType::Moderator);       // false
 $admin->is(UserType::Moderator());     // false
