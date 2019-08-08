@@ -60,6 +60,7 @@ $ composer require bensampo/laravel-enum
 ```
 
 If you're using Laravel < 5.5 you'll need to add the service provider to `config/app.php`
+
 ```php
 'BenSampo\Enum\EnumServiceProvider'
 ```
