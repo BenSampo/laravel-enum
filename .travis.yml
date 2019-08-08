@@ -33,10 +33,11 @@ matrix:
 
 install:
 - composer require "illuminate/contracts:${LARAVEL}" --no-interaction --no-update
+- composer install --prefer-dist --no-interaction --no-suggest
 
 script:
-- vendor/bin/phpunit -c phpunit.xml tests/
+- composer test
 
 cache:
   directories:
-    - $HOME/.composer/cache
+  - $HOME/.composer/cache
