@@ -19,7 +19,7 @@ class PHPStanTest extends TestCase
      */
     private $enumReflection;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
