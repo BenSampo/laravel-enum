@@ -10,6 +10,11 @@ use Illuminate\Filesystem\Filesystem;
 
 class ArtisanCommandsTest extends ApplicationTestCase
 {
+    /**
+     * TODO remove once we cut support for Laravel < 5.7
+     */
+    public $mockConsoleOutput = false;
+
     public function test_artisan_commands_are_registered()
     {
         $commands = $this->app[Kernel::class]->all();
@@ -26,7 +31,10 @@ class ArtisanCommandsTest extends ApplicationTestCase
 
         $fileSystem->copyDirectory(__DIR__ . '/Enums/AnnotateOriginals', __DIR__ . '/Enums/Annotate');
 
-        $this->artisan('enum:annotate', ['class' => AnnotateTestOneEnum::class])->assertExitCode(0);
+        $this->assertSame(
+            0,
+            $this->artisan('enum:annotate', ['class' => AnnotateTestOneEnum::class])
+        );
 
         $newClass = $fileSystem->get(__DIR__ . '/Enums/Annotate/AnnotateTestOneEnum.php');
 
@@ -40,7 +48,10 @@ class ArtisanCommandsTest extends ApplicationTestCase
 
         $fileSystem->copyDirectory(__DIR__ . '/Enums/AnnotateOriginals', __DIR__ . '/Enums/Annotate');
 
-        $this->artisan('enum:annotate', ['class' => AnnotateTestOneEnum::class])->assertExitCode(0);
+        $this->assertSame(
+            0,
+            $this->artisan('enum:annotate', ['class' => AnnotateTestOneEnum::class])
+        );
 
         $newClass = $fileSystem->get(__DIR__ . '/Enums/Annotate/AnnotateTestOneEnum.php');
 
@@ -54,7 +65,10 @@ class ArtisanCommandsTest extends ApplicationTestCase
 
         $fileSystem->copyDirectory(__DIR__ . '/Enums/AnnotateOriginals', __DIR__ . '/Enums/Annotate');
 
-        $this->artisan('enum:annotate', ['--folder' => __DIR__ . '/Enums/Annotate'])->assertExitCode(0);
+        $this->assertSame(
+            0,
+            $this->artisan('enum:annotate', ['--folder' => __DIR__ . '/Enums/Annotate'])
+        );
 
         $newClassOne = $fileSystem->get(__DIR__ . '/Enums/Annotate/AnnotateTestOneEnum.php');
         $newClassTwo = $fileSystem->get(__DIR__ . '/Enums/Annotate/AnnotateTestTwoEnum.php');
@@ -70,7 +84,10 @@ class ArtisanCommandsTest extends ApplicationTestCase
 
         $fileSystem->copyDirectory(__DIR__ . '/Models/AnnotateOriginals', __DIR__ . '/Models/Annotate');
 
-        $this->artisan('enum:annotate-model', ['--folder' => __DIR__ . '/Models/Annotate'])->assertExitCode(0);
+        $this->assertSame(
+            0,
+            $this->artisan('enum:annotate-model', ['--folder' => __DIR__ . '/Models/Annotate'])
+        );
 
         $newClass = $fileSystem->get(__DIR__ . '/Models/Annotate/Example.php');
         $this->assertStringEqualsFile(__DIR__ . '/fixtures/annotated_model_class_one', $newClass);
@@ -83,7 +100,10 @@ class ArtisanCommandsTest extends ApplicationTestCase
 
         $original = $fileSystem->get(__DIR__ . '/Models/AnnotatedExample.php');
 
-        $this->artisan('enum:annotate-model', ['class' => AnnotatedExample::class])->assertExitCode(0);
+        $this->assertSame(
+            0,
+            $this->artisan('enum:annotate-model', ['class' => AnnotatedExample::class])
+        );
 
         $newClass = $fileSystem->get(__DIR__ . '/Models/AnnotatedExample.php');
         $this->assertSame($original, $newClass);
@@ -96,7 +116,11 @@ class ArtisanCommandsTest extends ApplicationTestCase
 
         $original = $fileSystem->get(__DIR__ . '/Enums/MixedKeyFormatsAnnotated.php');
 
-        $this->artisan('enum:annotate', ['class' => MixedKeyFormatsAnnotated::class])->assertExitCode(0);
+
+        $this->assertSame(
+            0,
+            $this->artisan('enum:annotate', ['class' => MixedKeyFormatsAnnotated::class])
+        );
 
         $newClass = $fileSystem->get(__DIR__ . '/Enums/MixedKeyFormatsAnnotated.php');
         $this->assertSame($original, $newClass);
