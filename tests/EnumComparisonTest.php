@@ -9,18 +9,19 @@ use PHPUnit\Framework\TestCase;
 
 class EnumComparisonTest extends TestCase
 {
-    public function test_comparison_against_constant_matching()
+    public function test_comparison_against_plain_value_matching()
     {
         $admin = UserType::getInstance(UserType::Administrator);
 
         $this->assertTrue($admin->is(UserType::Administrator));
     }
 
-    public function test_comparison_against_constant_not_matching()
+    public function test_comparison_against_plain_value_not_matching()
     {
         $admin = UserType::getInstance(UserType::Administrator);
 
         $this->assertFalse($admin->is(UserType::SuperAdministrator));
+        $this->assertFalse($admin->is('some-random-value'));
     }
 
     public function test_comparison_against_itself_matches()
@@ -33,8 +34,9 @@ class EnumComparisonTest extends TestCase
     public function test_comparison_against_other_instances_matches()
     {
         $admin = UserType::getInstance(UserType::Administrator);
+        $anotherAdmin = UserType::getInstance(UserType::Administrator);
 
-        $this->assertTrue($admin->is($admin));
+        $this->assertTrue($admin->is($anotherAdmin));
     }
 
     public function test_comparison_against_other_instances_not_matching()
@@ -43,13 +45,6 @@ class EnumComparisonTest extends TestCase
         $superAdmin = UserType::getInstance(UserType::SuperAdministrator);
 
         $this->assertFalse($admin->is($superAdmin));
-    }
-
-    public function test_an_exception_is_thrown_when_trying_to_check_an_enum_instance_value_with_an_invalid_value()
-    {
-        $this->expectException(InvalidEnumMemberException::class);
-
-        StringValues::getInstance(UserType::Subscriber)->is('InvalidValue');
     }
 
     public function test_enum_instance_in_array()

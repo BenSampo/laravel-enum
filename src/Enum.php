@@ -106,10 +106,6 @@ abstract class Enum implements EnumContract
             return $this->value === $enumValue->value;
         }
 
-        if (!static::hasValue($enumValue)) {
-            throw new InvalidEnumMemberException($enumValue, $this);
-        }
-
         return $this->value === $enumValue;
     }
 
