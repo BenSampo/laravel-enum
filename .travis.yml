@@ -1,5 +1,3 @@
-dist: xenial
-
 language: php
 
 matrix:
@@ -36,7 +34,7 @@ before_install:
 
 install:
 - composer require "illuminate/contracts:${LARAVEL}" --no-interaction --no-update
-- COMPOSER_MEMORY_LIMIT=-1 composer install --prefer-dist --no-interaction --no-suggest
+- composer install --prefer-dist --no-interaction --no-suggest
 
 script:
 - vendor/bin/phpunit
