@@ -39,7 +39,7 @@ install:
 - composer install --prefer-dist --no-interaction --no-suggest
 
 script:
-- composer test
+- vendor/bin/phpunit
 
 cache:
   directories:
