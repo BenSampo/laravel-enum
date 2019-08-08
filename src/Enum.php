@@ -103,7 +103,7 @@ abstract class Enum implements EnumContract
     public function is($enumValue): bool
     {
         if ($enumValue instanceof static) {
-           return $this->value === $enumValue->value;
+            return $this->value === $enumValue->value;
         }
 
         if (!static::hasValue($enumValue)) {
