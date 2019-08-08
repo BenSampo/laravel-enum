@@ -5,12 +5,13 @@ Hey, thank you for contributing. Here are some tips to make it easy for you.
 ## Committing code
 
 1. Fork the project
+1. `git clone` it and `composer install` the dependencies
 1. Create a new branch
 1. Think about how the changes you are about to make can be tested, write tests before coding 
 1. Run tests, make sure they fail
 1. Write the actual code to make the tests pass
 1. Commit with a concise title line and a few more lines detailing the change
-1. Open a pull request detailing your changes.
+1. Open a pull request detailing your changes
 
 ## Testing
 
@@ -24,10 +25,11 @@ back is to write a failing test for it and then make it pass. If you can
 not figure out how to fix it yourself, feel free to submit a PR with a
 failing test.
 
-Just clone the project and run the following in the project root:
+Run the testsuite
 
-    composer install
-    composer test
+```bash
+composer test
+```
 
 ## Codestyle
 
@@ -35,8 +37,12 @@ Formatting is automated through [php_codesniffer](https://github.com/squizlabs/P
 
 Check the codestyle
 
-    composer check-style
+```bash
+composer check-style
+```
 
 Apply automated fixes
 
-    composer fix-style
+```bash
+composer fix-style
+```
