@@ -56,7 +56,7 @@ I wrote a blog post about using laravel-enum: https://sampo.co.uk/blog/using-enu
 Via Composer
 
 ```bash
-$ composer require bensampo/laravel-enum
+composer require bensampo/laravel-enum
 ```
 
 If you're using Laravel < 5.5 you'll need to add the service provider to `config/app.php`
@@ -132,14 +132,16 @@ generate PHPDoc annotations through an artisan command.
 
 By default all Enums in `app/Enums` will be annotated (you can change the folder by passing a path to `--folder`)
 
-```php
+```bash
 php artisan enum:annotate
 ```
 
 You can annotate a single class by specifying the class name
-```php
+
+```bash
 php artisan enum:annotate "App\Enums\UserType"
 ```
+
 ### Instance Properties
 
 Once you have an enum instance, you can access the `key`, `value` and `description` as properties.
@@ -252,11 +254,12 @@ $example->user_type = UserType::Moderator();
 ```
 
 ### Model Annotation
+
 The package can automatically generate DocBlocks for your `Model` classes to provide type hinting & completion in your IDE.
 
 By default all `Model` classes in the root of `app` will be annotated (you can change the folder by passing a path to `--folder`)
 
-```php
+```bash
 php artisan enum:annotate-model
 ```
 
