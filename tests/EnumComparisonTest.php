@@ -51,4 +51,20 @@ class EnumComparisonTest extends TestCase
 
         StringValues::getInstance(UserType::Subscriber)->is('InvalidValue');
     }
+
+    public function test_enum_instance_in_array()
+    {
+        $administrator = new StringValues(StringValues::Administrator);
+
+        $this->assertTrue($administrator->in([
+            StringValues::Moderator,
+            StringValues::Administrator
+        ]));
+        $this->assertTrue($administrator->in([
+            new StringValues(StringValues::Moderator),
+            new StringValues(StringValues::Administrator)
+        ]));
+        $this->assertTrue($administrator->in([StringValues::Administrator]));
+        $this->assertFalse($administrator->in([StringValues::Moderator]));
+    }
 }

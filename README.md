@@ -169,11 +169,17 @@ $userType = UserType::getInstance(UserType::SuperAdministrator);
 You can check the equality of an instance against a valid enum value by passing it to the `is` method.
 
 ``` php
-$userType = UserType::getInstance(UserType::SuperAdministrator);
+$admin = UserType::getInstance(UserType::Administrator);
 
-$userType->is(UserType::SuperAdministrator); // Returns true
-$userType->is(UserType::Moderator); // Returns false
-$userType->is(UserType::InvalidKey); // Throws InvalidEnumMemberException exception
+$admin->is(UserType::Administrator);   // true
+$admin->is($admin);                    // true
+$admin->is(UserType::Administrator()); // true
+
+$admin->is(UserType::Moderator);       // false
+$admin->is(UserType::Moderator());     // false
+
+$admin->is('random-value');            // Throws InvalidEnumMemberException exception
+$admin->is('random-value');            // Throws InvalidEnumMemberException exception
 ```
 
 You can also check to see if the instance's value matches against an array of possible values using the `in` method.

@@ -95,9 +95,9 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Checks the equality of the value against the enum instance.
+     * Checks if this instance is equal to the given enum instance or value.
      *
-     * @param  mixed  $enumValue
+     * @param  static|mixed  $enumValue
      * @return bool
      */
     public function is($enumValue): bool
@@ -114,16 +114,20 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Checks if the enum instance's value exists is one of the passed array
+     * Checks if a matching enum instance or value is in the given array.
      *
-     * @param array $values
-     * @param bool  $strict
-     *
+     * @param  (mixed|static)[]  $values
      * @return bool
      */
-    public function in(array $values, bool $strict = true): bool
+    public function in(array $values): bool
     {
-        return in_array($this->value, $values, $strict);
+        foreach ($values as $value) {
+            if ($this->is($value)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
