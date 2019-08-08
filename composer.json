@@ -20,7 +20,7 @@
     ],
     "require": {
         "php": "~7.1",
-        "hanneskod/classtools": "~1.0",
+        "hanneskod/classtools": "^1.2",
         "illuminate/console": "5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|5.9.*",
         "illuminate/contracts": "5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|5.9.*",
         "illuminate/support": "5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|5.9.*",

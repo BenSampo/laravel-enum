@@ -33,7 +33,6 @@ matrix:
 
 install:
 - composer require "illuminate/contracts:${LARAVEL}" --no-interaction --no-update
-- travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --no-suggest
 
 script:
 - vendor/bin/phpunit -c phpunit.xml tests/
