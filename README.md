@@ -39,6 +39,7 @@ Created by [Ben Sampson](https://sampo.co.uk)
 * [Overriding the getDescription method](#overriding-the-getdescription-method)
 * [Extending the Enum Base Class](#extending-the-enum-base-class)
 * [PHPStan Integration](#phpstan-integration)
+* [Artisan Command List](#artisan-command-list)
 * [Enum Class Reference](#enum-class-reference)
 
 ## Guide
@@ -128,8 +129,16 @@ $enumInstance = UserType::Administrator();
 If you want your IDE to autocomplete the static instantiation helpers, you can
 generate PHPDoc annotations through an artisan command.
 
-    php artisan enum:annotate "App\Enums\UserType"
+By default all Enums in `app/Enums` will be annotated (you can change the folder by passing a path to `--folder`)
 
+```php
+php artisan enum:annotate
+```
+
+You can annotate a single class by specifying the class name
+```php
+php artisan enum:annotate "App\Enums\UserType"
+```
 ### Instance Properties
 
 Once you have an enum instance, you can access the `key`, `value` and `description` as properties.
@@ -144,6 +153,17 @@ $userType->description; // Super Administrator
 
 This is particularly useful if you're passing an enum instance to a blade view.
 
+### Instance Casting
+
+Enum instances can be cast to strings as they implement the `__toString()` magic method.  
+This also means they can be echo'd, for example in blade views.
+
+```php
+$userType = UserType::getInstance(UserType::SuperAdministrator);
+
+(string) $userType // '0'
+```
+
 ### Instance Equality
 
 You can check the equality of an instance against a valid enum value by passing it to the `is` method.
@@ -154,6 +174,15 @@ $userType = UserType::getInstance(UserType::SuperAdministrator);
 $userType->is(UserType::SuperAdministrator); // Returns true
 $userType->is(UserType::Moderator); // Returns false
 $userType->is(UserType::InvalidKey); // Throws InvalidEnumMemberException exception
+```
+
+You can also check to see if the instance's value matches against an array of possible values using the `in` method.
+
+```php
+$userType = UserType::getInstance(UserType::SuperAdministrator);
+
+$userType->in([UserType::Moderator, UserType::SuperAdministrator]); // Returns true
+$userType->in([UserType::Moderator, UserType::Subscriber]); // Returns false
 ```
 
 ### Type Hinting
@@ -219,6 +248,15 @@ $example->user_type = UserType::Moderator;
 
 // Set using enum instance
 $example->user_type = UserType::Moderator();
+```
+
+### Model Annotation
+The package can automatically generate DocBlocks for your `Model` classes to provide type hinting & completion in your IDE.
+
+By default all `Model` classes in the root of `app` will be annotated (you can change the folder by passing a path to `--folder`)
+
+```php
+php artisan enum:annotate-model
 ```
 
 ## Validation
@@ -366,6 +404,20 @@ Add the following to your projects `phpstan.neon` includes:
 includes:
 - vendor/bensampo/laravel-enum/extension.neon
 ```
+
+## Artisan Command List
+
+### `php artisan make:enum`
+Create a new enum class  
+[Find out more](#enum-definition)
+
+### `php artisan enum:annotate`
+Generate DocBlock annotations for enum classes  
+[Find out more](#instantiation)
+
+### `php artisan enum:annotate-model`
+Generate DocBlock annotations for models that have enums  
+[Find out more](#model-annotation)
 
 ## Enum Class Reference
 

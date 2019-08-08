@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use BenSampo\Enum\Commands\MakeEnumCommand;
 use BenSampo\Enum\Commands\EnumAnnotateCommand;
+use BenSampo\Enum\Commands\ModelAnnotateCommand;
 
 class EnumServiceProvider extends ServiceProvider
 {
@@ -32,6 +33,7 @@ class EnumServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 EnumAnnotateCommand::class,
+                ModelAnnotateCommand::class,
                 MakeEnumCommand::class,
             ]);
         }

@@ -1,0 +1,15 @@
+<?php
+
+namespace BenSampo\Enum\Tests\Enums\Annotate;
+
+use BenSampo\Enum\Enum;
+
+/**
+ * @method static static TEST()
+ * @method static static XYZ()
+ */
+final class AnnotateTestTwoEnum extends Enum
+{
+    const TEST = 'test';
+    const XYZ = 'xyz';
+}

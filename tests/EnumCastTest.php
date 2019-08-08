@@ -38,7 +38,8 @@ class EnumCastTest extends TestCase
         $this->expectException(InvalidEnumMemberException::class);
 
         $model = app(Example::class);
-        $model->user_type = 'invalid_value';
+        $model->user_type = 5;
+
     }
 
     public function test_getting_model_value_returns_enum_instance()
@@ -55,5 +56,13 @@ class EnumCastTest extends TestCase
         $model->user_type = null;
 
         $this->assertNull($model->user_type);
+    }
+
+    public function test_that_model_with_enum_can_be_cast_to_array()
+    {
+        $model = app(Example::class);
+        $model->user_type = UserType::Moderator();
+
+        $this->assertSame(['user_type' => 1], $model->toArray());
     }
 }

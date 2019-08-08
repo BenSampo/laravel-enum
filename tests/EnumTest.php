@@ -48,7 +48,7 @@ class EnumTest extends TestCase
         $this->assertEquals(1, UserType::getValue('Moderator'));
         $this->assertEquals(3, UserType::getValue('SuperAdministrator'));
     }
-    
+
     public function test_enum_get_value_using_string_key()
     {
         $this->assertEquals('administrator', StringValues::getValue('Administrator'));
@@ -136,5 +136,34 @@ class EnumTest extends TestCase
         $this->assertTrue(
             $moderator->is(StringValues::Moderator)
         );
+    }
+
+    public function test_enum_instance_in_array()
+    {
+        $administrator = new StringValues(StringValues::Administrator);
+
+        $this->assertTrue($administrator->in([StringValues::Moderator, StringValues::Administrator]));
+        $this->assertTrue($administrator->in([StringValues::Administrator]));
+        $this->assertFalse($administrator->in([StringValues::Moderator]));
+
+        $mixed = new MixedKeyFormats(MixedKeyFormats::UPPERCASE_SNAKE_CASE);
+
+        $this->assertTrue($mixed->in([true], false)); // Strict checking turned off
+        $this->assertFalse($mixed->in([true], true)); // Strict checking turned on
+    }
+
+    public function test_enum_can_be_cast_to_string()
+    {
+        $enumWithZeroIntegerValue = new UserType(UserType::Administrator);
+        $enumWithPositiveIntegerValue = new UserType(UserType::SuperAdministrator);
+        $enumWithStringValue = new StringValues(StringValues::Moderator);
+
+        // Numbers should be cast to strings
+        $this->assertSame('0', (string) $enumWithZeroIntegerValue);
+        $this->assertSame('3', (string) $enumWithPositiveIntegerValue);
+
+        // Strings should just be returned
+        $this->assertSame(StringValues::Moderator, (string) $enumWithStringValue);
+
     }
 }

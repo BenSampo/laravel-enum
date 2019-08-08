@@ -4,12 +4,17 @@ namespace BenSampo\Enum\Commands;
 
 use ReflectionClass;
 use BenSampo\Enum\Enum;
-use Illuminate\Console\Command;
-use \Illuminate\Filesystem\Filesystem;
-use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Finder\Finder;
+use Zend\Code\Generator\DocBlockGenerator;
+use Zend\Code\Reflection\DocBlockReflection;
+use Zend\Code\Generator\DocBlock\Tag\MethodTag;
+use Zend\Code\Generator\DocBlock\Tag\TagInterface;
 
-class EnumAnnotateCommand extends Command
+class EnumAnnotateCommand extends AbstractAnnotationCommand
 {
+    const DEFAULT_SCAN_FOLDER = 'Enums';
+    const PARENT_CLASS = Enum::class;
+
     /**
      * The console command name.
      *
@@ -22,76 +27,50 @@ class EnumAnnotateCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Generate annotations for an enum class';
+    protected $description = 'Generate DocBlock annotations for enum classes';
 
     /**
-     * @var \Illuminate\Filesystem\Filesystem
-     */
-    protected $filesystem;
-
-    /**
-     * @param  \Illuminate\Filesystem\Filesystem  $filesystem
-     * @return void
-     */
-    public function __construct(Filesystem $filesystem)
-    {
-        parent::__construct();
-
-        $this->filesystem = $filesystem;
-    }
-
-    protected function getArguments()
-    {
-        return [
-            ['class', InputArgument::REQUIRED, 'The class name to generate annotations for']
-        ];
-    }
-
-    /**
-     * Handle the command call.
+     * Apply annotations to a reflected class
+     *
+     * @param ReflectionClass $reflectionClass
      *
      * @return void
-     * @throws \ReflectionException
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function handle()
+    protected function annotate(ReflectionClass $reflectionClass)
     {
-        $className = $this->argument('class');
+        $docBlock = DocBlockGenerator::fromArray([]);
+        $originalDocBlock =  null;
 
-        if(! is_subclass_of($className, Enum::class)){
-            $this->error("The given class must be an instance of BenSampo\Enum\Enum: $className.");
-            return;
+        if (strlen($reflectionClass->getDocComment()) !== 0) {
+            $originalDocBlock = DocBlockGenerator::fromReflection(new DocBlockReflection($reflectionClass));
+            $docBlock->setShortDescription($originalDocBlock->getShortDescription());
         }
 
-        $reflection = new ReflectionClass($className);
+        $this->updateClassDocblock($reflectionClass, $this->getDocBlock($reflectionClass));
+    }
 
-        $docBlock = "/**\n";
-        foreach($reflection->getConstants() as $name => $value) {
-            $docBlock .= " * @method static static {$name}\n";
-        }
-        $docBlock .= " */\n";
+    protected function getDocblockTags(array $originalTags, ReflectionClass $reflectionClass): array
+    {
+        $constants = $reflectionClass->getConstants();
 
-        $shortName = $reflection->getShortName();
-        $fileName = $reflection->getFileName();
-        $contents = $this->filesystem->get($fileName);
+        $existingTags = array_filter($originalTags, function (TagInterface $tag) use ($constants) {
+            return !$tag instanceof MethodTag || !in_array($tag->getMethodName(), array_keys($constants), true);
+        });
 
-        $classDeclaration = "class {$shortName}";
+        return collect($constants)
+            ->map(function ($value, $constantName) {
+                return new MethodTag($constantName, ['static'], null, true);
+            })
+            ->merge($existingTags)
+            ->toArray();
+    }
 
-        if($reflection->isFinal()){
-            $classDeclaration = "final {$classDeclaration}";
-        } elseif($reflection->isAbstract()){
-            $classDeclaration = "abstract {$classDeclaration}";
-        }
+    protected function getClassFinder(): Finder
+    {
+        $finder = new Finder();
+        $scanPath = $this->option('folder') ?? app_path(self::DEFAULT_SCAN_FOLDER);
 
-        $classDeclarationOffset = strpos($contents, $classDeclaration);
-        // Make sure we don't replace too much
-        $contents = substr_replace(
-            $contents,
-            $docBlock . $classDeclaration,
-            $classDeclarationOffset,
-            strlen($classDeclaration)
-        );
-
-        $this->filesystem->put($fileName, $contents);
-        $this->info("Wrote new phpDocBlock to {$fileName}.");
+        return $finder->files()->in($scanPath)->name('*.php');
     }
 }
