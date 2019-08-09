@@ -499,6 +499,14 @@ Returns a random value from the enum. Useful for factories.
 UserType::getRandomValue(); // Returns 0, 1, 2 or 3
 ```
 
+### static getRandomInstance(): mixed
+
+Returns a random instance of the enum. Useful for factories.
+
+``` php
+UserType::getRandomInstance(); // Returns an instanceof UserType with a random value
+```
+
 ### static toArray(): array
 
 Returns the enum key value pairs as an associative array.
