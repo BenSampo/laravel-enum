@@ -2,7 +2,6 @@
 
 namespace BenSampo\Enum\Tests;
 
-use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 use BenSampo\Enum\Tests\Enums\StringValues;
 use BenSampo\Enum\Tests\Enums\UserType;
 use PHPUnit\Framework\TestCase;
