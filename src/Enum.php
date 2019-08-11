@@ -128,7 +128,7 @@ abstract class Enum implements EnumContract
      * @param  mixed  $enumValue
      * @return static
      */
-    public static function getInstance($enumValue): Enum
+    public static function getInstance($enumValue): self
     {
         return new static($enumValue);
     }
@@ -266,6 +266,16 @@ abstract class Enum implements EnumContract
         $values = static::getValues();
 
         return $values[array_rand($values)];
+    }
+
+    /**
+     * Get a random instance of the enum.
+     *
+     * @return static
+     */
+    public static function getRandomInstance(): self
+    {
+        return new static(static::getRandomValue());
     }
 
     /**
