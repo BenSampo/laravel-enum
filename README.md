@@ -169,23 +169,30 @@ $userType = UserType::getInstance(UserType::SuperAdministrator);
 
 ### Instance Equality
 
-You can check the equality of an instance against a valid enum value by passing it to the `is` method.
+You can check the equality of an instance against any value by passing it to the `is` method.
 
 ```php
-$userType = UserType::getInstance(UserType::SuperAdministrator);
+$admin = UserType::getInstance(UserType::Administrator);
 
-$userType->is(UserType::SuperAdministrator); // Returns true
-$userType->is(UserType::Moderator); // Returns false
-$userType->is(UserType::InvalidKey); // Throws InvalidEnumMemberException exception
+$admin->is(UserType::Administrator);   // true
+$admin->is($admin);                    // true
+$admin->is(UserType::Administrator()); // true
+
+$admin->is(UserType::Moderator);       // false
+$admin->is(UserType::Moderator());     // false
+$admin->is('random-value');            // false
 ```
 
 You can also check to see if the instance's value matches against an array of possible values using the `in` method.
 
 ```php
-$userType = UserType::getInstance(UserType::SuperAdministrator);
+$admin = UserType::getInstance(UserType::Administrator);
 
-$userType->in([UserType::Moderator, UserType::SuperAdministrator]); // Returns true
-$userType->in([UserType::Moderator, UserType::Subscriber]); // Returns false
+$admin->in([UserType::Moderator, UserType::Administrator]);     // true
+$admin->in([UserType::Moderator(), UserType::Administrator()]); // true
+
+$admin->in([UserType::Moderator, UserType::Subscriber]);        // false
+$admin->in(['random-value']);                                   // false
 ```
 
 ### Type Hinting
@@ -501,6 +508,14 @@ Returns a random value from the enum. Useful for factories.
 
 ```php
 UserType::getRandomValue(); // Returns 0, 1, 2 or 3
+```
+
+### static getRandomInstance(): mixed
+
+Returns a random instance of the enum. Useful for factories.
+
+``` php
+UserType::getRandomInstance(); // Returns an instanceof UserType with a random value
 ```
 
 ### static toArray(): array

@@ -25,21 +25,6 @@ class EnumInstanceTest extends TestCase
         UserType::getInstance('InvalidValue');
     }
 
-    public function test_instance_can_check_it_is_set_to_an_enum_value()
-    {
-        $userType = UserType::getInstance(UserType::Administrator);
-
-        $this->assertTrue($userType->is(UserType::Administrator));
-        $this->assertFalse($userType->is(UserType::SuperAdministrator));
-    }
-
-    public function test_an_exception_is_thrown_when_trying_to_check_an_enum_instance_value_with_an_invalid_value()
-    {
-        $this->expectException(InvalidEnumMemberException::class);
-
-        StringValues::getInstance(UserType::Subscriber)->is('InvalidValue');
-    }
-
     public function test_can_get_the_value_for_an_enum_instance()
     {
         $userType = UserType::getInstance(UserType::Administrator);
@@ -69,7 +54,7 @@ class EnumInstanceTest extends TestCase
     public function test_an_exception_is_thrown_when_trying_to_get_enum_instance_by_calling_an_enum_key_as_a_static_method_which_does_not_exist()
     {
         $this->expectException(\BadMethodCallException::class);
-        
+
         UserType::KeyWhichDoesNotExist();
     }
 }

@@ -138,20 +138,6 @@ class EnumTest extends TestCase
         );
     }
 
-    public function test_enum_instance_in_array()
-    {
-        $administrator = new StringValues(StringValues::Administrator);
-
-        $this->assertTrue($administrator->in([StringValues::Moderator, StringValues::Administrator]));
-        $this->assertTrue($administrator->in([StringValues::Administrator]));
-        $this->assertFalse($administrator->in([StringValues::Moderator]));
-
-        $mixed = new MixedKeyFormats(MixedKeyFormats::UPPERCASE_SNAKE_CASE);
-
-        $this->assertTrue($mixed->in([true], false)); // Strict checking turned off
-        $this->assertFalse($mixed->in([true], true)); // Strict checking turned on
-    }
-
     public function test_enum_can_be_cast_to_string()
     {
         $enumWithZeroIntegerValue = new UserType(UserType::Administrator);

@@ -94,31 +94,35 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Checks the equality of the value against the enum instance.
+     * Checks if this instance is equal to the given enum instance or value.
      *
-     * @param  mixed  $enumValue
+     * @param  static|mixed  $enumValue
      * @return bool
      */
     public function is($enumValue): bool
     {
-        if (!static::hasValue($enumValue)) {
-            throw new InvalidEnumMemberException($enumValue, $this);
+        if ($enumValue instanceof static) {
+            return $this->value === $enumValue->value;
         }
 
         return $this->value === $enumValue;
     }
 
     /**
-     * Checks if the enum instance's value exists is one of the passed array
+     * Checks if a matching enum instance or value is in the given array.
      *
-     * @param array $values
-     * @param bool  $strict
-     *
+     * @param  (mixed|static)[]  $values
      * @return bool
      */
-    public function in(array $values, bool $strict = true): bool
+    public function in(array $values): bool
     {
-        return in_array($this->value, $values, $strict);
+        foreach ($values as $value) {
+            if ($this->is($value)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -127,7 +131,7 @@ abstract class Enum implements EnumContract
      * @param  mixed  $enumValue
      * @return static
      */
-    public static function getInstance($enumValue): Enum
+    public static function getInstance($enumValue): self
     {
         return new static($enumValue);
     }
@@ -263,6 +267,16 @@ abstract class Enum implements EnumContract
         $values = static::getValues();
 
         return $values[array_rand($values)];
+    }
+
+    /**
+     * Get a random instance of the enum.
+     *
+     * @return static
+     */
+    public static function getRandomInstance(): self
+    {
+        return new static(static::getRandomValue());
     }
 
     /**
