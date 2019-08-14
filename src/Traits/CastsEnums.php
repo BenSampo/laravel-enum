@@ -42,8 +42,12 @@ trait CastsEnums
             if ($value instanceOf $enum) {
                 $this->attributes[$key] = $value->value;
             } elseif ($this->hasCast($key) && $this->getCasts()[$key] === 'array') {
-                parent::setAttribute($key, collect($value)->map(function ($value) {
-                    return $value->value;
+                parent::setAttribute($key, collect($value)->map(function ($value) use ($enum) {
+                    if ($value instanceOf $enum) {
+                        return $value->value;
+                    }
+
+                    return $enum::getInstance($value)->value;
                 }));
             } else {
                 if ($this->hasCast($key)) {
