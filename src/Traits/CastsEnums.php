@@ -41,6 +41,10 @@ trait CastsEnums
 
             if ($value instanceOf $enum) {
                 $this->attributes[$key] = $value->value;
+            } elseif ($this->hasCast($key) && $this->getCasts()[$key] === 'array') {
+                parent::setAttribute($key, collect($value)->map(function ($value) {
+                    return $value->value;
+                }));
             } else {
                 if ($this->hasCast($key)) {
                     $value = $this->castAttribute($key, $value);
@@ -71,15 +75,19 @@ trait CastsEnums
      *
      * @param  string  $key
      * @param  mixed  $value
-     * @return \BenSampo\Enum\Enum|null
+     * @return \BenSampo\Enum\Enum|array|null
      */
-    protected function castToEnum($key, $value): ?Enum
+    protected function castToEnum($key, $value)
     {
         /** @var \BenSampo\Enum\Enum $enum */
         $enum = $this->enumCasts[$key];
 
         if ($value === null || $value instanceOf Enum) {
             return $value;
+        } elseif ($this->hasCast($key) && $this->getCasts()[$key] === 'array') {
+            return collect($value)->map(function ($value) use ($enum) {
+                return $enum::getInstance($value);
+            })->toArray();
         } else {
             return $enum::getInstance($value);
         }
