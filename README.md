@@ -124,6 +124,9 @@ $enumInstance = UserType::getInstance(UserType::Administrator);
 
 // Statically calling the key name as a method, utilizing __callStatic magic
 $enumInstance = UserType::Administrator();
+
+// Static getInstance method, passing the desired enum string as a parameter returns null if invalid
+$enumInstance = UserType::coerce(0);
 ```
 
 If you want your IDE to autocomplete the static instantiation helpers, you can
