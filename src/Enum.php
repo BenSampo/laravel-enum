@@ -153,6 +153,17 @@ abstract class Enum implements EnumContract
     }
 
     /**
+     * Return a new Enum instance if exists
+     *
+     * @param  string  $key
+     * @return ?Enum
+     */
+    public static function coerce(string $key): ?self
+    {
+        return static::hasValue($key) ? static::getInstance($key) : null;
+    }
+
+    /**
      * Get all of the constants defined on the class.
      *
      * @return array
