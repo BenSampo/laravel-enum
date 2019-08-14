@@ -26,11 +26,11 @@ class EnumTest extends TestCase
 
     public function test_enum_coerce()
     {
-        $key = UserType::coerce(0);
-        $this->assertEquals(UserType::Administrator, $key);
+        $enum = UserType::coerce(0);
+        $this->assertEquals(UserType::Administrator, $enum->value);
 
-        $key = UserType::coerce(-1);
-        $this->assertEquals(null, $key);
+        $enum = UserType::coerce(-1);
+        $this->assertEquals(null, $enum);
     }
 
     public function test_enum_get_values()
