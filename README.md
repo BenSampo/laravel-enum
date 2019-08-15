@@ -180,6 +180,20 @@ $admin->is(UserType::Moderator());     // false
 $admin->is('random-value');            // false
 ```
 
+For convenience, there is also an `isNot` method.
+
+``` php
+$admin = UserType::getInstance(UserType::Administrator);
+
+$admin->isNot(UserType::Administrator);   // false
+$admin->isNot($admin);                    // false
+$admin->isNot(UserType::Administrator()); // false
+
+$admin->isNot(UserType::Moderator);       // true
+$admin->isNot(UserType::Moderator());     // true
+$admin->isNot('random-value');            // true
+```
+
 You can also check to see if the instance's value matches against an array of possible values using the `in` method.
 
 ```php
@@ -227,7 +241,7 @@ use Illuminate\Database\Eloquent\Model;
 class Example extends Model
 {
     use CastsEnums;
-    
+
     protected $enumCasts = [
         // 'attribute_name' => Enum::class
         'user_type' => UserType::class,
@@ -236,7 +250,7 @@ class Example extends Model
 ```
 
 Now, when you access the `user_type` attribute of your `Example` model,
-the underlying value will be returned as a `UserType` enum. 
+the underlying value will be returned as a `UserType` enum.
 
 ```php
 $example = Example::first();
@@ -353,7 +367,7 @@ return [
 ```
 
 Now, you just need to make sure that your enum implements the `LocalizedEnum` interface as demonstrated below:
- 
+
 ```php
 use BenSampo\Enum\Enum;
 use BenSampo\Enum\Contracts\LocalizedEnum;

@@ -110,6 +110,17 @@ abstract class Enum implements EnumContract
     }
 
     /**
+     * Checks if this instance is not equal to the given enum instance or value.
+     *
+     * @param  static|mixed  $enumValue
+     * @return bool
+     */
+    public function isNot($enumValue): bool
+    {
+        return ! $this->is($enumValue);
+    }
+
+    /**
      * Checks if a matching enum instance or value is in the given array.
      *
      * @param  (mixed|static)[]  $values
