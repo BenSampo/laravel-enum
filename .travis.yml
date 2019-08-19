@@ -17,7 +17,6 @@ install:
 
 script:
 - composer test
-- composer check-style
 
 cache:
   directories:
