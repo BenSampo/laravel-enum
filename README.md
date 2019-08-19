@@ -257,6 +257,8 @@ $example->user_type = UserType::Moderator;
 $example->user_type = UserType::Moderator();
 ```
 
+Note that setting the value is strict, so you may wish to clean your request data before doing so. [See here](https://sampo.co.uk/blog/manipulating-request-data-before-performing-validation-in-laravel) for more details.
+
 ### Model Annotation
 The package can automatically generate DocBlocks for your `Model` classes to provide type hinting & completion in your IDE.
 
