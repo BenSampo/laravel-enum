@@ -7,6 +7,11 @@ use Illuminate\Contracts\Validation\Rule;
 class EnumKey implements Rule
 {
     /**
+     * The name of the rule.
+     */
+    protected $rule = 'enum_key';
+    
+    /**
      * @var string|\BenSampo\Enum\Enum
      */
     protected $enumClass;
@@ -46,5 +51,17 @@ class EnumKey implements Rule
     public function message()
     {
         return 'The key you have entered is invalid.';
+    }
+    
+    /**
+     * Convert the rule to a validation string.
+     *
+     * @return string
+     *
+     * @see \Illuminate\Validation\ValidationRuleParser::parseParameters
+     */
+    public function __toString()
+    {
+        return "{$this->rule}:{$this->enumClass}";
     }
 }
