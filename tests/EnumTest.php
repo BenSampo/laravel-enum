@@ -24,6 +24,15 @@ class EnumTest extends TestCase
         $this->assertEquals($expectedKeys, $keys);
     }
 
+    public function test_enum_coerce()
+    {
+        $enum = UserType::coerce(0);
+        $this->assertEquals(UserType::Administrator, $enum->value);
+
+        $enum = UserType::coerce(-1);
+        $this->assertEquals(null, $enum);
+    }
+
     public function test_enum_get_values()
     {
         $values = UserType::getValues();
