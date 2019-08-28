@@ -57,4 +57,9 @@ class EnumInstanceTest extends TestCase
 
         UserType::KeyWhichDoesNotExist();
     }
+
+    public function test_getting_an_instance_using_an_instance_returns_an_instance()
+    {
+        $this->assertInstanceOf(UserType::class, UserType::getInstance(UserType::Administrator));
+    }
 }

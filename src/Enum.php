@@ -144,6 +144,10 @@ abstract class Enum implements EnumContract
      */
     public static function getInstance($enumValue): self
     {
+        if ($enumValue instanceof static) {
+            return $enumValue;
+        }
+
         return new static($enumValue);
     }
 
