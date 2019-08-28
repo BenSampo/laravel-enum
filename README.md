@@ -159,7 +159,7 @@ This is particularly useful if you're passing an enum instance to a blade view.
 ### Instance Casting
 
 Enum instances can be cast to strings as they implement the `__toString()` magic method.  
-This also means they can be echo'd, for example in blade views.
+This also means they can be echoed in blade views, for example.
 
 ```php
 $userType = UserType::getInstance(UserType::SuperAdministrator);
@@ -169,7 +169,7 @@ $userType = UserType::getInstance(UserType::SuperAdministrator);
 
 ### Instance Equality
 
-You can check the equality of an instance against any value by passing it to the `is` method.
+You can check the equality of an instance against any value by passing it to the `is` method. For convenience, there is also an `isNot` method which is the exact reverse of the `is` method.
 
 ``` php
 $admin = UserType::getInstance(UserType::Administrator);
@@ -181,20 +181,6 @@ $admin->is(UserType::Administrator()); // true
 $admin->is(UserType::Moderator);       // false
 $admin->is(UserType::Moderator());     // false
 $admin->is('random-value');            // false
-```
-
-For convenience, there is also an `isNot` method.
-
-``` php
-$admin = UserType::getInstance(UserType::Administrator);
-
-$admin->isNot(UserType::Administrator);   // false
-$admin->isNot($admin);                    // false
-$admin->isNot(UserType::Administrator()); // false
-
-$admin->isNot(UserType::Moderator);       // true
-$admin->isNot(UserType::Moderator());     // true
-$admin->isNot('random-value');            // true
 ```
 
 You can also check to see if the instance's value matches against an array of possible values using the `in` method.
