@@ -124,6 +124,9 @@ $enumInstance = UserType::getInstance(UserType::Administrator);
 
 // Statically calling the key name as a method, utilizing __callStatic magic
 $enumInstance = UserType::Administrator();
+
+// Using the coerce static method to attempt to instantiate an Enum using the given value if it exists.
+$enumInstance = UserType::coerce($someValue);
 ```
 
 If you want your IDE to autocomplete the static instantiation helpers, you can
@@ -511,7 +514,7 @@ UserType::getRandomValue(); // Returns 0, 1, 2 or 3
 Returns a random instance of the enum. Useful for factories.
 
 ``` php
-UserType::getRandomInstance(); // Returns an instanceof UserType with a random value
+UserType::getRandomInstance(); // Returns an instance of UserType with a random value
 ```
 
 ### static toArray(): array
@@ -535,7 +538,7 @@ UserType::toSelectArray(); // Returns [0 => 'Administrator', 1 => 'Moderator', 2
 Returns an instance of the called enum. Read more about [enum instantiation](#instantiation).
 
 ``` php
-UserType::getInstance(UserType::Administrator);
+UserType::getInstance(UserType::Administrator); // Returns instance of Enum with the value set to UserType::Administrator
 ```
 
 ### static getInstances(): array
@@ -583,4 +586,13 @@ array(4) {
     string(19) "Super administrator"
   }
 }
+```
+
+### static coerce(): ?Enum
+
+Attempt to instantiate a new Enum using the given value if it exists. Returns null if it doesn't.
+
+```php
+UserType::coerce(0); // Returns instance of UserType with the value set to UserType::Administrator
+UserType::coerce(99); // Returns null (not a valid enum value)
 ```
