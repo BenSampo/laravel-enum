@@ -125,6 +125,9 @@ $enumInstance = UserType::getInstance(UserType::Administrator);
 
 // Statically calling the key name as a method, utilizing __callStatic magic
 $enumInstance = UserType::Administrator();
+
+// Using the coerce static method to attempt to instantiate an Enum using the given value if it exists.
+$enumInstance = UserType::coerce($someValue);
 ```
 
 If you want your IDE to autocomplete the static instantiation helpers, you can
@@ -159,7 +162,7 @@ This is particularly useful if you're passing an enum instance to a blade view.
 ### Instance Casting
 
 Enum instances can be cast to strings as they implement the `__toString()` magic method.  
-This also means they can be echo'd, for example in blade views.
+This also means they can be echoed in blade views, for example.
 
 ```php
 $userType = UserType::getInstance(UserType::SuperAdministrator);
@@ -169,7 +172,7 @@ $userType = UserType::getInstance(UserType::SuperAdministrator);
 
 ### Instance Equality
 
-You can check the equality of an instance against any value by passing it to the `is` method.
+You can check the equality of an instance against any value by passing it to the `is` method. For convenience, there is also an `isNot` method which is the exact reverse of the `is` method.
 
 ```php
 $admin = UserType::getInstance(UserType::Administrator);
@@ -230,16 +233,24 @@ use Illuminate\Database\Eloquent\Model;
 class Example extends Model
 {
     use CastsEnums;
-    
+
     protected $enumCasts = [
         // 'attribute_name' => Enum::class
         'user_type' => UserType::class,
+    ];
+
+    /**
+     * Existing casts are processed before $enumCasts which can be useful if you're 
+     * taking input from forms and your enum values are integers.
+     */
+    protected $casts = [
+        'user_type' => 'int',
     ];
 }
 ```
 
 Now, when you access the `user_type` attribute of your `Example` model,
-the underlying value will be returned as a `UserType` enum. 
+the underlying value will be returned as a `UserType` enum.
 
 ```php
 $example = Example::first();
@@ -357,7 +368,7 @@ return [
 ```
 
 Now, you just need to make sure that your enum implements the `LocalizedEnum` interface as demonstrated below:
- 
+
 ```php
 use BenSampo\Enum\Enum;
 use BenSampo\Enum\Contracts\LocalizedEnum;
@@ -515,7 +526,7 @@ UserType::getRandomValue(); // Returns 0, 1, 2 or 3
 Returns a random instance of the enum. Useful for factories.
 
 ``` php
-UserType::getRandomInstance(); // Returns an instanceof UserType with a random value
+UserType::getRandomInstance(); // Returns an instance of UserType with a random value
 ```
 
 ### static toArray(): array
@@ -538,8 +549,8 @@ UserType::toSelectArray(); // Returns [0 => 'Administrator', 1 => 'Moderator', 2
 
 Returns an instance of the called enum. Read more about [enum instantiation](#instantiation).
 
-```php
-UserType::getInstance(UserType::Administrator);
+``` php
+UserType::getInstance(UserType::Administrator); // Returns instance of Enum with the value set to UserType::Administrator
 ```
 
 ### static getInstances(): array
@@ -587,4 +598,13 @@ array(4) {
     string(19) "Super administrator"
   }
 }
+```
+
+### static coerce(): ?Enum
+
+Attempt to instantiate a new Enum using the given value if it exists. Returns null if it doesn't.
+
+```php
+UserType::coerce(0); // Returns instance of UserType with the value set to UserType::Administrator
+UserType::coerce(99); // Returns null (not a valid enum value)
 ```

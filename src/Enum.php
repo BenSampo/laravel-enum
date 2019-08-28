@@ -109,6 +109,17 @@ abstract class Enum implements EnumContract
     }
 
     /**
+     * Checks if this instance is not equal to the given enum instance or value.
+     *
+     * @param  static|mixed  $enumValue
+     * @return bool
+     */
+    public function isNot($enumValue): bool
+    {
+        return ! $this->is($enumValue);
+    }
+
+    /**
      * Checks if a matching enum instance or value is in the given array.
      *
      * @param  (mixed|static)[]  $values
@@ -149,6 +160,17 @@ abstract class Enum implements EnumContract
             },
             static::getConstants()
         );
+    }
+
+    /**
+     * Attempt to instantiate a new Enum using the given value if it exists.
+     *
+     * @param  mixed  $enumValue
+     * @return ?Enum
+     */
+    public static function coerce($enumValue): ?self
+    {
+        return static::hasValue($enumValue) ? static::getInstance($enumValue) : null;
     }
 
     /**
