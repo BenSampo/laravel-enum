@@ -153,7 +153,7 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Return a new Enum instance if exists
+     * Attempt to instantiate a new Enum using the given value if it exists.
      *
      * @param  mixed  $enumValue
      * @return ?Enum
