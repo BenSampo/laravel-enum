@@ -235,6 +235,14 @@ class Example extends Model
         // 'attribute_name' => Enum::class
         'user_type' => UserType::class,
     ];
+
+    /**
+     * Existing casts are processed before $enumCasts which can be useful if you're 
+     * taking input from forms and your enum values are integers.
+     */
+    protected $casts = [
+        'user_type' => 'int',
+    ];
 }
 ```
 
