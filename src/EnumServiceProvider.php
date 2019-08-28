@@ -46,13 +46,13 @@ class EnumServiceProvider extends ServiceProvider
      */
     private function bootValidators()
     {
-        Validator::extend('enum_key', function($attribute, $value, $parameters, $validator) {
+        Validator::extend('enum_key', function ($attribute, $value, $parameters, $validator) {
             $enum = $parameters[0] ?? null;
 
             return (new EnumKey($enum))->passes($attribute, $value);
         });
 
-        Validator::extend('enum_value', function($attribute, $value, $parameters, $validator) {
+        Validator::extend('enum_value', function ($attribute, $value, $parameters, $validator) {
             $enum = $parameters[0] ?? null;
 
             $strict = $parameters[1] ?? null;
