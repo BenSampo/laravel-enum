@@ -159,7 +159,7 @@ This is particularly useful if you're passing an enum instance to a blade view.
 ### Instance Casting
 
 Enum instances can be cast to strings as they implement the `__toString()` magic method.  
-This also means they can be echo'd, for example in blade views.
+This also means they can be echoed in blade views, for example.
 
 ```php
 $userType = UserType::getInstance(UserType::SuperAdministrator);
@@ -169,7 +169,7 @@ $userType = UserType::getInstance(UserType::SuperAdministrator);
 
 ### Instance Equality
 
-You can check the equality of an instance against any value by passing it to the `is` method.
+You can check the equality of an instance against any value by passing it to the `is` method. For convenience, there is also an `isNot` method which is the exact reverse of the `is` method.
 
 ``` php
 $admin = UserType::getInstance(UserType::Administrator);
@@ -230,7 +230,7 @@ use Illuminate\Database\Eloquent\Model;
 class Example extends Model
 {
     use CastsEnums;
-    
+
     protected $enumCasts = [
         // 'attribute_name' => Enum::class
         'user_type' => UserType::class,
@@ -239,7 +239,7 @@ class Example extends Model
 ```
 
 Now, when you access the `user_type` attribute of your `Example` model,
-the underlying value will be returned as a `UserType` enum. 
+the underlying value will be returned as a `UserType` enum.
 
 ```php
 $example = Example::first();
@@ -356,7 +356,7 @@ return [
 ```
 
 Now, you just need to make sure that your enum implements the `LocalizedEnum` interface as demonstrated below:
- 
+
 ```php
 use BenSampo\Enum\Enum;
 use BenSampo\Enum\Contracts\LocalizedEnum;
