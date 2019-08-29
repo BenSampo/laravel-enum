@@ -50,7 +50,7 @@ abstract class FlaggedEnum extends Enum
     }
 
     /**
-     * Add the given flag to the enum
+     * Add the given flag to the enum.
      * 
      * @param  int|Enum  $flag
      * @return self
@@ -63,7 +63,7 @@ abstract class FlaggedEnum extends Enum
     }
 
     /**
-     * Add the given flags to the enum
+     * Add the given flags to the enum.
      * 
      * @param  int[]|Enum[]  $flags
      * @return self
@@ -78,7 +78,7 @@ abstract class FlaggedEnum extends Enum
     }
 
     /**
-     * Remove the given flag from the enum
+     * Remove the given flag from the enum.
      * 
      * @param  int|Enum  $flag
      * @return self
@@ -91,7 +91,7 @@ abstract class FlaggedEnum extends Enum
     }
 
     /**
-     * Remove the given flags from the enum
+     * Remove the given flags from the enum.
      * 
      * @param  int[]|Enum[]  $flags
      * @return self
@@ -168,7 +168,7 @@ abstract class FlaggedEnum extends Enum
     }
 
     /**
-     * Return the flags as an array of instances
+     * Return the flags as an array of instances.
      * 
      * @return Enum[]
      */
@@ -187,7 +187,7 @@ abstract class FlaggedEnum extends Enum
     }
 
     /**
-     * Check if there are multiple flags set on the enum
+     * Check if there are multiple flags set on the enum.
      * 
      * @return bool
      */
@@ -197,7 +197,7 @@ abstract class FlaggedEnum extends Enum
     }
 
     /**
-     * Get the bitmask for the enum
+     * Get the bitmask for the enum.
      * 
      * @return int
      */
