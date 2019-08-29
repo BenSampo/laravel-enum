@@ -2,12 +2,12 @@
 
 namespace BenSampo\Enum;
 
-abstract class BitwiseEnum extends Enum
+abstract class FlaggedEnum extends Enum
 {
     const None = 0;
     
     /**
-     * Construct a BitwiseEnum instance.
+     * Construct a FlaggedEnum instance.
      *
      * @param  int[]|Enum[]  $flags
      * @return void

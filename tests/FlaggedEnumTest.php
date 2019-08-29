@@ -5,9 +5,9 @@ namespace BenSampo\Enum\Tests;
 use BenSampo\Enum\Tests\Enums\SuperPowers;
 use PHPUnit\Framework\TestCase;
 
-class BitwiseEnumTest extends TestCase
+class FlaggedEnumTest extends TestCase
 {
-    public function test_can_construct_bitwise_enum_using_static_properties()
+    public function test_can_construct_flagged_enum_using_static_properties()
     {
         /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::LaserVision]);
@@ -15,7 +15,7 @@ class BitwiseEnumTest extends TestCase
         $this->assertInstanceOf(SuperPowers::class, $powers);
     }
 
-    public function test_can_construct_bitwise_enum_using_instances()
+    public function test_can_construct_flagged_enum_using_instances()
     {
         /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength(), SuperPowers::Flight(), SuperPowers::LaserVision()]);

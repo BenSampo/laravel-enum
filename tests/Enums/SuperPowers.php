@@ -2,9 +2,9 @@
 
 namespace BenSampo\Enum\Tests\Enums;
 
-use BenSampo\Enum\BitwiseEnum;
+use BenSampo\Enum\FlaggedEnum;
 
-final class SuperPowers extends BitwiseEnum
+final class SuperPowers extends FlaggedEnum
 {
     const Flight = 1 << 1;
     const Invisibility = 1 << 2;
