@@ -24,6 +24,17 @@ abstract class FlaggedEnum extends Enum
     }
 
     /**
+     * Return a FlaggedEnum instance with defined flags.
+     *
+     * @param  int[]|Enum[]  $flags
+     * @return void
+     */
+    public static function flags($flags): self
+    {
+        return static::getInstance($flags);
+    }
+
+    /**
      * Set the flags for the enum to the given array of flags.
      * 
      * @param  int[]|Enum[]  $flags

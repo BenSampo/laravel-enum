@@ -11,7 +11,12 @@ class FlaggedEnumTest extends TestCase
     {
         /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::LaserVision]);
+        $this->assertInstanceOf(SuperPowers::class, $powers);
 
+        $powers = SuperPowers::getInstance([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::LaserVision]);
+        $this->assertInstanceOf(SuperPowers::class, $powers);
+
+        $powers = SuperPowers::flags([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::LaserVision]);
         $this->assertInstanceOf(SuperPowers::class, $powers);
     }
 
@@ -19,7 +24,12 @@ class FlaggedEnumTest extends TestCase
     {
         /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength(), SuperPowers::Flight(), SuperPowers::LaserVision()]);
+        $this->assertInstanceOf(SuperPowers::class, $powers);
 
+        $powers = SuperPowers::getInstance([SuperPowers::Strength(), SuperPowers::Flight(), SuperPowers::LaserVision()]);
+        $this->assertInstanceOf(SuperPowers::class, $powers);
+
+        $powers = SuperPowers::flags([SuperPowers::Strength(), SuperPowers::Flight(), SuperPowers::LaserVision()]);
         $this->assertInstanceOf(SuperPowers::class, $powers);
     }
 
