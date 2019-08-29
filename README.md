@@ -13,6 +13,7 @@ Simple, extensible and powerful enumeration implementation for Laravel.
 * Enum key value pairs as class constants
 * Full featured suite of methods
 * Enum instantiation
+* Flagged/Bitwise enums
 * Type hinting
 * Attribute casting
 * Enum artisan generator
@@ -33,6 +34,7 @@ Created by [Ben Sampson](https://sampo.co.uk)
     * [Instance Properties](#instance-properties)
     * [Instance Equality](#instance-equality)
     * [Type Hinting](#instance-equality)
+* [Flagged/Bitwise Enum](#flaggedbitwise-enum)
 * [Attribute Casting](#attribute-casting)
 * [Validation](#validation)
 * [Localization](#localization)
@@ -217,6 +219,179 @@ $userType2 = UserType::getInstance(UserType::Moderator);
 
 canPerformAction($userType1); // Returns true
 canPerformAction($userType2); // Returns false
+```
+
+## Flagged/Bitwise Enum
+
+Standard enums represent a single value at a time, but flagged or bitwise enums are capable of of representing multiple values simultaneously. This makes them perfect for when you want to express multiple selections of a limited set of options. A good example of this would be user permissions where there are a limited number of possible permissions but a user can have none, some or all of them.
+
+You can create a flagged enum using the following artisan command:
+
+`php artisan make:enum UserPermissions --flagged`
+
+### Defining values
+
+When defining values you must use powers of 2, the easiest way to do this is by using the *shift left* `<<` operator like so:
+
+```php
+final class UserPermissions extends FlaggedEnum
+{
+    const ReadComments      = 1 << 0;
+    const WriteComments     = 1 << 1;
+    const EditComments      = 1 << 2;
+    const DeleteComments    = 1 << 3;
+    // The next one would be `1 << 4` and so on...
+}
+```
+
+### Defining shortcuts
+
+You can use the bitwise *or* `|` to set a shortcut value which represents a given set of values.
+
+```php
+final class UserPermissions extends FlaggedEnum
+{
+    const ReadComments      = 1 << 0;
+    const WriteComments     = 1 << 1;
+    const EditComments      = 1 << 2;
+    const DeleteComments    = 1 << 3;
+    
+    // Shortcuts
+    const Member = self::ReadComments | self::WriteComments; // Read and write.
+    const Moderator = self::Member | self::EditComments; // All the permissions a Member has, plus Edit.
+    const Admin = self::Moderator | self::DeleteComments; // All the permissions a Moderator has, plus Delete.
+}
+```
+
+### Instantiating a flagged enum
+
+There are couple of ways to instantiate a flagged enum:
+
+```php
+// Standard new PHP class, passing the desired enum values as an array of values or array of enum instances
+$permissions = new UserPermissions([UserPermissions::ReadComments, UserPermissions::EditComments]);
+$permissions = new UserPermissions([UserPermissions::ReadComments(), UserPermissions::EditComments()]);
+
+// Static flags method, again passing the desired enum values as an array of values or array of enum instances
+$permissions = UserPermissions::flags([UserPermissions::ReadComments, UserPermissions::EditComments]);
+$permissions = UserPermissions::flags([UserPermissions::ReadComments(), UserPermissions::EditComments()]);
+```
+
+[Attribute casting](#attribute-casting) works in the same way a single value enums.
+
+### Empty flagged enums
+
+Flagged enums can contain no value at all. Every flagged enum has a pre-defined constant of `None` which is comparable to `0`.
+
+```php
+UserPermissions::flags([])->value === UserPermissions::None; // True
+```
+
+### Flagged enum methods
+
+In addition to the standard enum methods, there are a suite of helpful methods available on flagged enums. Anywhere where a static property is passed, you can also pass an enum instance.
+
+#### setFlags(array $flags): Enum
+Set the flags for the enum to the given array of flags.
+
+```php
+$permissions = UserPermissions::flags([UserPermissions::ReadComments]);
+$permissions->flags([UserPermissions::EditComments, UserPermissions::DeleteComments]); // Flags are now: EditComments, DeleteComments.
+```
+
+#### addFlag($flag): Enum
+Add the given flag to the enum
+
+```php
+$permissions = UserPermissions::flags([UserPermissions::ReadComments]);
+$permissions->addFlag(UserPermissions::EditComments); // Flags are now: ReadComments, EditComments.
+```
+
+#### addFlags(array $flags): Enum
+Add the given flags to the enum
+
+```php
+$permissions = UserPermissions::flags([UserPermissions::ReadComments]);
+$permissions->addFlags([UserPermissions::EditComments, UserPermissions::WriteComments]); // Flags are now: ReadComments, EditComments, WriteComments.
+```
+
+#### removeFlag($flag): Enum
+Remove the given flag from the enum
+
+```php
+$permissions = UserPermissions::flags([UserPermissions::ReadComments, UserPermissions::WriteComments]);
+$permissions->removeFlag(UserPermissions::ReadComments); // Flags are now: WriteComments.
+```
+
+#### removeFlags(array $flags): Enum
+Remove the given flags from the enum
+
+```php
+$permissions = UserPermissions::flags([UserPermissions::ReadComments, UserPermissions::WriteComments, UserPermissions::EditComments]);
+$permissions->removeFlags([UserPermissions::ReadComments, UserPermissions::WriteComments]); // Flags are now: EditComments.
+```
+
+#### hasFlag($flag): bool
+Check if the enum has the specified flag.
+
+```php
+$permissions = UserPermissions::flags([UserPermissions::ReadComments, UserPermissions::WriteComments]);
+$permissions->hasFlag(UserPermissions::ReadComments); // True
+$permissions->hasFlag(UserPermissions::EditComments); // False
+```
+
+#### hasFlags(array $flags): bool
+Check if the enum has all of the specified flags.
+
+```php
+$permissions = UserPermissions::flags([UserPermissions::ReadComments, UserPermissions::WriteComments]);
+$permissions->hasFlags([UserPermissions::ReadComments, UserPermissions::WriteComments]); // True
+$permissions->hasFlags([UserPermissions::ReadComments, UserPermissions::EditComments]); // False
+```
+
+#### notHasFlag($flag): bool
+Check if the enum does not have the specified flag.
+
+```php
+$permissions = UserPermissions::flags([UserPermissions::ReadComments, UserPermissions::WriteComments]);
+$permissions->notHasFlag(UserPermissions::EditComments); // True
+$permissions->notHasFlag(UserPermissions::ReadComments); // False
+```
+
+#### notHasFlags(array $flags): bool
+Check if the enum doesn't have any of the specified flags.
+
+```php
+$permissions = UserPermissions::flags([UserPermissions::ReadComments, UserPermissions::WriteComments]);
+$permissions->notHasFlags([UserPermissions::ReadComments, UserPermissions::EditComments]); // True
+$permissions->notHasFlags([UserPermissions::ReadComments, UserPermissions::WriteComments]); // False
+```
+
+#### getFlags(): Enum[]
+Return the flags as an array of instances.
+
+```php
+$permissions = UserPermissions::flags([UserPermissions::ReadComments, UserPermissions::WriteComments]);
+$permissions->getFlags(); // [UserPermissions::ReadComments(), UserPermissions::WriteComments()];
+```
+
+#### hasMultipleFlags(): bool
+Check if there are multiple flags set on the enum.
+
+```php
+$permissions = UserPermissions::flags([UserPermissions::ReadComments, UserPermissions::WriteComments]);
+$permissions->hasMultipleFlags(); // True;
+$permissions->removeFlag(UserPermissions::ReadComments)->hasMultipleFlags(); // False
+```
+
+#### getBitmask(): int
+Get the bitmask for the enum.
+
+```php
+UserPermissions::Member()->getBitmask(); // 11;
+UserPermissions::Moderator()->getBitmask(); // 111;
+UserPermissions::Admin()->getBitmask(); // 1111;
+UserPermissions::DeleteComments()->getBitmask(); // 1000;
 ```
 
 ## Attribute Casting
@@ -429,16 +604,16 @@ includes:
 
 ## Artisan Command List
 
-### `php artisan make:enum`
-Create a new enum class  
+`php artisan make:enum`  
+Create a new enum class. Pass `--flagged` as an option to create a flagged enum.  
 [Find out more](#enum-definition)
 
-### `php artisan enum:annotate`
-Generate DocBlock annotations for enum classes  
+`php artisan enum:annotate`  
+Generate DocBlock annotations for enum classes.  
 [Find out more](#instantiation)
 
-### `php artisan enum:annotate-model`
-Generate DocBlock annotations for models that have enums  
+`php artisan enum:annotate-model`  
+Generate DocBlock annotations for models that have enums.  
 [Find out more](#model-annotation)
 
 ## Enum Class Reference
