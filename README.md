@@ -277,7 +277,7 @@ $permissions = UserPermissions::flags([UserPermissions::ReadComments, UserPermis
 $permissions = UserPermissions::flags([UserPermissions::ReadComments(), UserPermissions::EditComments()]);
 ```
 
-[Attribute casting](#attribute-casting) works in the same way a single value enums.
+[Attribute casting](#attribute-casting) works in the same way as single value enums.
 
 ### Empty flagged enums
 
@@ -289,7 +289,9 @@ UserPermissions::flags([])->value === UserPermissions::None; // True
 
 ### Flagged enum methods
 
-In addition to the standard enum methods, there are a suite of helpful methods available on flagged enums. Anywhere where a static property is passed, you can also pass an enum instance.
+In addition to the standard enum methods, there are a suite of helpful methods available on flagged enums. 
+
+Note: Anywhere where a static property is passed, you can also pass an enum instance.
 
 #### setFlags(array $flags): Enum
 Set the flags for the enum to the given array of flags.
