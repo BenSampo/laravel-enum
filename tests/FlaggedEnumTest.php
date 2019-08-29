@@ -175,8 +175,8 @@ class FlaggedEnumTest extends TestCase
     public function test_can_get_bitmask_for_an_instance()
     {
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight]);
-        $this->assertEquals(10010, $powers->getBitmask());
+        $this->assertEquals(1001, $powers->getBitmask());
 
-        $this->assertEquals(11010, SuperPowers::Superman()->getBitmask());
+        $this->assertEquals(1101, SuperPowers::Superman()->getBitmask());
     }
 }
