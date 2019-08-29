@@ -4,6 +4,14 @@ namespace DummyNamespace;
 
 use BenSampo\Enum\FlaggedEnum;
 
+/**
+ * @method static static FlagOne()
+ * @method static static FlagTwo()
+ * @method static static FlagThree()
+ * @method static static FlagFour()
+ * @method static static FlagOneAndTwo()
+ * @method static static None()
+ */
 final class DummyClass extends FlaggedEnum
 {
     const FlagOne   = 1 << 0;
