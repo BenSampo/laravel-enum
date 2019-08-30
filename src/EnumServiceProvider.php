@@ -2,6 +2,7 @@
 
 namespace BenSampo\Enum;
 
+use Doctrine\DBAL\Types\Type;
 use BenSampo\Enum\Rules\EnumKey;
 use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Support\ServiceProvider;
@@ -21,6 +22,7 @@ class EnumServiceProvider extends ServiceProvider
     {
         $this->bootCommands();
         $this->bootValidators();
+        $this->bootDoctrineType();
     }
 
     /**
@@ -65,5 +67,20 @@ class EnumServiceProvider extends ServiceProvider
 
             return (new EnumValue($enum, $strict))->passes($attribute, $value);
         });
+    }
+
+    /**
+     * Boot the Doctrine type.
+     *
+     * @return void
+     */
+    private function bootDoctrineType()
+    {
+        // Not included by default in Laravel
+        if (class_exists('Doctrine\DBAL\Types\Type')) {
+            if (! Type::hasType(EnumType::ENUM)) {
+                Type::addType(EnumType::ENUM, EnumType::class);
+            }
+        }
     }
 }
