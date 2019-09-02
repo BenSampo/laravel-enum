@@ -36,13 +36,13 @@ abstract class FlaggedEnum extends Enum
 
     /**
      * Set the flags for the enum to the given array of flags.
-     * 
+     *
      * @param  int[]|Enum[]  $flags
      * @return self
      */
     public function setFlags(array $flags): self
     {
-        $this->value = array_reduce($flags, function($carry, $flag) {
+        $this->value = array_reduce($flags, function ($carry, $flag) {
             return $carry | static::getInstance($flag)->value;
         }, 0);
 
@@ -51,7 +51,7 @@ abstract class FlaggedEnum extends Enum
 
     /**
      * Add the given flag to the enum.
-     * 
+     *
      * @param  int|Enum  $flag
      * @return self
      */
@@ -64,13 +64,13 @@ abstract class FlaggedEnum extends Enum
 
     /**
      * Add the given flags to the enum.
-     * 
+     *
      * @param  int[]|Enum[]  $flags
      * @return self
      */
     public function addFlags(array $flags): self
     {
-        array_map(function($flag) {
+        array_map(function ($flag) {
             $this->addFlag($flag);
         }, $flags);
 
@@ -79,7 +79,7 @@ abstract class FlaggedEnum extends Enum
 
     /**
      * Remove the given flag from the enum.
-     * 
+     *
      * @param  int|Enum  $flag
      * @return self
      */
@@ -92,13 +92,13 @@ abstract class FlaggedEnum extends Enum
 
     /**
      * Remove the given flags from the enum.
-     * 
+     *
      * @param  int[]|Enum[]  $flags
      * @return self
      */
     public function removeFlags(array $flags): self
     {
-        array_map(function($flag) {
+        array_map(function ($flag) {
             $this->removeFlag($flag);
         }, $flags);
 
@@ -169,7 +169,7 @@ abstract class FlaggedEnum extends Enum
 
     /**
      * Return the flags as an array of instances.
-     * 
+     *
      * @return Enum[]
      */
     public function getFlags(): array
@@ -188,7 +188,7 @@ abstract class FlaggedEnum extends Enum
 
     /**
      * Check if there are multiple flags set on the enum.
-     * 
+     *
      * @return bool
      */
     public function hasMultipleFlags(): bool
@@ -198,7 +198,7 @@ abstract class FlaggedEnum extends Enum
 
     /**
      * Get the bitmask for the enum.
-     * 
+     *
      * @return int
      */
     public function getBitmask(): int
