@@ -45,4 +45,15 @@ class EnumType extends Type
     {
         return self::ENUM;
     }
+
+    /**
+     * @param  AbstractPlatform  $platform
+     * @return string[]
+     */
+    public function getMappedDatabaseTypes(AbstractPlatform $platform)
+    {
+        return [
+            self::ENUM,
+        ];
+    }
 }
