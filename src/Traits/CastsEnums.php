@@ -51,7 +51,7 @@ trait CastsEnums
             return $this;
         }
 
-        parent::setAttribute($key, $value);
+        return parent::setAttribute($key, $value);
     }
 
     /**
