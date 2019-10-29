@@ -141,6 +141,7 @@ abstract class Enum implements EnumContract
      *
      * @param  mixed  $enumValue
      * @return static
+     * @throws InvalidEnumMemberException
      */
     public static function getInstance($enumValue): self
     {
@@ -164,6 +165,18 @@ abstract class Enum implements EnumContract
             },
             static::getConstants()
         );
+    }
+
+    /**
+     * Return a new Enum instance or throw InvalidEnumMemberException
+     *
+     * @param  string  $enumValue
+     * @return static
+     * @throws InvalidEnumMemberException
+     */
+    public static function assert($enumValue): self
+    {
+        return static::getInstance($enumValue);
     }
 
     /**

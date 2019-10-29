@@ -11,6 +11,13 @@ use BenSampo\Enum\Enum;
  * @method static static UPPERCASE_SNAKE_CASE()
  * @method static static lowercase_snake_case()
  */
+/**
+ * @method static static Normal()
+ * @method static static MultiWordKeyName()
+ * @method static static UPPERCASE()
+ * @method static static UPPERCASE_SNAKE_CASE()
+ * @method static static lowercase_snake_case()
+ */
 final class MixedKeyFormatsAnnotated extends Enum
 {
     const Normal = 1;
