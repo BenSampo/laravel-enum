@@ -54,6 +54,11 @@
             "providers": [
                 "BenSampo\\Enum\\EnumServiceProvider"
             ]
+        },
+        "phpstan": {
+            "includes": [
+                "extension.neon"
+            ]
         }
     },
     "config": {
