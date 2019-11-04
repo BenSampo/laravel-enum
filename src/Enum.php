@@ -170,7 +170,7 @@ abstract class Enum implements EnumContract
      * Attempt to instantiate a new Enum using the given value if it exists.
      *
      * @param  mixed  $enumValue
-     * @return ?Enum
+     * @return static|null
      */
     public static function coerce($enumValue): ?self
     {
