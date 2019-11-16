@@ -461,26 +461,41 @@ php artisan enum:annotate-model
 
 ## Migrations
 
-You may use defined `Enum` classes in your migrations to define enum columns.
-Make sure to use string values for your enum constants.
+### Recommended
+
+Because enums enforce consistency at the code level it's not necessary to do so again at the database level, therefore the recommended type for database columns is `string` or `int` depending on your enum values. This means you can add/remove enum values in your code without worrying about your database layer.
 
 ```php
-<?php
+use App\Enums\UserType;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-namespace App\Enums;
-
-use BenSampo\Enum\Enum;
-
-final class UserType extends Enum
+class CreateUsersTable extends Migration
 {
-    const Administrator = 'Administrator';
-    const Moderator = 'Moderator';
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table): void {
+            $table->bigIncrements('id');
+            $table->timestamps();
+            $table->string('type')
+                ->default(UserType::Moderator);
+        });
+    }
 }
 ```
 
-```php
-<?php
+### Using `enum` column type
 
+Alternatively you may use `Enum` classes in your migrations to define enum columns.
+The enum values must be defined as strings.
+
+```php
 use App\Enums\UserType;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
