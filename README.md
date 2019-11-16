@@ -36,6 +36,7 @@ Created by [Ben Sampson](https://sampo.co.uk)
     * [Type Hinting](#instance-equality)
 * [Flagged/Bitwise Enum](#flaggedbitwise-enum)
 * [Attribute Casting](#attribute-casting)
+* [Migrations](#migrations)
 * [Validation](#validation)
 * [Localization](#localization)
 * [Overriding the getDescription method](#overriding-the-getdescription-method)
@@ -456,6 +457,52 @@ By default all `Model` classes in the root of `app` will be annotated (you can c
 
 ```bash
 php artisan enum:annotate-model
+```
+
+## Migrations
+
+You may use defined `Enum` classes in your migrations to define enum columns.
+Make sure to use string values for your enum constants.
+
+```php
+<?php
+
+namespace App\Enums;
+
+use BenSampo\Enum\Enum;
+
+final class UserType extends Enum
+{
+    const Administrator = 'Administrator';
+    const Moderator = 'Moderator';
+}
+```
+
+```php
+<?php
+
+use App\Enums\UserType;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateUsersTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table): void {
+            $table->bigIncrements('id');
+            $table->timestamps();
+            $table->enum('type', UserType::getValues())
+                ->default(UserType::Moderator);
+        });
+    }
+}
 ```
 
 ## Validation
