@@ -129,7 +129,7 @@ $enumInstance = UserType::getInstance(UserType::Administrator);
 // Statically calling the key name as a method, utilizing __callStatic magic
 $enumInstance = UserType::Administrator();
 
-// Using the coerce static method to attempt to instantiate an Enum using the given value if it exists.
+// Attempt to instantiate a new Enum using the given key or value. Returns null if the Enum cannot be instantiated.
 $enumInstance = UserType::coerce($someValue);
 ```
 
