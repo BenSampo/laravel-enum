@@ -2,6 +2,7 @@
 
 namespace BenSampo\Enum\Rules;
 
+use BenSampo\Enum\Enum;
 use Illuminate\Contracts\Validation\Rule;
 
 class EnumKey implements Rule
@@ -10,7 +11,7 @@ class EnumKey implements Rule
      * The name of the rule.
      */
     protected $rule = 'enum_key';
-    
+
     /**
      * @var string|\BenSampo\Enum\Enum
      */
@@ -40,6 +41,10 @@ class EnumKey implements Rule
      */
     public function passes($attribute, $value)
     {
+        if ($value instanceof Enum) {
+            $value = $value->key;
+        }
+
         return $this->enumClass::hasKey($value);
     }
 
@@ -52,7 +57,7 @@ class EnumKey implements Rule
     {
         return 'The key you have entered is invalid.';
     }
-    
+
     /**
      * Convert the rule to a validation string.
      *

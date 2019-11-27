@@ -13,9 +13,11 @@ class EnumValueTest extends TestCase
     {
         $passes1 = (new EnumValue(UserType::class))->passes('', 3);
         $passes2 = (new EnumValue(StringValues::class))->passes('', 'administrator');
+        $passes3 = (new EnumValue(UserType::class))->passes('', UserType::getInstance(UserType::Subscriber));
 
         $this->assertTrue($passes1);
         $this->assertTrue($passes2);
+        $this->assertTrue($passes3);
     }
 
     public function test_validation_fails()
@@ -48,18 +50,18 @@ class EnumValueTest extends TestCase
 
         (new EnumValue('PathToAClassThatDoesntExist'))->passes('', 'Test');
     }
-    
+
     public function test_can_serialize_to_string_without_strict_type_checking()
     {
         $rule = new EnumValue(UserType::class, false);
-    
+
         $this->assertEquals('enum_value:' . UserType::class . ',false', (string) $rule);
     }
-    
+
     public function test_can_serialize_to_string_with_strict_type_checking()
     {
         $rule = new EnumValue(UserType::class, true);
-        
+
         $this->assertEquals('enum_value:' . UserType::class . ',true', (string) $rule);
     }
 }

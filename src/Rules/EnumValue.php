@@ -2,6 +2,7 @@
 
 namespace BenSampo\Enum\Rules;
 
+use BenSampo\Enum\Enum;
 use Illuminate\Contracts\Validation\Rule;
 
 class EnumValue implements Rule
@@ -10,7 +11,7 @@ class EnumValue implements Rule
      * The name of the rule.
      */
     protected $rule = 'enum_value';
-    
+
     /**
      * @var string|\BenSampo\Enum\Enum
      */
@@ -47,6 +48,10 @@ class EnumValue implements Rule
      */
     public function passes($attribute, $value)
     {
+        if ($value instanceof Enum) {
+            $value = $value->value;
+        }
+
         return $this->enumClass::hasValue($value, $this->strict);
     }
 
@@ -59,7 +64,7 @@ class EnumValue implements Rule
     {
         return 'The value you have entered is invalid.';
     }
-    
+
     /**
      * Convert the rule to a validation string.
      *
@@ -70,7 +75,7 @@ class EnumValue implements Rule
     public function __toString()
     {
         $strict = $this->strict ? 'true' : 'false';
-        
+
         return "{$this->rule}:{$this->enumClass},{$strict}";
     }
 }
