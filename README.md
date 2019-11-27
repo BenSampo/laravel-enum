@@ -524,9 +524,13 @@ class CreateUsersTable extends Migration
 
 ### Array Validation
 
+#### Enum value
+
 You may validate that an enum value passed to a controller is a valid value for a given enum by using the `EnumValue` rule.
 
 ```php
+use BenSampo\Enum\Rules\EnumValue;
+
 public function store(Request $request)
 {
     $this->validate($request, [
@@ -541,9 +545,13 @@ By default, type checking is set to strict, but you can bypass this by passing `
 new EnumValue(UserType::class, false) // Turn off strict type checking.
 ```
 
+#### Enum key
+
 You can also validate on keys using the `EnumKey` rule. This is useful if you're taking the enum key as a URL parameter for sorting or filtering for example.
 
 ```php
+use BenSampo\Enum\Rules\EnumKey;
+
 public function store(Request $request)
 {
     $this->validate($request, [
@@ -552,20 +560,33 @@ public function store(Request $request)
 }
 ```
 
-Of course, both of these work on form request classes too.
+#### Enum instance
 
-Make sure to include `BenSampo\Enum\Rules\EnumValue` and/or `BenSampo\Enum\Rules\EnumKey` and your enum class in the usings.
+Additionally you can validate that a parameter is an instance of a given enum.
+
+```php
+use BenSampo\Enum\Rules\Enum;
+
+public function store(Request $request)
+{
+    $this->validate($request, [
+        'user_type' => ['required', new Enum(UserType::class)],
+    ]);
+}
+```
 
 ### Pipe Validation
 
-You can also use the 'pipe' syntax for both the EnumKey and EnumValue rules by using `enum_value` and/or `enum_key` respectively.
+You can also use the 'pipe' syntax for rules.
 
 **enum_value**_:enum_class,[strict]_  
-**enum_key**_:enum_class_
+**enum_key**_:enum_class_  
+**enum**_:enum_class_
 
 ```php
 'user_type' => 'required|enum_value:' . UserType::class,
 'user_type' => 'required|enum_key:' . UserType::class,
+'user_type' => 'required|enum:' . UserType::class,
 ```
 
 ## Localization
