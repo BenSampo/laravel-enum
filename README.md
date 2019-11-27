@@ -839,11 +839,12 @@ array(4) {
 }
 ```
 
-### static coerce(): ?Enum
+### static coerce(mixed $enumKeyOrValue): ?Enum
 
-Attempt to instantiate a new Enum using the given value if it exists. Returns null if it doesn't.
+Attempt to instantiate a new Enum using the given key or value. Returns null if the Enum cannot be instantiated.
 
 ```php
 UserType::coerce(0); // Returns instance of UserType with the value set to UserType::Administrator
+UserType::coerce('Administrator'); // Returns instance of UserType with the value set to UserType::Administrator
 UserType::coerce(99); // Returns null (not a valid enum value)
 ```

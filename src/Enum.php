@@ -167,14 +167,22 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Attempt to instantiate a new Enum using the given value if it exists.
+     * Attempt to instantiate a new Enum using the given key or value.
      *
-     * @param  mixed  $enumValue
+     * @param  mixed  $enumKeyOrValue
      * @return static|null
      */
-    public static function coerce($enumValue): ?self
+    public static function coerce($enumKeyOrValue): ?self
     {
-        return static::hasValue($enumValue) ? static::getInstance($enumValue) : null;
+        if (static::hasValue($enumKeyOrValue)) {
+            return static::getInstance($enumKeyOrValue);
+        }
+
+        if (static::hasKey($enumKeyOrValue)) {
+            return static::$enumKeyOrValue();
+        }
+        
+        return null;
     }
 
     /**
