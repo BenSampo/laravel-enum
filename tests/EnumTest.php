@@ -34,6 +34,9 @@ class EnumTest extends TestCase
 
         $enum = UserType::coerce(-1);
         $this->assertEquals(null, $enum);
+
+        $enum = UserType::coerce(null);
+        $this->assertEquals(null, $enum);
     }
 
     public function test_enum_get_values()

@@ -174,11 +174,15 @@ abstract class Enum implements EnumContract
      */
     public static function coerce($enumKeyOrValue): ?self
     {
+        if ($enumKeyOrValue === null) {
+            return null;
+        }
+
         if (static::hasValue($enumKeyOrValue)) {
             return static::getInstance($enumKeyOrValue);
         }
 
-        if (static::hasKey($enumKeyOrValue)) {
+        if (is_string($enumKeyOrValue) && static::hasKey($enumKeyOrValue)) {
             return static::$enumKeyOrValue();
         }
         
