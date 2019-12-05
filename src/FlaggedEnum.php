@@ -2,6 +2,8 @@
 
 namespace BenSampo\Enum;
 
+use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
+
 abstract class FlaggedEnum extends Enum
 {
     const None = 0;
@@ -14,12 +16,17 @@ abstract class FlaggedEnum extends Enum
      */
     public function __construct($flags)
     {
+        $this->key = null;
+        $this->description = null;
+
         if (is_array($flags)) {
             $this->setFlags($flags);
-            $this->key = null;
-            $this->description = null;
         } else {
-            parent::__construct($flags);
+            try {
+                parent::__construct($flags);
+            } catch (InvalidEnumMemberException $exception) {
+                $this->value = $flags;
+            }
         }
     }
 

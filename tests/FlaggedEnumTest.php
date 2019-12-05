@@ -179,4 +179,11 @@ class FlaggedEnumTest extends TestCase
 
         $this->assertEquals(1101, SuperPowers::Superman()->getBitmask());
     }
+
+    public function test_can_instantiate_a_flagged_enum_from_a_value_which_has_multiple_flags_set()
+    {
+        $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight]);
+
+        $this->assertEquals($powers, SuperPowers::getInstance($powers->value));
+    }
 }
