@@ -11,10 +11,10 @@ class InvalidEnumMemberException extends Exception
      * Create an InvalidEnumMemberException.
      *
      * @param  mixed  $invalidValue
-     * @param  \BenSampo\Enum\Enum  $enum
+     * @param  \BenSampo\Enum\Enum|string  $enum
      * @return void
      */
-    public function __construct($invalidValue, Enum $enum)
+    public function __construct($invalidValue, $enum)
     {
         $invalidValueType = gettype($invalidValue);
         $enumValues = implode(', ', $enum::getValues());
