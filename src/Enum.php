@@ -185,7 +185,7 @@ abstract class Enum implements EnumContract
         if (is_string($enumKeyOrValue) && static::hasKey($enumKeyOrValue)) {
             return static::$enumKeyOrValue();
         }
-        
+
         return null;
     }
 
@@ -410,5 +410,16 @@ abstract class Enum implements EnumContract
     public static function getLocalizationKey(): string
     {
         return 'enums.' . static::class;
+    }
+
+    /**
+     * This static method is called for classes exported by var_export()
+     *
+     * @param $an_array
+     * @return array
+     */
+    public static function __set_state($an_array)
+    {
+        return static::getInstance($an_array['value']);
     }
 }
