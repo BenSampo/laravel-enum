@@ -5,8 +5,8 @@ namespace BenSampo\Enum\Commands;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;
 use Illuminate\Database\Eloquent\Model;
-use Zend\Code\Generator\DocBlock\Tag\PropertyTag;
-use Zend\Code\Generator\DocBlock\Tag\TagInterface;
+use Laminas\Code\Generator\DocBlock\Tag\PropertyTag;
+use Laminas\Code\Generator\DocBlock\Tag\TagInterface;
 
 class ModelAnnotateCommand extends AbstractAnnotationCommand
 {
