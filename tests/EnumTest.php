@@ -24,6 +24,21 @@ class EnumTest extends TestCase
         $this->assertEquals($expectedKeys, $keys);
     }
 
+    public function test_enum_coerce()
+    {
+        $enum = UserType::coerce(UserType::Administrator()->value);
+        $this->assertEquals(UserType::Administrator, $enum->value);
+
+        $enum = UserType::coerce(UserType::Administrator()->key);
+        $this->assertEquals(UserType::Administrator, $enum->value);
+
+        $enum = UserType::coerce(-1);
+        $this->assertEquals(null, $enum);
+
+        $enum = UserType::coerce(null);
+        $this->assertEquals(null, $enum);
+    }
+
     public function test_enum_get_values()
     {
         $values = UserType::getValues();
@@ -112,7 +127,7 @@ class EnumTest extends TestCase
 
     public function test_enum_is_macroable()
     {
-        Enum::macro('toFlippedArray', function() {
+        Enum::macro('toFlippedArray', function () {
             return array_flip(self::toArray());
         });
 
@@ -150,6 +165,5 @@ class EnumTest extends TestCase
 
         // Strings should just be returned
         $this->assertSame(StringValues::Moderator, (string) $enumWithStringValue);
-
     }
 }

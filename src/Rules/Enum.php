@@ -4,12 +4,12 @@ namespace BenSampo\Enum\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 
-class EnumValue implements Rule
+class Enum implements Rule
 {
     /**
      * The name of the rule.
      */
-    protected $rule = 'enum_value';
+    protected $rule = 'enum';
     
     /**
      * @var string|\BenSampo\Enum\Enum
@@ -17,21 +17,14 @@ class EnumValue implements Rule
     protected $enumClass;
 
     /**
-     * @var bool
-     */
-    protected $strict;
-
-    /**
      * Create a new rule instance.
      *
-     * @param  string  $enumClass
-     * @param  bool  $strict
+     * @param  string  $enum
      * @return void
      */
-    public function __construct(string $enumClass, bool $strict = true)
+    public function __construct(string $enum)
     {
-        $this->enumClass = $enumClass;
-        $this->strict = $strict;
+        $this->enumClass = $enum;
 
         if (! class_exists($this->enumClass)) {
             throw new \InvalidArgumentException("Cannot validate against the enum, the class {$this->enumClass} doesn't exist.");
@@ -47,7 +40,7 @@ class EnumValue implements Rule
      */
     public function passes($attribute, $value)
     {
-        return $this->enumClass::hasValue($value, $this->strict);
+        return $value instanceof $this->enumClass;
     }
 
     /**
@@ -57,7 +50,7 @@ class EnumValue implements Rule
      */
     public function message()
     {
-        return 'The value you have entered is invalid.';
+        return 'The value you have provided is not a valid enum instance.';
     }
     
     /**
@@ -69,8 +62,6 @@ class EnumValue implements Rule
      */
     public function __toString()
     {
-        $strict = $this->strict ? 'true' : 'false';
-        
-        return "{$this->rule}:{$this->enumClass},{$strict}";
+        return "{$this->rule}:{$this->enumClass}";
     }
 }

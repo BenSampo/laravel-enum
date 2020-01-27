@@ -16,8 +16,10 @@ class InvalidEnumMemberException extends Exception
      */
     public function __construct($invalidValue, Enum $enum)
     {
+        $invalidValueType = gettype($invalidValue);
         $enumValues = implode(', ', $enum::getValues());
+        $enumClassName = class_basename($enum);
 
-        parent::__construct("Value {$invalidValue} doesn't exist in [{$enumValues}]");
+        parent::__construct("Cannot construct an instance of $enumClassName using the value ($invalidValueType) `$invalidValue`. Possible values are [$enumValues].");
     }
 }

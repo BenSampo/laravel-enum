@@ -73,8 +73,7 @@ abstract class Enum implements EnumContract
      */
     public static function __callStatic($method, $parameters)
     {
-        if (static::hasMacro($method))
-        {
+        if (static::hasMacro($method)) {
             return static::macroCallStatic($method, $parameters);
         }
 
@@ -110,6 +109,17 @@ abstract class Enum implements EnumContract
     }
 
     /**
+     * Checks if this instance is not equal to the given enum instance or value.
+     *
+     * @param  static|mixed  $enumValue
+     * @return bool
+     */
+    public function isNot($enumValue): bool
+    {
+        return ! $this->is($enumValue);
+    }
+
+    /**
      * Checks if a matching enum instance or value is in the given array.
      *
      * @param  (mixed|static)[]  $values
@@ -134,6 +144,10 @@ abstract class Enum implements EnumContract
      */
     public static function getInstance($enumValue): self
     {
+        if ($enumValue instanceof static) {
+            return $enumValue;
+        }
+
         return new static($enumValue);
     }
 
@@ -145,11 +159,34 @@ abstract class Enum implements EnumContract
     public static function getInstances(): array
     {
         return array_map(
-            function($constantValue) {
+            function ($constantValue) {
                 return new static($constantValue);
             },
             static::getConstants()
         );
+    }
+
+    /**
+     * Attempt to instantiate a new Enum using the given key or value.
+     *
+     * @param  mixed  $enumKeyOrValue
+     * @return static|null
+     */
+    public static function coerce($enumKeyOrValue): ?self
+    {
+        if ($enumKeyOrValue === null) {
+            return null;
+        }
+
+        if (static::hasValue($enumKeyOrValue)) {
+            return static::getInstance($enumKeyOrValue);
+        }
+
+        if (is_string($enumKeyOrValue) && static::hasKey($enumKeyOrValue)) {
+            return static::$enumKeyOrValue();
+        }
+        
+        return null;
     }
 
     /**
@@ -235,12 +272,10 @@ abstract class Enum implements EnumContract
      */
     protected static function getLocalizedDescription($value): ?string
     {
-        if (static::isLocalizable())
-        {
+        if (static::isLocalizable()) {
             $localizedStringKey = static::getLocalizationKey() . '.' . $value;
 
-            if (Lang::has($localizedStringKey))
-            {
+            if (Lang::has($localizedStringKey)) {
                 return __($localizedStringKey);
             }
         }

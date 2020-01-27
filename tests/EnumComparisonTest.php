@@ -21,6 +21,8 @@ class EnumComparisonTest extends TestCase
 
         $this->assertFalse($admin->is(UserType::SuperAdministrator));
         $this->assertFalse($admin->is('some-random-value'));
+        $this->assertTrue($admin->isNot(UserType::SuperAdministrator));
+        $this->assertTrue($admin->isNot('some-random-value'));
     }
 
     public function test_comparison_against_itself_matches()

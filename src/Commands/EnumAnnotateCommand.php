@@ -5,10 +5,10 @@ namespace BenSampo\Enum\Commands;
 use ReflectionClass;
 use BenSampo\Enum\Enum;
 use Symfony\Component\Finder\Finder;
-use Zend\Code\Generator\DocBlockGenerator;
-use Zend\Code\Reflection\DocBlockReflection;
-use Zend\Code\Generator\DocBlock\Tag\MethodTag;
-use Zend\Code\Generator\DocBlock\Tag\TagInterface;
+use Laminas\Code\Generator\DocBlockGenerator;
+use Laminas\Code\Reflection\DocBlockReflection;
+use Laminas\Code\Generator\DocBlock\Tag\MethodTag;
+use Laminas\Code\Generator\DocBlock\Tag\TagInterface;
 
 class EnumAnnotateCommand extends AbstractAnnotationCommand
 {

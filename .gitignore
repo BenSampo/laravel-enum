@@ -1,3 +1,7 @@
+# Not commiting composer.lock as this is a library project
+composer.lock
+
+# Dependencies
 vendor/
 node_modules/
 npm-debug.log
@@ -19,6 +23,5 @@ Homestead.json
 # Rocketeer PHP task runner and deployment package. https://github.com/rocketeers/rocketeer
 .rocketeer/
 
+# IDE stuff
 .idea/
-
-composer.lock

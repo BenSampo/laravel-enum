@@ -3,6 +3,7 @@
 namespace BenSampo\Enum\Commands;
 
 use Illuminate\Console\GeneratorCommand;
+use Symfony\Component\Console\Input\InputOption;
 
 class MakeEnumCommand extends GeneratorCommand
 {
@@ -34,6 +35,10 @@ class MakeEnumCommand extends GeneratorCommand
      */
     protected function getStub()
     {
+        if ($this->option('flagged')) {
+            return __DIR__.'/../Stubs/FlaggedEnum.stub';
+        }
+
         return __DIR__.'/../Stubs/Enum.stub';
     }
 
@@ -46,5 +51,17 @@ class MakeEnumCommand extends GeneratorCommand
     protected function getDefaultNamespace($rootNamespace)
     {
         return "{$rootNamespace}\Enums";
+    }
+
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions()
+    {
+        return [
+            ['flagged', 'f', InputOption::VALUE_NONE, 'Generate a flagged enum'],
+        ];
     }
 }
