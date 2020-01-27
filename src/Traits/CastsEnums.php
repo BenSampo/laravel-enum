@@ -62,6 +62,12 @@ trait CastsEnums
      */
     public function hasEnumCast($key): bool
     {
+        // This can happen if this trait is added to the model
+        // but no enum casts have been added yet
+        if ($this->enumCasts === null) {
+            return false;
+        }
+
         return array_key_exists($key, $this->enumCasts);
     }
 
