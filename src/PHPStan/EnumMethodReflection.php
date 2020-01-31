@@ -7,6 +7,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionVariant;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\TrinaryLogic;
+use PHPStan\Type\Generic\TemplateTypeMap;
 use PHPStan\Type\ObjectType;
 
 class EnumMethodReflection implements MethodReflection
@@ -61,6 +62,8 @@ class EnumMethodReflection implements MethodReflection
     {
         return [
             new FunctionVariant(
+                TemplateTypeMap::createEmpty(),
+                null,
                 [],
                 false,
                 new ObjectType($this->classReflection->getName())
