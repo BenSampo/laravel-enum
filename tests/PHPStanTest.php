@@ -117,6 +117,12 @@ class PHPStanTest extends TestCase
         $this->assertNull($method->getDeprecatedDescription());
     }
 
+    public function test_getVariants_returns_array(): void
+    {
+        $method = $this->getMethodReflection(UserType::class, 'Administrator');
+        $this->assertIsArray($method->getVariants());
+    }
+
     protected function getMethodReflection(string $class, string $name): MethodReflection
     {
         $broker = $this->createBroker();
