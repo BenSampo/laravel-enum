@@ -9,6 +9,7 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\TrinaryLogic;
 use PHPStan\Type\Generic\TemplateTypeMap;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\Type;
 
 class EnumMethodReflection implements MethodReflection
 {
@@ -36,6 +37,44 @@ class EnumMethodReflection implements MethodReflection
     public function getDeclaringClass(): ClassReflection
     {
         return $this->classReflection;
+    }
+
+    public function getDeprecatedDescription(): ?string
+    {
+        $constant = $this->classReflection->getConstant($this->name);
+        return $constant->getDeprecatedDescription();
+    }
+
+    public function getDocComment(): ?string
+    {
+        return null;
+    }
+
+    public function getThrowType(): ?Type
+    {
+        return null;
+    }
+
+    public function hasSideEffects(): TrinaryLogic
+    {
+        return TrinaryLogic::createNo();
+    }
+
+    public function isDeprecated(): TrinaryLogic
+    {
+        $constant = $this->classReflection->getConstant($this->name);
+        return $constant->isDeprecated();
+    }
+
+    public function isFinal(): TrinaryLogic
+    {
+        return TrinaryLogic::createNo();
+    }
+
+    public function isInternal(): TrinaryLogic
+    {
+        $constant = $this->classReflection->getConstant($this->name);
+        return $constant->isInternal();
     }
 
     public function isStatic(): bool
