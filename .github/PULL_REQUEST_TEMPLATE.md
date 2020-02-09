@@ -1,5 +1,6 @@
 - [ ] Added or updated tests
 - [ ] Added or updated the [README.md](../README.md)
+- [ ] Detailed changes in the [CHANGELOG.md](../CHANGELOG.md) unreleased section
 
 **Related Issue/Intent**
 
