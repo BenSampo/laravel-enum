@@ -6,6 +6,8 @@ use PHPStan\Reflection\ClassMemberReflection;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionVariant;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\TrinaryLogic;
+use PHPStan\Type\Generic\TemplateTypeMap;
 use PHPStan\Type\ObjectType;
 
 class EnumMethodReflection implements MethodReflection
@@ -60,10 +62,47 @@ class EnumMethodReflection implements MethodReflection
     {
         return [
             new FunctionVariant(
+                TemplateTypeMap::createEmpty(),
+                null,
                 [],
                 false,
                 new ObjectType($this->classReflection->getName())
             ),
         ];
+    }
+
+    public function getDocComment(): ?string
+    {
+        return null;
+    }
+
+    public function isDeprecated(): \PHPStan\TrinaryLogic
+    {
+        return TrinaryLogic::createNo();
+    }
+
+    public function getDeprecatedDescription(): ?string
+    {
+        return null;
+    }
+
+    public function isFinal(): \PHPStan\TrinaryLogic
+    {
+        return TrinaryLogic::createNo();
+    }
+
+    public function isInternal(): \PHPStan\TrinaryLogic
+    {
+        return TrinaryLogic::createNo();
+    }
+
+    public function getThrowType(): ?\PHPStan\Type\Type
+    {
+        return null;
+    }
+
+    public function hasSideEffects(): \PHPStan\TrinaryLogic
+    {
+        return TrinaryLogic::createNo();
     }
 }
