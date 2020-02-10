@@ -29,11 +29,6 @@ class EnumMethodReflection implements MethodReflection
         $this->name = $name;
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
     public function getDeclaringClass(): ClassReflection
     {
         return $this->classReflection;
@@ -50,9 +45,32 @@ class EnumMethodReflection implements MethodReflection
         return null;
     }
 
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getPrototype(): ClassMemberReflection
+    {
+        return $this;
+    }
+
     public function getThrowType(): ?Type
     {
         return null;
+    }
+
+    public function getVariants(): array
+    {
+        return [
+            new FunctionVariant(
+                TemplateTypeMap::createEmpty(),
+                null,
+                [],
+                false,
+                new ObjectType($this->classReflection->getName())
+            ),
+        ];
     }
 
     public function hasSideEffects(): TrinaryLogic
@@ -77,11 +95,6 @@ class EnumMethodReflection implements MethodReflection
         return $constant->isInternal();
     }
 
-    public function isStatic(): bool
-    {
-        return true;
-    }
-
     public function isPrivate(): bool
     {
         return false;
@@ -92,21 +105,8 @@ class EnumMethodReflection implements MethodReflection
         return true;
     }
 
-    public function getPrototype(): ClassMemberReflection
+    public function isStatic(): bool
     {
-        return $this;
-    }
-
-    public function getVariants(): array
-    {
-        return [
-            new FunctionVariant(
-                TemplateTypeMap::createEmpty(),
-                null,
-                [],
-                false,
-                new ObjectType($this->classReflection->getName())
-            ),
-        ];
+        return true;
     }
 }
