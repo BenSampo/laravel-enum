@@ -9,6 +9,7 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\TrinaryLogic;
 use PHPStan\Type\Generic\TemplateTypeMap;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\Type;
 
 class EnumMethodReflection implements MethodReflection
 {
@@ -28,34 +29,35 @@ class EnumMethodReflection implements MethodReflection
         $this->name = $name;
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
     public function getDeclaringClass(): ClassReflection
     {
         return $this->classReflection;
     }
 
-    public function isStatic(): bool
+    public function getDeprecatedDescription(): ?string
     {
-        return true;
+        $constant = $this->classReflection->getConstant($this->name);
+        return $constant->getDeprecatedDescription();
     }
 
-    public function isPrivate(): bool
+    public function getDocComment(): ?string
     {
-        return false;
+        return null;
     }
 
-    public function isPublic(): bool
+    public function getName(): string
     {
-        return true;
+        return $this->name;
     }
 
     public function getPrototype(): ClassMemberReflection
     {
         return $this;
+    }
+
+    public function getThrowType(): ?Type
+    {
+        return null;
     }
 
     public function getVariants(): array
@@ -71,38 +73,40 @@ class EnumMethodReflection implements MethodReflection
         ];
     }
 
-    public function getDocComment(): ?string
-    {
-        return null;
-    }
-
-    public function isDeprecated(): \PHPStan\TrinaryLogic
+    public function hasSideEffects(): TrinaryLogic
     {
         return TrinaryLogic::createNo();
     }
 
-    public function getDeprecatedDescription(): ?string
+    public function isDeprecated(): TrinaryLogic
     {
-        return null;
+        $constant = $this->classReflection->getConstant($this->name);
+        return $constant->isDeprecated();
     }
 
-    public function isFinal(): \PHPStan\TrinaryLogic
+    public function isFinal(): TrinaryLogic
     {
         return TrinaryLogic::createNo();
     }
 
-    public function isInternal(): \PHPStan\TrinaryLogic
+    public function isInternal(): TrinaryLogic
     {
-        return TrinaryLogic::createNo();
+        $constant = $this->classReflection->getConstant($this->name);
+        return $constant->isInternal();
     }
 
-    public function getThrowType(): ?\PHPStan\Type\Type
+    public function isPrivate(): bool
     {
-        return null;
+        return false;
     }
 
-    public function hasSideEffects(): \PHPStan\TrinaryLogic
+    public function isPublic(): bool
     {
-        return TrinaryLogic::createNo();
+        return true;
+    }
+
+    public function isStatic(): bool
+    {
+        return true;
     }
 }
