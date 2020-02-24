@@ -15,6 +15,8 @@ env:
     - LARAVEL='5.8.*' COMPOSER_FLAGS="--prefer-lowest"
     - LARAVEL='^6.0'
     - LARAVEL='^6.0' COMPOSER_FLAGS="--prefer-lowest"
+    - LARAVEL='^7.0'
+    - LARAVEL='^7.0' COMPOSER_FLAGS="--prefer-lowest"
 
 install:
   - composer require "illuminate/contracts:${LARAVEL}" --prefer-dist --no-interaction --no-suggest
