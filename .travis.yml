@@ -21,7 +21,7 @@ env:
     - LARAVEL='^7.0' COMPOSER_FLAGS="--prefer-lowest"
 
 install:
-  - if [ $LARAVEL == $LARAVEL_DEV_RELEASE ]; then composer config minimum-stability dev; fi
+  - if [ "$LARAVEL" == "$LARAVEL_DEV_RELEASE" ]; then composer config minimum-stability dev; fi
   - composer require "illuminate/contracts:${LARAVEL}" --prefer-dist --no-interaction --no-suggest
   - composer install --prefer-dist --no-interaction --no-suggest
 
