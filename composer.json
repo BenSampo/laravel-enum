@@ -21,7 +21,7 @@
     "require": {
         "php": "~7.1",
         "hanneskod/classtools": "~1.0",
-        "illuminate/support": "5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|^6.0",
+        "illuminate/support": "5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|^6.0|^7.0",
         "laminas/laminas-code": "^3.4"
     },
     "require-dev": {
