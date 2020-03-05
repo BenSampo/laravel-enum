@@ -2,6 +2,7 @@
 
 namespace BenSampo\Enum\Tests;
 
+use BenSampo\Enum\Tests\Enums\IntegerValues;
 use BenSampo\Enum\Tests\Enums\StringValues;
 use BenSampo\Enum\Tests\Enums\UserType;
 use PHPUnit\Framework\TestCase;
@@ -62,5 +63,14 @@ class EnumComparisonTest extends TestCase
         ]));
         $this->assertTrue($administrator->in([StringValues::Administrator]));
         $this->assertFalse($administrator->in([StringValues::Moderator]));
+    }
+
+    public function test_object_relational_comparision()
+    {
+        $z = IntegerValues::Z();
+        $y = IntegerValues::Y();
+        $x = IntegerValues::X();
+
+        $this->assertEquals($z, min($x, $y, $z));
     }
 }

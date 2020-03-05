@@ -18,18 +18,18 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * The key of one of the enum members.
-     *
-     * @var mixed
-     */
-    public $key;
-
-    /**
      * The value of one of the enum members.
      *
      * @var mixed
      */
     public $value;
+
+    /**
+     * The key of one of the enum members.
+     *
+     * @var mixed
+     */
+    public $key;
 
     /**
      * The description of one of the enum members.
@@ -116,7 +116,7 @@ abstract class Enum implements EnumContract
      */
     public function isNot($enumValue): bool
     {
-        return ! $this->is($enumValue);
+        return !$this->is($enumValue);
     }
 
     /**
@@ -185,7 +185,7 @@ abstract class Enum implements EnumContract
         if (is_string($enumKeyOrValue) && static::hasKey($enumKeyOrValue)) {
             return static::$enumKeyOrValue();
         }
-        
+
         return null;
     }
 
