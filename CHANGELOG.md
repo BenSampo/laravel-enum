@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v1.32...master)
 
+- Fixed regex stack limit error when annotating models [#130](https://github.com/BenSampo/laravel-enum/pull/130)
+
 ### Added
 
 ### Changed
