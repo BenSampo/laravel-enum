@@ -128,7 +128,7 @@ abstract class AbstractAnnotationCommand extends Command
 
         // Remove existing docblock
         $contents = preg_replace(
-            sprintf('#([\n]?\/\*(?:[^*]|\n|(?:\*(?:[^\/]|\n)))*\*\/)?[\n]?%s#ms', preg_quote($classDeclaration)),
+            sprintf('#([\n]?\/\*(?:[^*]|\n|(?:\*(?:[^\/]|\n)))*\*\/)?[\n]?%s#ms', preg_quote($classDeclaration, '#')),
             "\n" . $classDeclaration,
             $contents
         );
