@@ -65,12 +65,19 @@ class EnumComparisonTest extends TestCase
         $this->assertFalse($administrator->in([StringValues::Moderator]));
     }
 
-    public function test_object_relational_comparision()
+    /**
+     * @test
+     * Verify that relational comparision of Enum object uses attribute `$value`
+     * 
+     * "comparison operation stops and returns at the first unequal property found."
+     * as stated in https://www.php.net/manual/en/language.oop5.object-comparison.php#98725
+     * @return void
+     */
+    public function test_object_relational_comparison()
     {
-        $z = IntegerValues::Z();
-        $y = IntegerValues::Y();
-        $x = IntegerValues::X();
+        $b = IntegerValues::B();
+        $a = IntegerValues::A();
 
-        $this->assertEquals($z, min($x, $y, $z));
+        $this->assertTrue($a > $b);
     }
 }

@@ -6,7 +6,6 @@ use BenSampo\Enum\Enum;
 
 final class IntegerValues extends Enum
 {
-    const Z = 1;
-    const Y = 2;
-    const X = 3;
+    const B = 1;
+    const A = 2;
 }
