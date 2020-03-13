@@ -2,6 +2,7 @@
 
 namespace BenSampo\Enum\Tests;
 
+use BenSampo\Enum\Tests\Enums\IntegerValues;
 use BenSampo\Enum\Tests\Enums\StringValues;
 use BenSampo\Enum\Tests\Enums\UserType;
 use PHPUnit\Framework\TestCase;
@@ -62,5 +63,21 @@ class EnumComparisonTest extends TestCase
         ]));
         $this->assertTrue($administrator->in([StringValues::Administrator]));
         $this->assertFalse($administrator->in([StringValues::Moderator]));
+    }
+
+    /**
+     * @test
+     * Verify that relational comparision of Enum object uses attribute `$value`
+     * 
+     * "comparison operation stops and returns at the first unequal property found."
+     * as stated in https://www.php.net/manual/en/language.oop5.object-comparison.php#98725
+     * @return void
+     */
+    public function test_object_relational_comparison()
+    {
+        $b = IntegerValues::B();
+        $a = IntegerValues::A();
+
+        $this->assertTrue($a > $b);
     }
 }
