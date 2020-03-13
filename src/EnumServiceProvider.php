@@ -3,6 +3,7 @@
 namespace BenSampo\Enum;
 
 use Doctrine\DBAL\Types\Type;
+use BenSampo\Enum\Rules\Enum;
 use BenSampo\Enum\Rules\EnumKey;
 use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Support\ServiceProvider;
@@ -66,6 +67,12 @@ class EnumServiceProvider extends ServiceProvider
             $strict = !! json_decode(strtolower($strict));
 
             return (new EnumValue($enum, $strict))->passes($attribute, $value);
+        });
+
+        Validator::extend('enum', function ($attribute, $value, $parameters, $validator) {
+            $enum = $parameters[0] ?? null;
+
+            return (new Enum($enum))->passes($attribute, $value);
         });
     }
 
