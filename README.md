@@ -869,3 +869,11 @@ UserType::coerce(0); // Returns instance of UserType with the value set to UserT
 UserType::coerce('Administrator'); // Returns instance of UserType with the value set to UserType::Administrator
 UserType::coerce(99); // Returns null (not a valid enum value)
 ```
+
+## Translations
+
+If you wish to edit the package translations, you can run the following command to publish them into your resources/lang folder
+
+```
+php artisan vendor:publish --provider="BenSampo\Enum\EnumServiceProvider"
+```
