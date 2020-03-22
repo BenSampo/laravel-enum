@@ -591,6 +591,16 @@ You can also use the 'pipe' syntax for rules.
 
 ## Localization
 
+### Validation messages
+
+Run the following command to publish the language files to your `resources/lang` folder.
+
+```
+php artisan vendor:publish --provider="BenSampo\Enum\EnumServiceProvider"
+```
+
+### Enum descriptions
+
 You can translate the strings returned by the `getDescription` method using Laravel's built in [localization](https://laravel.com/docs/5.6/localization) features.
 
 Add a new `enums.php` keys file for each of your supported languages. In this example there is one for English and one for Spanish.
@@ -868,12 +878,4 @@ Attempt to instantiate a new Enum using the given key or value. Returns null if 
 UserType::coerce(0); // Returns instance of UserType with the value set to UserType::Administrator
 UserType::coerce('Administrator'); // Returns instance of UserType with the value set to UserType::Administrator
 UserType::coerce(99); // Returns null (not a valid enum value)
-```
-
-## Translations
-
-If you wish to edit the package translations, you can run the following command to publish them into your resources/lang folder
-
-```
-php artisan vendor:publish --provider="BenSampo\Enum\EnumServiceProvider"
 ```

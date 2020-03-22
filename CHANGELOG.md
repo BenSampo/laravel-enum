@@ -5,13 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v1.32...master)
+## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v1.36...master)
 
 ### Added
 
-- Added translations
+### Changed
+
+## [1.35.0](https://github.com/BenSampo/laravel-enum/compare/v1.35...v1.36) - 2020-03-22
 
 ### Changed
+
+- Validation messages are now pulled from translation files [#134](https://github.com/BenSampo/laravel-enum/pull/134)
 
 ## [1.35.0](https://github.com/BenSampo/laravel-enum/compare/v1.34...v1.35) - 2020-03-16
 
