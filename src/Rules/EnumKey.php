@@ -10,7 +10,7 @@ class EnumKey implements Rule
      * The name of the rule.
      */
     protected $rule = 'enum_key';
-    
+
     /**
      * @var string|\BenSampo\Enum\Enum
      */
@@ -50,9 +50,9 @@ class EnumKey implements Rule
      */
     public function message()
     {
-        return 'The key you have entered is invalid.';
+        return __('laravelEnum::messages.enum_key');
     }
-    
+
     /**
      * Convert the rule to a validation string.
      *

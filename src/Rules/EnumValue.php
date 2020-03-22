@@ -10,7 +10,7 @@ class EnumValue implements Rule
      * The name of the rule.
      */
     protected $rule = 'enum_value';
-    
+
     /**
      * @var string|\BenSampo\Enum\Enum
      */
@@ -57,9 +57,9 @@ class EnumValue implements Rule
      */
     public function message()
     {
-        return 'The value you have entered is invalid.';
+        return __('laravelEnum::messages.enum_value');
     }
-    
+
     /**
      * Convert the rule to a validation string.
      *
@@ -70,7 +70,7 @@ class EnumValue implements Rule
     public function __toString()
     {
         $strict = $this->strict ? 'true' : 'false';
-        
+
         return "{$this->rule}:{$this->enumClass},{$strict}";
     }
 }

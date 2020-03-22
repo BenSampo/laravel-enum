@@ -22,6 +22,7 @@ class EnumServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->bootCommands();
+        $this->bootValidationTranslation();
         $this->bootValidators();
         $this->bootDoctrineType();
     }
@@ -53,7 +54,7 @@ class EnumServiceProvider extends ServiceProvider
             $enum = $parameters[0] ?? null;
 
             return (new EnumKey($enum))->passes($attribute, $value);
-        });
+        }, __('laravelEnum::messages.enum_key'));
 
         $this->app['validator']->extend('enum_value', function ($attribute, $value, $parameters, $validator) {
             $enum = $parameters[0] ?? null;
@@ -67,13 +68,13 @@ class EnumServiceProvider extends ServiceProvider
             $strict = !! json_decode(strtolower($strict));
 
             return (new EnumValue($enum, $strict))->passes($attribute, $value);
-        });
+        }, __('laravelEnum::messages.enum_value'));
 
-        Validator::extend('enum', function ($attribute, $value, $parameters, $validator) {
+        $this->app['validator']->extend('enum', function ($attribute, $value, $parameters, $validator) {
             $enum = $parameters[0] ?? null;
 
             return (new Enum($enum))->passes($attribute, $value);
-        });
+        }, __('laravelEnum::messages.enum'));
     }
 
     /**
@@ -89,5 +90,14 @@ class EnumServiceProvider extends ServiceProvider
                 Type::addType(EnumType::ENUM, EnumType::class);
             }
         }
+    }
+
+    private function bootValidationTranslation()
+    {
+        $this->publishes([
+            __DIR__.'/../resources/lang' => resource_path('lang/vendor/laravelEnum'),
+        ]);
+
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang/', 'laravelEnum');
     }
 }
