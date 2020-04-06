@@ -51,6 +51,16 @@ class EnumValueTest extends TestCase
         $this->assertTrue($passed);
     }
 
+    public function test_flagged_enum_passes_with_all_flags_set()
+    {
+        $allFlags = array_reduce(SuperPowers::getValues(), function (int $carry, int $powerValue) {
+            return $carry | $powerValue;
+        }, 0);
+        $passed = (new EnumValue(SuperPowers::class))->passes('', $allFlags);
+
+        $this->assertTrue($passed);
+    }
+
     public function test_flagged_enum_fails_with_invalid_flag_set()
     {
         $allFlagsSet = array_reduce(SuperPowers::getValues(), function ($carry, $value) {

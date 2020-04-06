@@ -48,7 +48,7 @@ class EnumValue implements Rule
      */
     public function passes($attribute, $value)
     {
-        if ($this->enumClass instanceof FlaggedEnum && is_integer($value)) {
+        if (is_subclass_of($this->enumClass, FlaggedEnum::class) && is_integer($value)) {
             // Unset all possible flag values
             foreach($this->enumClass::getValues() as $enumValue) {
                 $value &= ~$enumValue;
