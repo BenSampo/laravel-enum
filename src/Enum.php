@@ -252,12 +252,13 @@ abstract class Enum implements EnumContract
      * Get the description for an enum value
      *
      * @param  mixed  $value
+     * @param  string|null $locale
      * @return string
      */
-    public static function getDescription($value): string
+    public static function getDescription($value, ?string $locale = null): string
     {
         return
-            static::getLocalizedDescription($value) ??
+            static::getLocalizedDescription($value, $locale) ??
             static::getFriendlyKeyName(static::getKey($value));
     }
 
@@ -268,15 +269,16 @@ abstract class Enum implements EnumContract
      * for the enum and if the key exists in the lang file.
      *
      * @param  mixed  $value
+     * @param  string|null $locale
      * @return string|null
      */
-    protected static function getLocalizedDescription($value): ?string
+    protected static function getLocalizedDescription($value, ?string $locale = null): ?string
     {
         if (static::isLocalizable()) {
             $localizedStringKey = static::getLocalizationKey() . '.' . $value;
 
-            if (Lang::has($localizedStringKey)) {
-                return __($localizedStringKey);
+            if (Lang::has($localizedStringKey, $locale)) {
+                return __($localizedStringKey, [], $locale);
             }
         }
 
