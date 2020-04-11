@@ -2,6 +2,7 @@
 
 namespace BenSampo\Enum\Rules;
 
+use BenSampo\Enum\FlaggedEnum;
 use Illuminate\Contracts\Validation\Rule;
 
 class EnumValue implements Rule
@@ -47,6 +48,14 @@ class EnumValue implements Rule
      */
     public function passes($attribute, $value)
     {
+        if (is_subclass_of($this->enumClass, FlaggedEnum::class) && (is_integer($value) || ctype_digit($value))) {
+            // Unset all possible flag values
+            foreach($this->enumClass::getValues() as $enumValue) {
+                $value &= ~$enumValue;
+            }
+            // All bits should be unset
+            return $value === 0;
+        }
         return $this->enumClass::hasValue($value, $this->strict);
     }
 

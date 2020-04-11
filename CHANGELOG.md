@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- EnumValue validation rule allows multiple flags for FlaggedEnums, integer values only.
 
 ## [1.36.0](https://github.com/BenSampo/laravel-enum/compare/v1.35...v1.36) - 2020-03-22
 
