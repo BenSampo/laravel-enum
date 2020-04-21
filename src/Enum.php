@@ -84,7 +84,7 @@ abstract class Enum implements EnumContract
      * @param  mixed  $enumValue
      * @return static
      *
-     * @deprecated in favor of fromValue(), will be removed in v2
+     * @deprecated in favor of fromValue(), might be removed in a major version
      */
     public static function getInstance($enumValue): self
     {
