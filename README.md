@@ -123,8 +123,11 @@ For convenience, enums can be instantiated in multiple ways:
 // Standard new PHP class, passing the desired enum value as a parameter
 $enumInstance = new UserType(UserType::Administrator);
 
-// Static getInstance method, again passing the desired enum value as a parameter
-$enumInstance = UserType::getInstance(UserType::Administrator);
+// Same as the constructor, instantiate by value
+$enumInstance = UserType::fromValue(UserType::Administrator);
+
+// Use an enum key instead of its value
+$enumInstance = UserType::fromKey('Administrator');
 
 // Statically calling the key name as a method, utilizing __callStatic magic
 $enumInstance = UserType::Administrator();
@@ -153,7 +156,7 @@ php artisan enum:annotate "App\Enums\UserType"
 Once you have an enum instance, you can access the `key`, `value` and `description` as properties.
 
 ```php
-$userType = UserType::getInstance(UserType::SuperAdministrator);
+$userType = UserType::fromValue(UserType::SuperAdministrator);
 
 $userType->key; // SuperAdministrator
 $userType->value; // 0
@@ -168,7 +171,7 @@ Enum instances can be cast to strings as they implement the `__toString()` magic
 This also means they can be echoed in blade views, for example.
 
 ```php
-$userType = UserType::getInstance(UserType::SuperAdministrator);
+$userType = UserType::fromValue(UserType::SuperAdministrator);
 
 (string) $userType // '0'
 ```
@@ -178,7 +181,7 @@ $userType = UserType::getInstance(UserType::SuperAdministrator);
 You can check the equality of an instance against any value by passing it to the `is` method. For convenience, there is also an `isNot` method which is the exact reverse of the `is` method.
 
 ```php
-$admin = UserType::getInstance(UserType::Administrator);
+$admin = UserType::fromValue(UserType::Administrator);
 
 $admin->is(UserType::Administrator);   // true
 $admin->is($admin);                    // true
@@ -192,7 +195,7 @@ $admin->is('random-value');            // false
 You can also check to see if the instance's value matches against an array of possible values using the `in` method.
 
 ```php
-$admin = UserType::getInstance(UserType::Administrator);
+$admin = UserType::fromValue(UserType::Administrator);
 
 $admin->in([UserType::Moderator, UserType::Administrator]);     // true
 $admin->in([UserType::Moderator(), UserType::Administrator()]); // true
@@ -215,8 +218,8 @@ function canPerformAction(UserType $userType)
     return false;
 }
 
-$userType1 = UserType::getInstance(UserType::SuperAdministrator);
-$userType2 = UserType::getInstance(UserType::Moderator);
+$userType1 = UserType::fromValue(UserType::SuperAdministrator);
+$userType2 = UserType::fromValue(UserType::Moderator);
 
 canPerformAction($userType1); // Returns true
 canPerformAction($userType2); // Returns false
@@ -815,12 +818,12 @@ Returns the enum for use in a select as value => description.
 UserType::toSelectArray(); // Returns [0 => 'Administrator', 1 => 'Moderator', 2 => 'Subscriber', 3 => 'Super administrator']
 ```
 
-### static getInstance(mixed $enumValue): Enum
+### static fromValue(mixed $enumValue): Enum
 
 Returns an instance of the called enum. Read more about [enum instantiation](#instantiation).
 
 ``` php
-UserType::getInstance(UserType::Administrator); // Returns instance of Enum with the value set to UserType::Administrator
+UserType::fromValue(UserType::Administrator); // Returns instance of Enum with the value set to UserType::Administrator
 ```
 
 ### static getInstances(): array

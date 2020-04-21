@@ -7,7 +7,7 @@ use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 abstract class FlaggedEnum extends Enum
 {
     const None = 0;
-    
+
     /**
      * Construct a FlaggedEnum instance.
      *
@@ -38,7 +38,7 @@ abstract class FlaggedEnum extends Enum
      */
     public static function flags($flags): self
     {
-        return static::getInstance($flags);
+        return static::fromValue($flags);
     }
 
     /**
@@ -50,7 +50,7 @@ abstract class FlaggedEnum extends Enum
     public function setFlags(array $flags): self
     {
         $this->value = array_reduce($flags, function ($carry, $flag) {
-            return $carry | static::getInstance($flag)->value;
+            return $carry | static::fromValue($flag)->value;
         }, 0);
 
         return $this;
@@ -64,7 +64,7 @@ abstract class FlaggedEnum extends Enum
      */
     public function addFlag($flag): self
     {
-        $this->value |= static::getInstance($flag)->value;
+        $this->value |= static::fromValue($flag)->value;
 
         return $this;
     }
@@ -92,7 +92,7 @@ abstract class FlaggedEnum extends Enum
      */
     public function removeFlag($flag): self
     {
-        $this->value &= ~ static::getInstance($flag)->value;
+        $this->value &= ~ static::fromValue($flag)->value;
 
         return $this;
     }
@@ -120,12 +120,12 @@ abstract class FlaggedEnum extends Enum
      */
     public function hasFlag($flag): bool
     {
-        $flagValue = static::getInstance($flag)->value;
+        $flagValue = static::fromValue($flag)->value;
 
         if ($flagValue === 0) {
             return false;
         }
-        
+
         return ($flagValue & $this->value) === $flagValue;
     }
 

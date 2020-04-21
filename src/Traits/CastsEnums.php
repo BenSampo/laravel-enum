@@ -45,7 +45,7 @@ trait CastsEnums
                     $value = $this->castAttribute($key, $value);
                 }
 
-                $this->attributes[$key] = $enum::getInstance($value)->value;
+                $this->attributes[$key] = $enum::fromValue($value)->value;
             }
 
             return $this;
@@ -86,7 +86,7 @@ trait CastsEnums
         if ($value === null || $value instanceof Enum) {
             return $value;
         } else {
-            return $enum::getInstance($value);
+            return $enum::fromValue($value);
         }
     }
 }

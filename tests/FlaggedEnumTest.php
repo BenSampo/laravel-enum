@@ -13,7 +13,7 @@ class FlaggedEnumTest extends TestCase
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::LaserVision]);
         $this->assertInstanceOf(SuperPowers::class, $powers);
 
-        $powers = SuperPowers::getInstance([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::LaserVision]);
+        $powers = SuperPowers::fromValue([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::LaserVision]);
         $this->assertInstanceOf(SuperPowers::class, $powers);
 
         $powers = SuperPowers::flags([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::LaserVision]);
@@ -26,7 +26,7 @@ class FlaggedEnumTest extends TestCase
         $powers = new SuperPowers([SuperPowers::Strength(), SuperPowers::Flight(), SuperPowers::LaserVision()]);
         $this->assertInstanceOf(SuperPowers::class, $powers);
 
-        $powers = SuperPowers::getInstance([SuperPowers::Strength(), SuperPowers::Flight(), SuperPowers::LaserVision()]);
+        $powers = SuperPowers::fromValue([SuperPowers::Strength(), SuperPowers::Flight(), SuperPowers::LaserVision()]);
         $this->assertInstanceOf(SuperPowers::class, $powers);
 
         $powers = SuperPowers::flags([SuperPowers::Strength(), SuperPowers::Flight(), SuperPowers::LaserVision()]);
@@ -79,7 +79,7 @@ class FlaggedEnumTest extends TestCase
         /** @var SuperPowers $powers */
         $powers = SuperPowers::None();
         $this->assertFalse($powers->hasFlag(SuperPowers::LaserVision));
-        
+
         $powers->setFlags([SuperPowers::LaserVision, SuperPowers::Strength]);
         $this->assertTrue($powers->hasFlag(SuperPowers::LaserVision));
         $this->assertTrue($powers->hasFlag(SuperPowers::Strength));
@@ -90,7 +90,7 @@ class FlaggedEnumTest extends TestCase
         /** @var SuperPowers $powers */
         $powers = SuperPowers::None();
         $this->assertFalse($powers->hasFlag(SuperPowers::LaserVision));
-        
+
         $powers->addFlag(SuperPowers::LaserVision);
         $this->assertTrue($powers->hasFlag(SuperPowers::LaserVision));
 
@@ -103,7 +103,7 @@ class FlaggedEnumTest extends TestCase
         /** @var SuperPowers $powers */
         $powers = SuperPowers::None();
         $this->assertFalse($powers->hasFlag(SuperPowers::LaserVision));
-        
+
         $powers->addFlags([SuperPowers::LaserVision, SuperPowers::Strength]);
         $this->assertTrue($powers->hasFlags([SuperPowers::LaserVision, SuperPowers::Strength]));
     }
@@ -113,7 +113,7 @@ class FlaggedEnumTest extends TestCase
         /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight]);
         $this->assertTrue($powers->hasFlags([SuperPowers::Strength, SuperPowers::Flight]));
-        
+
         $powers->removeFlag(SuperPowers::Strength);
         $this->assertFalse($powers->hasFlag(SuperPowers::Strength));
 
@@ -128,7 +128,7 @@ class FlaggedEnumTest extends TestCase
         /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight]);
         $this->assertTrue($powers->hasFlags([SuperPowers::Strength, SuperPowers::Flight]));
-        
+
         $powers->removeFlags([SuperPowers::Strength, SuperPowers::Flight]);
         $this->assertFalse($powers->hasFlags([SuperPowers::Strength, SuperPowers::Flight]));
 
@@ -160,7 +160,7 @@ class FlaggedEnumTest extends TestCase
         /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::LaserVision, SuperPowers::Flight]);
         $this->assertTrue($powers->hasFlag(SuperPowers::Superman));
-        
+
         $powers->removeFlag([SuperPowers::LaserVision]);
         $this->assertFalse($powers->hasFlag(SuperPowers::Superman));
     }
@@ -184,6 +184,6 @@ class FlaggedEnumTest extends TestCase
     {
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight]);
 
-        $this->assertEquals($powers, SuperPowers::getInstance($powers->value));
+        $this->assertEquals($powers, SuperPowers::fromValue($powers->value));
     }
 }
