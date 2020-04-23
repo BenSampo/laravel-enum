@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class NativeCastModel extends Model
 {
     protected $casts = [
-        'user_type' => EnumCast::class . ':' . UserType::class,
+        'user_type' => UserType::class,
     ];
 
     protected $fillable = [

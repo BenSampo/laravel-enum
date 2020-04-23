@@ -2,15 +2,17 @@
 
 namespace BenSampo\Enum;
 
+use BenSampo\Enum\Casts\EnumCast;
 use BenSampo\Enum\Contracts\EnumContract;
 use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
+use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use ReflectionClass;
 
-abstract class Enum implements EnumContract
+abstract class Enum implements EnumContract, Castable
 {
     use Macroable {
         // Because this class also defines a '__callStatic' method, a new name has to be given to the trait's '__callStatic' method.
@@ -410,5 +412,16 @@ abstract class Enum implements EnumContract
     public static function getLocalizationKey(): string
     {
         return 'enums.' . static::class;
+    }
+
+    public static function castUsing()
+    {
+        $nativeType = null;
+
+        if (property_exists(get_called_class(), 'nativeType')) {
+            $nativeType = static::$nativeType;
+        }
+
+        return new EnumCast(static::class, $nativeType);
     }
 }

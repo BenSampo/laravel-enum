@@ -11,9 +11,13 @@ class EnumCast implements CastsAttributes
     /**@var string */
     private $enumClass;
 
-    public function __construct(string $enumClass)
+    /** @var string|null */
+    private $nativeType;
+
+    public function __construct(string $enumClass, ?string $nativeType = null)
     {
         $this->enumClass = $enumClass;
+        $this->nativeType = $nativeType;
     }
 
     /**
@@ -55,6 +59,30 @@ class EnumCast implements CastsAttributes
             return $value;
         }
 
+        if ($this->nativeType !== null) {
+            $value = $this->performNativeCast($value);
+        }
+
         return $enum::getInstance($value);
+    }
+
+    protected function performNativeCast($value)
+    {
+        switch ($this->nativeType) {
+            case 'int':
+            case 'integer':
+                return (int) $value;
+            case 'real':
+            case 'float':
+            case 'double':
+                return (float) $value;
+            case 'string':
+                return (string) $value;
+            case 'bool':
+            case 'boolean':
+                return (bool) $value;
+        }
+
+        return $value;
     }
 }

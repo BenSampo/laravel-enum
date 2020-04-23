@@ -6,7 +6,6 @@ use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 use BenSampo\Enum\Tests\Enums\UserType;
 use BenSampo\Enum\Tests\Models\NativeCastModel;
 use PHPUnit\Framework\TestCase;
-use ReflectionMethod;
 
 class NativeEnumCastTest extends TestCase
 {
@@ -67,6 +66,12 @@ class NativeEnumCastTest extends TestCase
         $model = app(NativeCastModel::class);
         $model->user_type = UserType::Moderator();
 
-        $this->assertSame(['user_type' => 1], $model->toArray());
+        $this->assertSame([
+            'user_type' => [
+                'value' => 1,
+                'key' => 'Moderator',
+                'description' => 'Moderator',
+            ],
+        ], json_decode(json_encode($model), true));
     }
 }
