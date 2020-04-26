@@ -414,14 +414,22 @@ abstract class Enum implements EnumContract, Castable
         return 'enums.' . static::class;
     }
 
+    /**
+     * Cast values before constructing an enum from them.
+     *
+     * You may need to overwrite this when using string values that are returned
+     * from a raw database query or a similar data source.
+     *
+     * @param  mixed  $value  A raw value that may have any native type
+     * @return mixed  The value cast into the type this enum expects
+     */
+    public static function castNative($value)
+    {
+        return $value;
+    }
+
     public static function castUsing()
     {
-        $nativeType = null;
-
-        if (property_exists(get_called_class(), 'nativeType')) {
-            $nativeType = static::$nativeType;
-        }
-
-        return new EnumCast(static::class, $nativeType);
+        return new EnumCast(static::class);
     }
 }

@@ -11,13 +11,9 @@ class EnumCast implements CastsAttributes
     /**@var string */
     private $enumClass;
 
-    /** @var string|null */
-    private $nativeType;
-
-    public function __construct(string $enumClass, ?string $nativeType = null)
+    public function __construct(string $enumClass)
     {
         $this->enumClass = $enumClass;
-        $this->nativeType = $nativeType;
     }
 
     /**
@@ -59,28 +55,38 @@ class EnumCast implements CastsAttributes
             return $value;
         }
 
-        if ($this->nativeType !== null) {
-            $value = $this->performNativeCast($value);
-        }
+        $value = $this->getCastableValue($value);
 
         return $enum::getInstance($value);
     }
 
-    protected function performNativeCast($value)
+    /**
+     * Retrieve the value that can be casted into Enum
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    protected function getCastableValue($value)
     {
-        switch ($this->nativeType) {
-            case 'int':
-            case 'integer':
-                return (int) $value;
-            case 'real':
-            case 'float':
-            case 'double':
-                return (float) $value;
-            case 'string':
-                return (string) $value;
-            case 'bool':
-            case 'boolean':
-                return (bool) $value;
+        // If the enum has overridden the `castNative` method, use it to get the cast value
+        $value = $this->enumClass::castNative($value);
+
+        // If the value exists in the enum (using strict type checking) return it
+        if ($this->enumClass::hasValue($value)) {
+            return $value;
+        }
+
+        // Try and find a value that can be type coerced into one that exists in the enum, returning if no matches
+        if (!$this->enumClass::hasValue($value, false)) {
+            return $value;
+        }
+
+        // Find the value in the enum that the incoming value can be coerced to
+        foreach ($this->enumClass::getValues() as $enumValue) {
+            if ($value == $enumValue) {
+                return $enumValue;
+            }
         }
 
         return $value;
