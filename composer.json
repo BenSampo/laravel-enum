@@ -22,6 +22,7 @@
         "php": "^7.2.5",
         "hanneskod/classtools": "~1.0",
         "illuminate/support": "^7.5",
+        "illuminate/contracts": "^7.5",
         "laminas/laminas-code": "^3.4"
     },
     "require-dev": {

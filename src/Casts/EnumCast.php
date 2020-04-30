@@ -9,7 +9,7 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 class EnumCast implements CastsAttributes
 {
     /**@var string */
-    private $enumClass;
+    protected $enumClass;
 
     public function __construct(string $enumClass)
     {
@@ -29,15 +29,7 @@ class EnumCast implements CastsAttributes
      */
     public function set($model, string $key, $value, array $attributes)
     {
-        if ($value === null) {
-            return $value;
-        }
-
-        $enum = $this->enumClass;
-
-        if (!$value instanceof $enum) {
-            $value = $this->castEnum($value);
-        }
+        $value = $this->castEnum($value);
 
         return [$key => $value->value];
     }
@@ -49,15 +41,13 @@ class EnumCast implements CastsAttributes
      */
     protected function castEnum($value): ?Enum
     {
-        $enum = $this->enumClass;
-
-        if ($value === null || $value instanceof Enum) {
+        if ($value === null || $value instanceof $this->enumClass) {
             return $value;
         }
 
         $value = $this->getCastableValue($value);
 
-        return $enum::getInstance($value);
+        return $this->enumClass::getInstance($value);
     }
 
     /**
@@ -77,11 +67,6 @@ class EnumCast implements CastsAttributes
             return $value;
         }
 
-        // Try and find a value that can be type coerced into one that exists in the enum, returning if no matches
-        if (!$this->enumClass::hasValue($value, false)) {
-            return $value;
-        }
-
         // Find the value in the enum that the incoming value can be coerced to
         foreach ($this->enumClass::getValues() as $enumValue) {
             if ($value == $enumValue) {
@@ -89,6 +74,7 @@ class EnumCast implements CastsAttributes
             }
         }
 
+        // Fall back to trying to construct it directly (will result in an error since it doesn't exist)
         return $value;
     }
 }
