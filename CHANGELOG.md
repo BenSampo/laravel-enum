@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v1.37.0...master)
 
-### Added
+### Fixed
 
-### Changed
+- Handle calling magic instantiation methods from within instance methods of the Enum
 
 ## [1.37.0](https://github.com/BenSampo/laravel-enum/compare/v1.36.0...v1.37.0) - 2020-04-11
 
