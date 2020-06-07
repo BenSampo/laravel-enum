@@ -5,12 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v1.37.0...master)
+## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v1.38.0...master)
+
+## [1.38.0](https://github.com/BenSampo/laravel-enum/compare/v1.37.0...v1.38.0) - 2020-06-07
 
 ### Fixed
 
 - Handle calling magic instantiation methods from within instance methods of the Enum [#147](https://github.com/BenSampo/laravel-enum/pull/147)
-- Add new instantiation methods `Enum::fromKey()` and `Enum::fromValue()`
+- Add new instantiation methods `Enum::fromKey()` and `Enum::fromValue()` [#142](https://github.com/BenSampo/laravel-enum/pull/142)
+- Fixed issue with localized validation messages [#141](https://github.com/BenSampo/laravel-enum/pull/141)
 
 ### Deprecated
 
