@@ -4,6 +4,7 @@ namespace BenSampo\Enum;
 
 use BenSampo\Enum\Contracts\EnumContract;
 use BenSampo\Enum\Contracts\LocalizedEnum;
+use BenSampo\Enum\Exceptions\InvalidEnumKeyException;
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
@@ -63,6 +64,50 @@ abstract class Enum implements EnumContract
     }
 
     /**
+     * Make a new instance from an enum value.
+     *
+     * @param  mixed  $enumValue
+     * @return static
+     */
+    public static function fromValue($enumValue): self
+    {
+        if ($enumValue instanceof static) {
+            return $enumValue;
+        }
+
+        return new static($enumValue);
+    }
+
+    /**
+     * Alias for fromValue();
+     *
+     * @param  mixed  $enumValue
+     * @return static
+     *
+     * @deprecated in favor of fromValue(), might be removed in a major version
+     */
+    public static function getInstance($enumValue): self
+    {
+        return static::fromValue($enumValue);
+    }
+
+    /**
+     * Make an enum instance from a given key.
+     *
+     * @param  string  $key
+     * @return static
+     */
+    public static function fromKey(string $key): self
+    {
+        if (static::hasKey($key)) {
+            $enumValue = static::getValue($key);
+            return new static($enumValue);
+        }
+
+        throw new InvalidEnumKeyException($key, static::class);
+    }
+
+    /**
      * Attempt to instantiate an enum by calling the enum key as a static method.
      *
      * This function defers to the macroable __callStatic function if a macro is found using the static method called.
@@ -77,12 +122,7 @@ abstract class Enum implements EnumContract
             return static::macroCallStatic($method, $parameters);
         }
 
-        if (static::hasKey($method)) {
-            $enumValue = static::getValue($method);
-            return new static($enumValue);
-        }
-
-        throw new \BadMethodCallException("Cannot create an enum instance for $method. The enum value $method does not exist.");
+        return static::fromKey($method);
     }
 
     /**
@@ -137,21 +177,6 @@ abstract class Enum implements EnumContract
     }
 
     /**
-     * Return a new Enum instance,
-     *
-     * @param  mixed  $enumValue
-     * @return static
-     */
-    public static function getInstance($enumValue): self
-    {
-        if ($enumValue instanceof static) {
-            return $enumValue;
-        }
-
-        return new static($enumValue);
-    }
-
-    /**
      * Return instances of all the contained values.
      *
      * @return static[]
@@ -179,11 +204,12 @@ abstract class Enum implements EnumContract
         }
 
         if (static::hasValue($enumKeyOrValue)) {
-            return static::getInstance($enumKeyOrValue);
+            return static::fromValue($enumKeyOrValue);
         }
 
         if (is_string($enumKeyOrValue) && static::hasKey($enumKeyOrValue)) {
-            return static::$enumKeyOrValue();
+            $enumValue = static::getValue($enumKeyOrValue);
+            return new static($enumValue);
         }
 
         return null;
