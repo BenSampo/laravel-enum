@@ -10,4 +10,9 @@ final class UserType extends Enum
     const Moderator = 1;
     const Subscriber = 2;
     const SuperAdministrator = 3;
+
+    public function magicInstantiationFromInstanceMethod(): self
+    {
+        return self::Administrator();
+    }
 }

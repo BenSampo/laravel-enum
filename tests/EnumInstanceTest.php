@@ -67,6 +67,12 @@ class EnumInstanceTest extends TestCase
         $this->assertInstanceOf(UserType::class, UserType::Administrator());
     }
 
+    public function test_magic_instantiation_from_instance_method()
+    {
+        $userType = new UserType(UserType::Administrator);
+        $this->assertInstanceOf(UserType::class, $userType->magicInstantiationFromInstanceMethod());
+    }
+
     public function test_an_exception_is_thrown_when_trying_to_get_enum_instance_by_calling_an_enum_key_as_a_static_method_which_does_not_exist()
     {
         $this->expectException(InvalidEnumKeyException::class);

@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v1.37.0...master)
 
-### Added
+### Fixed
 
+- Handle calling magic instantiation methods from within instance methods of the Enum [#147](https://github.com/BenSampo/laravel-enum/pull/147)
 - Add new instantiation methods `Enum::fromKey()` and `Enum::fromValue()`
 
 ### Deprecated

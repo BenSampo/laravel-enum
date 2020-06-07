@@ -14,8 +14,8 @@ use ReflectionClass;
 abstract class Enum implements EnumContract
 {
     use Macroable {
-        // Because this class also defines a '__callStatic' method, a new name has to be given to the trait's '__callStatic' method.
         __callStatic as macroCallStatic;
+        __call as macroCall;
     }
 
     /**
@@ -123,6 +123,27 @@ abstract class Enum implements EnumContract
         }
 
         return static::fromKey($method);
+    }
+
+    /**
+     * Delegate magic method calls to macro's or the static call.
+     *
+     * While it is not typical to use the magic instantiation dynamically, it may happen
+     * incidentally when calling the instantiation in an instance method of itself.
+     * Even when using the `static::KEY()` syntax, PHP still interprets this is a call to
+     * an instance method when it happens inside of an instance method of the same class.
+     *
+     * @param  string  $method
+     * @param  mixed  $parameters
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        if (static::hasMacro($method)) {
+            return $this->macroCall($method, $parameters);
+        }
+
+        return self::__callStatic($method, $parameters);
     }
 
     /**
