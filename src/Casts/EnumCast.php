@@ -31,7 +31,7 @@ class EnumCast implements CastsAttributes
     {
         $value = $this->castEnum($value);
 
-        return [$key => $value->value];
+        return [$key => $this->enumClass::serializeDatabase($value)];
     }
 
     /**
@@ -60,7 +60,7 @@ class EnumCast implements CastsAttributes
     protected function getCastableValue($value)
     {
         // If the enum has overridden the `castNative` method, use it to get the cast value
-        $value = $this->enumClass::castNative($value);
+        $value = $this->enumClass::parseDatabase($value);
 
         // If the value exists in the enum (using strict type checking) return it
         if ($this->enumClass::hasValue($value)) {

@@ -4,6 +4,7 @@ namespace BenSampo\Enum\Tests;
 
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 use BenSampo\Enum\Tests\Enums\UserType;
+use BenSampo\Enum\Tests\Enums\UserTypeCustomCast;
 use BenSampo\Enum\Tests\Models\NativeCastModel;
 use PHPUnit\Framework\TestCase;
 
@@ -73,5 +74,22 @@ class NativeEnumCastTest extends TestCase
                 'description' => 'Moderator',
             ],
         ], json_decode(json_encode($model), true));
+    }
+
+    public function test_can_use_custom_casting()
+    {
+        /** @var NativeCastModel $model */
+        $model = app(NativeCastModel::class);
+
+        $reflection = new \ReflectionProperty(NativeCastModel::class, 'attributes');
+        $reflection->setAccessible(true);
+        $reflection->setValue($model, ['user_type_custom' => 'type-3']);
+
+        $this->assertInstanceOf(UserTypeCustomCast::class, $model->user_type_custom);
+        $this->assertEquals(UserTypeCustomCast::SuperAdministrator(), $model->user_type_custom);
+
+        $model->user_type_custom = UserTypeCustomCast::Administrator();
+
+        $this->assertSame('type-0', $reflection->getValue($model)['user_type_custom']);
     }
 }

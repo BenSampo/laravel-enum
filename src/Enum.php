@@ -415,7 +415,7 @@ abstract class Enum implements EnumContract, Castable
     }
 
     /**
-     * Cast values before constructing an enum from them.
+     * Cast values loaded from the database before constructing an enum from them.
      *
      * You may need to overwrite this when using string values that are returned
      * from a raw database query or a similar data source.
@@ -423,7 +423,21 @@ abstract class Enum implements EnumContract, Castable
      * @param  mixed  $value  A raw value that may have any native type
      * @return mixed  The value cast into the type this enum expects
      */
-    public static function castNative($value)
+    public static function parseDatabase($value)
+    {
+        return $value;
+    }
+
+    /**
+     * Transform value from the enum instance before it's persisted to the database.
+     *
+     * You may need to overwrite this when using a database that expects a different
+     * type to that used internally in your enum.
+     *
+     * @param  mixed  $value  A raw value that may have any native type
+     * @return mixed  The value cast into the type this database expects
+     */
+    public static function serializeDatabase($value)
     {
         return $value;
     }
