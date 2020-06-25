@@ -440,7 +440,8 @@ $example->user_type = UserType::Moderator();
 ```
 
 ### Casting underlying native types
-Many databases return everything as strings (for example, an integer may be returned as the string `'1'`). To reduce fricton for users of the library we'll use type coercion to
+Many databases return everything as strings (for example, an integer may be returned as the string `'1'`).
+To reduce friction for users of the library, we use type coercion to
 figure out the intended value. If you'd prefer to control this, you can override the `castNative` static method on your enum class:
 
 ```php
