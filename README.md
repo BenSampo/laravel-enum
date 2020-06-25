@@ -47,6 +47,7 @@ Created by [Ben Sampson](https://sampo.co.uk)
 
 ## Documentation for v1
 You are reading the documentation for `2.x`. If you're using Laravel 6 or below, please see the docs for `1.x`.
+Please see the [upgrade guide](./UPGRADE.md) for information on how to upgrade from `1.x`.
 
 ## Guide
 
@@ -453,21 +454,6 @@ final class UserType extends Enum
         return (int) $value;
     }
 }
-```
-
-### Upgrading from Laravel Enum 1.x
-If you're upgrading from `1.x`, then you should update your models to use Laravel 7 native casting. Remove the trait and
-move the casts from `$enumCasts` to `$casts`. 
-
-```diff
-class MyModel extends Model
-{
--   use CastsEnums;
-
--   protected $enumCasts = [
-+   protected $casts = [
-        'foo' => Foo::class,
-    ];
 ```
 
 ### Model Annotation
