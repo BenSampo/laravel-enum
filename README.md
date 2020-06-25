@@ -442,7 +442,7 @@ $example->user_type = UserType::Moderator();
 ### Casting underlying native types
 Many databases return everything as strings (for example, an integer may be returned as the string `'1'`).
 To reduce friction for users of the library, we use type coercion to
-figure out the intended value. If you'd prefer to control this, you can override the `castNative` static method on your enum class:
+figure out the intended value. If you'd prefer to control this, you can override the `parseDatabase` static method on your enum class:
 
 ```php
 final class UserType extends Enum
@@ -450,7 +450,7 @@ final class UserType extends Enum
     const Administrator = 0;
     const Moderator = 1;
     
-    public static function castNative($value)
+    public static function parseDatabase($value)
     {
         return (int) $value;
     }

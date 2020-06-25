@@ -7,6 +7,7 @@ use BenSampo\Enum\Contracts\EnumContract;
 use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 use Illuminate\Contracts\Database\Eloquent\Castable;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
@@ -442,7 +443,7 @@ abstract class Enum implements EnumContract, Castable
         return $value;
     }
 
-    public static function castUsing()
+    public static function castUsing(): CastsAttributes
     {
         return new EnumCast(static::class);
     }
