@@ -14,8 +14,12 @@ move the casts from `$enumCasts` to `$casts`.
 Trait based casting is still present, but is now deprecated and will be removed in the next major version.
 
 ```diff
+--use BenSampo\Enum\Traits\CastsEnums;
+
 class MyModel extends Model
 {
+-   use CastsEnums;
+
 -   protected $enumCasts = [
 +   protected $casts = [
         'foo' => Foo::class,
