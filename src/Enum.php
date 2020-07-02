@@ -2,16 +2,19 @@
 
 namespace BenSampo\Enum;
 
+use BenSampo\Enum\Casts\EnumCast;
 use BenSampo\Enum\Contracts\EnumContract;
 use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Exceptions\InvalidEnumKeyException;
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
+use Illuminate\Contracts\Database\Eloquent\Castable;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use ReflectionClass;
 
-abstract class Enum implements EnumContract
+abstract class Enum implements EnumContract, Castable
 {
     use Macroable {
         __callStatic as macroCallStatic;
@@ -457,5 +460,38 @@ abstract class Enum implements EnumContract
     public static function getLocalizationKey(): string
     {
         return 'enums.' . static::class;
+    }
+
+    /**
+     * Cast values loaded from the database before constructing an enum from them.
+     *
+     * You may need to overwrite this when using string values that are returned
+     * from a raw database query or a similar data source.
+     *
+     * @param  mixed  $value  A raw value that may have any native type
+     * @return mixed  The value cast into the type this enum expects
+     */
+    public static function parseDatabase($value)
+    {
+        return $value;
+    }
+
+    /**
+     * Transform value from the enum instance before it's persisted to the database.
+     *
+     * You may need to overwrite this when using a database that expects a different
+     * type to that used internally in your enum.
+     *
+     * @param  mixed  $value  A raw value that may have any native type
+     * @return mixed  The value cast into the type this database expects
+     */
+    public static function serializeDatabase($value)
+    {
+        return $value;
+    }
+
+    public static function castUsing(): CastsAttributes
+    {
+        return new EnumCast(static::class);
     }
 }

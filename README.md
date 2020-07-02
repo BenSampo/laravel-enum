@@ -45,27 +45,26 @@ Created by [Ben Sampson](https://sampo.co.uk)
 * [Artisan Command List](#artisan-command-list)
 * [Enum Class Reference](#enum-class-reference)
 
+## Documentation for v1
+You are reading the documentation for `2.x`. If you're using Laravel 6 or below, please see the docs for `1.x`.
+Please see the [upgrade guide](./UPGRADE.md) for information on how to upgrade from `1.x`.
+
 ## Guide
 
 I wrote a blog post about using laravel-enum: https://sampo.co.uk/blog/using-enums-in-laravel
 
-## Requirements
-
-- Laravel `5.4` or newer  
-- PHP `7.1` or newer
-
 ## Installation
+
+### Requirements
+
+- Laravel `7.5` or newer  
+- PHP `7.2.5` or newer
+
 
 Via Composer
 
 ```bash
 composer require bensampo/laravel-enum
-```
-
-If you're using Laravel < 5.5 you'll need to add the service provider to `config/app.php`
-
-```php
-'BenSampo\Enum\EnumServiceProvider'
 ```
 
 ## Enum Library
@@ -402,9 +401,8 @@ UserPermissions::DeleteComments()->getBitmask(); // 1000;
 
 ## Attribute Casting
 
-You may cast model attributes to enums using the `CastsEnums` trait. This will cast the attribute to an enum instance when getting and back to the enum value when setting.
-
-Similar to how standard attribute casting works, you simply define which attributes you want to cast to which enum as an array on the model.
+You may cast model attributes to enums using Laravel 7.x's built in custom casting. This will cast the attribute to an enum instance when getting and back to the enum value when setting.
+Since `Enum::class` implements the `Castable` contract, you just need to specify the classname of the enum:
 
 ```php
 use BenSampo\Enum\Traits\CastsEnums;
@@ -415,17 +413,9 @@ class Example extends Model
 {
     use CastsEnums;
 
-    protected $enumCasts = [
-        // 'attribute_name' => Enum::class
-        'user_type' => UserType::class,
-    ];
-
-    /**
-     * Existing casts are processed before $enumCasts which can be useful if you're 
-     * taking input from forms and your enum values are integers.
-     */
     protected $casts = [
-        'user_type' => 'int',
+        'random_flag' => 'boolean',     // Example standard laravel cast
+        'user_type' => UserType::class, // Example enum cast
     ];
 }
 ```
@@ -450,6 +440,24 @@ $example->user_type = UserType::Moderator;
 
 // Set using enum instance
 $example->user_type = UserType::Moderator();
+```
+
+### Casting underlying native types
+Many databases return everything as strings (for example, an integer may be returned as the string `'1'`).
+To reduce friction for users of the library, we use type coercion to
+figure out the intended value. If you'd prefer to control this, you can override the `parseDatabase` static method on your enum class:
+
+```php
+final class UserType extends Enum
+{
+    const Administrator = 0;
+    const Moderator = 1;
+    
+    public static function parseDatabase($value)
+    {
+        return (int) $value;
+    }
+}
 ```
 
 ### Model Annotation
