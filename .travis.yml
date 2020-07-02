@@ -1,20 +1,12 @@
 language: php
 
 php:
-  - "7.2"
+  - "7.2.5"
   - "7.3"
   - "7.4"
 
 env:
   matrix:
-    - LARAVEL='5.6.*'
-    - LARAVEL='5.6.*' COMPOSER_FLAGS="--prefer-lowest"
-    - LARAVEL='5.7.*'
-    - LARAVEL='5.7.*' COMPOSER_FLAGS="--prefer-lowest"
-    - LARAVEL='5.8.*'
-    - LARAVEL='5.8.*' COMPOSER_FLAGS="--prefer-lowest"
-    - LARAVEL='^6.0'
-    - LARAVEL='^6.0' COMPOSER_FLAGS="--prefer-lowest"
     - LARAVEL='^7.0'
     - LARAVEL='^7.0' COMPOSER_FLAGS="--prefer-lowest"
 
