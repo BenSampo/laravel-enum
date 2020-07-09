@@ -309,7 +309,7 @@ Add the given flag to the enum
 
 ```php
 $permissions = UserPermissions::flags([UserPermissions::ReadComments]);
-$permissions->addFlag(UserPermissions::EditComments); // Flags are now: ReadComments, EditComments.
+$permissions = $permissions->addFlag(UserPermissions::EditComments); // Flags are now: ReadComments, EditComments.
 ```
 
 #### addFlags(array $flags): Enum
@@ -317,7 +317,7 @@ Add the given flags to the enum
 
 ```php
 $permissions = UserPermissions::flags([UserPermissions::ReadComments]);
-$permissions->addFlags([UserPermissions::EditComments, UserPermissions::WriteComments]); // Flags are now: ReadComments, EditComments, WriteComments.
+$permissions = $permissions->addFlags([UserPermissions::EditComments, UserPermissions::WriteComments]); // Flags are now: ReadComments, EditComments, WriteComments.
 ```
 
 #### removeFlag($flag): Enum
