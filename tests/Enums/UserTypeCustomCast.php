@@ -13,11 +13,19 @@ final class UserTypeCustomCast extends Enum
 
     public static function parseDatabase($value)
     {
+        if (! $value) {
+            return null;
+        }
+
         return explode('-', $value)[1] ?? null;
     }
 
     public static function serializeDatabase($value)
     {
+        if (! $value) {
+            return null;
+        }
+
         return 'type-' . $value;
     }
 }
