@@ -826,6 +826,14 @@ Returns the enum for use in a select as value => description.
 UserType::toSelectArray(); // Returns [0 => 'Administrator', 1 => 'Moderator', 2 => 'Subscriber', 3 => 'Super administrator']
 ```
 
+### static toFlippedSelectArray(): array
+
+Returns the enum for use in a select as description => value.
+
+```php
+UserType::toFlippedSelectArray(); // Returns ['Administrator' => 0, 'Moderator' => 1, 'Subscriber' => 2, 'Super administrator' => 3]
+```
+
 ### static fromValue(mixed $enumValue): Enum
 
 Returns an instance of the called enum. Read more about [enum instantiation](#instantiation).

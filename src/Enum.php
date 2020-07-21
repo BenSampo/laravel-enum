@@ -399,6 +399,18 @@ abstract class Enum implements EnumContract, Castable
     }
 
     /**
+     * Get the enum as an flipped array formatted for a select.
+     *
+     * [string description => mixed $value]
+     *
+     * @return array
+     */
+    public static function toFlippedSelectArray(): array
+    {
+        return array_flip(static::toSelectArray());
+    }
+
+    /**
      * Check that the enum contains a specific key.
      *
      * @param  string  $key

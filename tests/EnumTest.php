@@ -101,6 +101,30 @@ class EnumTest extends TestCase
         $this->assertEquals($expectedArray, $array);
     }
 
+    public function test_enum_to_flipped_select_array()
+    {
+        $array = UserType::toFlippedSelectArray();
+        $expectedArray = [
+            'Administrator' => 0,
+            'Moderator' => 1,
+            'Subscriber' => 2,
+            'Super administrator' => 3,
+        ];
+
+        $this->assertEquals($expectedArray, $array);
+    }
+
+    public function test_enum_to_flipped_select_array_with_string_values()
+    {
+        $array = StringValues::toFlippedSelectArray();
+        $expectedArray = [
+            'Administrator' => 'administrator',
+            'Moderator' => 'moderator',
+        ];
+
+        $this->assertEquals($expectedArray, $array);
+    }
+
     public function test_enum_to_select_array()
     {
         $array = UserType::toSelectArray();
