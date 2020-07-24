@@ -2,7 +2,6 @@
 
 namespace BenSampo\Enum\Tests\Models;
 
-use BenSampo\Enum\Casts\EnumCast;
 use BenSampo\Enum\Tests\Enums\UserType;
 use BenSampo\Enum\Tests\Enums\UserTypeCustomCast;
 use Illuminate\Database\Eloquent\Model;
