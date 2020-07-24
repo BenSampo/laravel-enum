@@ -444,8 +444,7 @@ $example->user_type = UserType::Moderator();
 
 ### Casting underlying native types
 Many databases return everything as strings (for example, an integer may be returned as the string `'1'`).
-To reduce friction for users of the library, we use type coercion to
-figure out the intended value. If you'd prefer to control this, you can override the `parseDatabase` static method on your enum class:
+To reduce friction for users of the library, we use type coercion to figure out the intended value. If you'd prefer to control this, you can override the `parseDatabase` static method on your enum class:
 
 ```php
 final class UserType extends Enum
@@ -460,25 +459,7 @@ final class UserType extends Enum
 }
 ```
 
-Many databases have inconsistent data for blank values using both `NULL` or an empty string to store them.
-You can use this method to check for blank values and return `null` to avoid casting to an enum instance:
-
-```php
-final class UserType extends Enum
-{
-    const Administrator = 0;
-    const Moderator = 1;
-    
-    public static function parseDatabase($value)
-    {
-        if (! $value) {
-            return null;
-        }
-
-        return (int) $value;
-    }
-}
-```
+Returning `null` from the `parseDatabase` method will cause the attribute on the model to also be null. This can be useful if your database stores inconsistent blank values such as empty strings instead of `NULL`.
 
 ### Model Annotation
 
