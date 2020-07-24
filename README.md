@@ -460,6 +460,26 @@ final class UserType extends Enum
 }
 ```
 
+Many databases have inconsistent data for blank values using both `NULL` or an empty string to store them.
+You can use this method to check for blank values and return `null` to avoid casting to an enum instance:
+
+```php
+final class UserType extends Enum
+{
+    const Administrator = 0;
+    const Moderator = 1;
+    
+    public static function parseDatabase($value)
+    {
+        if (! $value) {
+            return null;
+        }
+
+        return (int) $value;
+    }
+}
+```
+
 ### Model Annotation
 
 The package can automatically generate DocBlocks for your `Model` classes to provide type hinting & completion in your IDE.

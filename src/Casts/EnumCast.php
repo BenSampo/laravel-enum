@@ -47,6 +47,10 @@ class EnumCast implements CastsAttributes
 
         $value = $this->getCastableValue($value);
 
+        if ($value === null) {
+            return null;
+        }
+
         return $this->enumClass::getInstance($value);
     }
 
@@ -59,8 +63,12 @@ class EnumCast implements CastsAttributes
      */
     protected function getCastableValue($value)
     {
-        // If the enum has overridden the `castNative` method, use it to get the cast value
+        // If the enum has overridden the `parseDatabase` method, use it to get the cast value
         $value = $this->enumClass::parseDatabase($value);
+
+        if ($value === null) {
+            return null;
+        }
 
         // If the value exists in the enum (using strict type checking) return it
         if ($this->enumClass::hasValue($value)) {

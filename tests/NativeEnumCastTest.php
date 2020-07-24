@@ -92,4 +92,16 @@ class NativeEnumCastTest extends TestCase
 
         $this->assertSame('type-0', $reflection->getValue($model)['user_type_custom']);
     }
+
+    public function test_can_bail_custom_casting()
+    {
+        /** @var NativeCastModel $model */
+        $model = app(NativeCastModel::class);
+
+        $reflection = new \ReflectionProperty(NativeCastModel::class, 'attributes');
+        $reflection->setAccessible(true);
+        $reflection->setValue($model, ['user_type_custom' => '']);
+
+        $this->assertNull($model->user_type_custom);
+    }
 }
