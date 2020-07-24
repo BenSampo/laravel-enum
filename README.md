@@ -459,7 +459,7 @@ final class UserType extends Enum
 }
 ```
 
-Returning `null` from the `parseDatabase` method will cause the attribute on the model to also be null. This can be useful if your database stores inconsistent blank values such as empty strings instead of `NULL`.
+Returning `null` from the `parseDatabase` method will cause the attribute on the model to also be `null`. This can be useful if your database stores inconsistent blank values such as empty strings instead of `NULL`.
 
 ### Model Annotation
 
