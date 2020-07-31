@@ -50,7 +50,7 @@ class EnumValue implements Rule
     {
         if (is_subclass_of($this->enumClass, FlaggedEnum::class) && (is_integer($value) || ctype_digit($value))) {
             // Unset all possible flag values
-            foreach($this->enumClass::getValues() as $enumValue) {
+            foreach ($this->enumClass::getValues() as $enumValue) {
                 $value &= ~$enumValue;
             }
             // All bits should be unset

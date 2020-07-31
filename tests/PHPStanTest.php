@@ -5,7 +5,6 @@ namespace BenSampo\Enum\Tests;
 use BenSampo\Enum\PHPStan\EnumMethodsClassReflectionExtension;
 use BenSampo\Enum\Tests\Enums\AnnotatedConstants;
 use BenSampo\Enum\Tests\Enums\UserType;
-use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Testing\TestCase;
 
