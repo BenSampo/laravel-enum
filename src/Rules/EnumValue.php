@@ -28,6 +28,8 @@ class EnumValue implements Rule
      * @param  string  $enumClass
      * @param  bool  $strict
      * @return void
+     *
+     * @throws \InvalidArgumentException
      */
     public function __construct(string $enumClass, bool $strict = true)
     {

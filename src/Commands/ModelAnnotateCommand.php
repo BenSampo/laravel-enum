@@ -31,8 +31,6 @@ class ModelAnnotateCommand extends AbstractAnnotationCommand
      *
      * @param  \ReflectionClass  $reflectionClass
      * @return void
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function annotate(ReflectionClass $reflectionClass)
     {
