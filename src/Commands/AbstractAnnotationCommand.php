@@ -54,6 +54,7 @@ abstract class AbstractAnnotationCommand extends Command
      * Handle the command call.
      *
      * @return int
+     *
      * @throws ReflectionException
      */
     public function handle()
@@ -70,6 +71,7 @@ abstract class AbstractAnnotationCommand extends Command
      * Annotate classes in a given folder
      *
      * @return void
+     *
      * @throws ReflectionException
      */
     protected function annotateFolder()
@@ -89,8 +91,9 @@ abstract class AbstractAnnotationCommand extends Command
     /**
      * Annotate a specific class by name
      *
-     * @param string $className
+     * @param  string  $className
      * @return void
+     *
      * @throws ReflectionException
      */
     protected function annotateClass(string $className)
@@ -108,8 +111,8 @@ abstract class AbstractAnnotationCommand extends Command
     /**
      * Write new DocBlock to the class
      *
-     * @param ReflectionClass $reflectionClass
-     * @param DocBlock        $docBlock
+     * @param  ReflectionClass  $reflectionClass
+     * @param  DocBlock  $docBlock
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function updateClassDocblock(ReflectionClass $reflectionClass, DocBlockGenerator $docBlock)
@@ -177,7 +180,7 @@ abstract class AbstractAnnotationCommand extends Command
     abstract protected function getDocblockTags(array $originalTags, ReflectionClass $reflectionClass): array;
 
     /**
-     * @param ReflectionClass $reflectionClass
+     * @param  ReflectionClass  $reflectionClass
      * @return void
      *
      * @throws ReflectionException

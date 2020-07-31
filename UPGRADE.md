@@ -2,9 +2,13 @@
 
 ## 2.x
 
-### Laravel 7 Required
-`2.x` uses new features not present in earlier laravel versions, so Laravel 7 is required.
-PHP `7.2.5` or greater is also now required.
+### Laravel 7.5 required
+
+Laravel `7.5` or higher is required for the new native attribute casting.
+
+### PHP 7.2 required
+
+PHP `7.2.5` or higher is now required.
 
 ### Switch to native casting
 

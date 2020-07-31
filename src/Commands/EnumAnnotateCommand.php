@@ -32,9 +32,9 @@ class EnumAnnotateCommand extends AbstractAnnotationCommand
     /**
      * Apply annotations to a reflected class
      *
-     * @param ReflectionClass $reflectionClass
-     *
+     * @param  ReflectionClass  $reflectionClass
      * @return void
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function annotate(ReflectionClass $reflectionClass)
