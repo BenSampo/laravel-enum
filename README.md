@@ -40,6 +40,7 @@ Created by [Ben Sampson](https://sampo.co.uk)
 * [Validation](#validation)
 * [Localization](#localization)
 * [Overriding the getDescription method](#overriding-the-getdescription-method)
+* [Using With QueryBuilder](#using-with-querybuilder)
 * [Extending the Enum Base Class](#extending-the-enum-base-class)
 * [PHPStan Integration](#phpstan-integration)
 * [Artisan Command List](#artisan-command-list)
@@ -258,7 +259,7 @@ final class UserPermissions extends FlaggedEnum
     const WriteComments     = 1 << 1;
     const EditComments      = 1 << 2;
     const DeleteComments    = 1 << 3;
-    
+
     // Shortcuts
     const Member = self::ReadComments | self::WriteComments; // Read and write.
     const Moderator = self::Member | self::EditComments; // All the permissions a Member has, plus Edit.
@@ -292,7 +293,7 @@ UserPermissions::flags([])->value === UserPermissions::None; // True
 
 ### Flagged enum methods
 
-In addition to the standard enum methods, there are a suite of helpful methods available on flagged enums. 
+In addition to the standard enum methods, there are a suite of helpful methods available on flagged enums.
 
 Note: Anywhere where a static property is passed, you can also pass an enum instance.
 
@@ -451,7 +452,7 @@ final class UserType extends Enum
 {
     const Administrator = 0;
     const Moderator = 1;
-    
+
     public static function parseDatabase($value)
     {
         return (int) $value;
@@ -679,6 +680,41 @@ public static function getDescription($value): string
 ```
 
 Calling `UserType::getDescription(3);` now returns `Super admin` instead of `Super administator`.
+
+## Using With QueryBuilder
+
+If You want to use Laravel QueryBuilder in order to Constraint Result When Using Eloquent ORM, you can benefit `whereHas()` and `whereHasNot()` methods.
+
+you have to use HasFlag Trait within your model:
+
+```php
+
+class Order extends Model
+{
+  use CastsEnums;
+  use HasFlag;
+
+  protected $fillable = ['client_id','order_status'];
+
+  protected $casts = ['order_status' => 'int'];
+  protected $enumCasts = ['order_status' => OrderStatus::class];
+
+  ...
+```
+
+then you can query your model like this:
+
+```php
+
+// order_status is Database Column`s name
+// OrderStatus::Ready() is a FlaggedEnum`s Flag
+Order::whereHasFlag("order_status",OrderStatus::Ready())->get();
+
+// OR
+
+Order::whereHasNotFlag("order_status",OrderStatus::Payed())->get();
+
+```
 
 ## Extending the Enum Base Class
 
