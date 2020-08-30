@@ -67,13 +67,7 @@ class NativeEnumCastTest extends TestCase
         $model = app(NativeCastModel::class);
         $model->user_type = UserType::Moderator();
 
-        $this->assertSame([
-            'user_type' => [
-                'value' => 1,
-                'key' => 'Moderator',
-                'description' => 'Moderator',
-            ],
-        ], json_decode(json_encode($model), true));
+        $this->assertSame(['user_type' => 1], $model->toArray());
     }
 
     public function test_can_use_custom_casting()

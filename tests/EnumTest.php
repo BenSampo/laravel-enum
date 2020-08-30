@@ -90,7 +90,7 @@ class EnumTest extends TestCase
 
     public function test_enum_to_array()
     {
-        $array = UserType::toArray();
+        $array = UserType::asArray();
         $expectedArray = [
             'Administrator' => 0,
             'Moderator' => 1,
@@ -101,9 +101,9 @@ class EnumTest extends TestCase
         $this->assertEquals($expectedArray, $array);
     }
 
-    public function test_enum_to_select_array()
+    public function test_enum_as_select_array()
     {
-        $array = UserType::toSelectArray();
+        $array = UserType::asSelectArray();
         $expectedArray = [
             0 => 'Administrator',
             1 => 'Moderator',
@@ -114,9 +114,9 @@ class EnumTest extends TestCase
         $this->assertEquals($expectedArray, $array);
     }
 
-    public function test_enum_to_select_array_with_string_values()
+    public function test_enum_as_select_array_with_string_values()
     {
-        $array = StringValues::toSelectArray();
+        $array = StringValues::asSelectArray();
         $expectedArray = [
             'administrator' => 'Administrator',
             'moderator' => 'Moderator',
@@ -127,12 +127,12 @@ class EnumTest extends TestCase
 
     public function test_enum_is_macroable_with_static_methods()
     {
-        Enum::macro('toFlippedArray', function () {
-            return array_flip(self::toArray());
+        Enum::macro('asFlippedArray', function () {
+            return array_flip(self::asArray());
         });
 
-        $this->assertTrue(UserType::hasMacro('toFlippedArray'));
-        $this->assertEquals(UserType::toFlippedArray(), array_flip(UserType::toArray()));
+        $this->assertTrue(UserType::hasMacro('asFlippedArray'));
+        $this->assertEquals(UserType::asFlippedArray(), array_flip(UserType::asArray()));
     }
 
     public function test_enum_is_macroable_with_instance_methods()
@@ -177,5 +177,10 @@ class EnumTest extends TestCase
 
         // Strings should just be returned
         $this->assertSame(StringValues::Moderator, (string) $enumWithStringValue);
+    }
+
+    public function test_enum_can_be_json_encoded()
+    {
+        $this->assertEquals('1', json_encode(UserType::Moderator()));
     }
 }

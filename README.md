@@ -684,15 +684,15 @@ Calling `UserType::getDescription(3);` now returns `Super admin` instead of `Sup
 
 The `Enum` base class implements the [Laravel `Macroable`](https://laravel.com/api/5.6/Illuminate/Support/Traits/Macroable.html) trait, meaning it's easy to extend it with your own functions. If you have a function that you often add to each of your enums, you can use a macro.
 
-Let's say we want to be able to get a flipped version of the enum `toArray` method, we can do this using:
+Let's say we want to be able to get a flipped version of the enum `asArray` method, we can do this using:
 
 ```php
-Enum::macro('toFlippedArray', function() {
-    return array_flip(self::toArray());
+Enum::macro('asFlippedArray', function() {
+    return array_flip(self::asArray());
 });
 ```
 
-Now, on each of my enums, I can call it using `UserType::toFlippedArray()`.
+Now, on each of my enums, I can call it using `UserType::asFlippedArray()`.
 
 It's best to register the macro inside of a service providers' boot method.
 
@@ -811,12 +811,12 @@ Returns a random instance of the enum. Useful for factories.
 UserType::getRandomInstance(); // Returns an instance of UserType with a random value
 ```
 
-### static toArray(): array
+### static asArray(): array
 
 Returns the enum key value pairs as an associative array.
 
 ```php
-UserType::toArray(); // Returns ['Administrator' => 0, 'Moderator' => 1, 'Subscriber' => 2, 'SuperAdministrator' => 3]
+UserType::asArray(); // Returns ['Administrator' => 0, 'Moderator' => 1, 'Subscriber' => 2, 'SuperAdministrator' => 3]
 ```
 
 ### static toSelectArray(): array

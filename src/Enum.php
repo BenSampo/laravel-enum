@@ -2,19 +2,21 @@
 
 namespace BenSampo\Enum;
 
+use ReflectionClass;
+use JsonSerializable;
+use Illuminate\Support\Str;
 use BenSampo\Enum\Casts\EnumCast;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Traits\Macroable;
 use BenSampo\Enum\Contracts\EnumContract;
 use BenSampo\Enum\Contracts\LocalizedEnum;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Database\Eloquent\Castable;
 use BenSampo\Enum\Exceptions\InvalidEnumKeyException;
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
-use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Str;
-use Illuminate\Support\Traits\Macroable;
-use ReflectionClass;
 
-abstract class Enum implements EnumContract, Castable
+abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializable
 {
     use Macroable {
         __callStatic as macroCallStatic;
@@ -147,14 +149,6 @@ abstract class Enum implements EnumContract, Castable
         }
 
         return self::__callStatic($method, $parameters);
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return (string) $this->value;
     }
 
     /**
@@ -374,7 +368,7 @@ abstract class Enum implements EnumContract, Castable
      *
      * @return array
      */
-    public static function toArray(): array
+    public static function asArray()
     {
         return static::getConstants();
     }
@@ -386,9 +380,9 @@ abstract class Enum implements EnumContract, Castable
      *
      * @return array
      */
-    public static function toSelectArray(): array
+    public static function asSelectArray(): array
     {
-        $array = static::toArray();
+        $array = static::asArray();
         $selectArray = [];
 
         foreach ($array as $key => $value) {
@@ -490,8 +484,41 @@ abstract class Enum implements EnumContract, Castable
         return $value;
     }
 
+    /**
+     * Get the name of the caster class to use when casting from / to this cast target.
+     *
+     * @return string|\Illuminate\Contracts\Database\Eloquent\CastsAttributes|\Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes
+     */
     public static function castUsing(): CastsAttributes
     {
         return new EnumCast(static::class);
+    }
+
+    /**
+     * Transform the enum instance when it's converted to an array
+     *
+     * @return string
+     */
+    public function toArray()
+    {
+        return $this->value;
+    }
+
+    /**
+     * Transform the enum when it's passed through json_encode
+     *
+     * @return string
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return (string) $this->value;
     }
 }
