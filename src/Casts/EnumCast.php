@@ -8,7 +8,7 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 class EnumCast implements CastsAttributes
 {
-    /**@var string */
+    /** @var string */
     protected $enumClass;
 
     public function __construct(string $enumClass)
@@ -16,17 +16,11 @@ class EnumCast implements CastsAttributes
         $this->enumClass = $enumClass;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function get($model, string $key, $value, array $attributes)
     {
         return $this->castEnum($value);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function set($model, string $key, $value, array $attributes)
     {
         $value = $this->castEnum($value);
@@ -35,9 +29,8 @@ class EnumCast implements CastsAttributes
     }
 
     /**
-     * @param mixed $value
-     *
-     * @return Enum|null
+     * @param  mixed  $value
+     * @return \BenSampo\Enum\Enum|null
      */
     protected function castEnum($value): ?Enum
     {
@@ -57,8 +50,7 @@ class EnumCast implements CastsAttributes
     /**
      * Retrieve the value that can be casted into Enum
      *
-     * @param mixed $value
-     *
+     * @param  mixed  $value
      * @return mixed
      */
     protected function getCastableValue($value)

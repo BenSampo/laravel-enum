@@ -56,6 +56,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      *
      * @param  mixed  $enumValue
      * @return void
+     *
+     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException
      */
     public function __construct($enumValue)
     {
@@ -101,6 +103,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      *
      * @param  string  $key
      * @return static
+     *
+     * @throws \BenSampo\Enum\Exceptions\InvalidEnumKeyException
      */
     public static function fromKey(string $key): self
     {

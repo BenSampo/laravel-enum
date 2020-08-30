@@ -62,9 +62,8 @@ I wrote a blog post about using laravel-enum: https://sampo.co.uk/blog/using-enu
 
 ### Requirements
 
-- Laravel `7.5` or newer  
-- PHP `7.2.5` or newer
-
+- Laravel `7.5` or higher  
+- PHP `7.2.5` or higher
 
 Via Composer
 

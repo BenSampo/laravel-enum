@@ -21,6 +21,8 @@ class EnumKey implements Rule
      *
      * @param  string  $enum
      * @return void
+     *
+     * @throws \InvalidArgumentException
      */
     public function __construct(string $enum)
     {

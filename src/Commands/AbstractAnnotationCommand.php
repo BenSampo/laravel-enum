@@ -4,12 +4,10 @@ declare(strict_types=1);
 namespace BenSampo\Enum\Commands;
 
 use ReflectionClass;
-use ReflectionException;
 use InvalidArgumentException;
 use Illuminate\Console\Command;
 use Symfony\Component\Finder\Finder;
 use Illuminate\Filesystem\Filesystem;
-use phpDocumentor\Reflection\DocBlock;
 use Laminas\Code\Generator\DocBlockGenerator;
 use Laminas\Code\Reflection\DocBlockReflection;
 use hanneskod\classtools\Iterator\ClassIterator;
@@ -54,23 +52,24 @@ abstract class AbstractAnnotationCommand extends Command
      * Handle the command call.
      *
      * @return int
-     * @throws ReflectionException
      */
     public function handle()
     {
         if ($this->argument('class')) {
             $this->annotateClass($this->argument('class'));
+
             return 0;
         }
 
         $this->annotateFolder();
+
+        return 0;
     }
 
     /**
      * Annotate classes in a given folder
      *
      * @return void
-     * @throws ReflectionException
      */
     protected function annotateFolder()
     {
@@ -78,7 +77,7 @@ abstract class AbstractAnnotationCommand extends Command
 
         $classes->enableAutoloading();
 
-        /** @var ReflectionClass $reflection */
+        /** @var \ReflectionClass $reflection */
         foreach ($classes as $reflection) {
             if ($reflection->isSubclassOf(static::PARENT_CLASS)) {
                 $this->annotate($reflection);
@@ -89,9 +88,11 @@ abstract class AbstractAnnotationCommand extends Command
     /**
      * Annotate a specific class by name
      *
-     * @param string $className
+     * @param  string  $className
      * @return void
-     * @throws ReflectionException
+     *
+     * @throws \InvalidArgumentException
+     * @throws \ReflectionException
      */
     protected function annotateClass(string $className)
     {
@@ -108,9 +109,9 @@ abstract class AbstractAnnotationCommand extends Command
     /**
      * Write new DocBlock to the class
      *
-     * @param ReflectionClass $reflectionClass
-     * @param DocBlock        $docBlock
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @param  \ReflectionClass  $reflectionClass
+     * @param  \Laminas\Code\Generator\DocBlockGenerator  $docBlock
+     * @return void
      */
     protected function updateClassDocblock(ReflectionClass $reflectionClass, DocBlockGenerator $docBlock)
     {
@@ -176,12 +177,6 @@ abstract class AbstractAnnotationCommand extends Command
 
     abstract protected function getDocblockTags(array $originalTags, ReflectionClass $reflectionClass): array;
 
-    /**
-     * @param ReflectionClass $reflectionClass
-     * @return void
-     *
-     * @throws ReflectionException
-     */
     abstract protected function annotate(ReflectionClass $reflectionClass);
 
     abstract protected function getClassFinder(): Finder;

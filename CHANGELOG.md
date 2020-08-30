@@ -29,9 +29,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Native attribute casting [#131](https://github.com/BenSampo/laravel-enum/pull/131)
 
+### Changed
+
+- Require Laravel 7.5 or higher
+- Require PHP 7.2.5 or higher
+
 ### Deprecated
 
-- Dropped support for legacy attribute casting in favour of native casting
+- Deprecate legacy attribute casting in favor of native casting
 
 ## [1.38.0](https://github.com/BenSampo/laravel-enum/compare/v1.37.0...v1.38.0) - 2020-06-07
 
@@ -43,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deprecated
 
-- Deprecate `Enum::getInstance()` in favour of `Enum::fromValue()`
+- Deprecate `Enum::getInstance()` in favor of `Enum::fromValue()`
 
 ## [1.37.0](https://github.com/BenSampo/laravel-enum/compare/v1.36.0...v1.37.0) - 2020-04-11
 

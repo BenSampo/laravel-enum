@@ -17,7 +17,7 @@ class EnumType extends Type
      * Gets the SQL declaration snippet for a field of this type.
      *
      * @param  mixed[]  $fieldDeclaration The field declaration.
-     * @param  AbstractPlatform  $platform The currently used database platform.
+     * @param  \Doctrine\DBAL\Platforms\AbstractPlatform  $platform The currently used database platform.
      *
      * @return string
      */
@@ -47,7 +47,7 @@ class EnumType extends Type
     }
 
     /**
-     * @param  AbstractPlatform  $platform
+     * @param  \Doctrine\DBAL\Platforms\AbstractPlatform  $platform
      * @return string[]
      */
     public function getMappedDatabaseTypes(AbstractPlatform $platform)
