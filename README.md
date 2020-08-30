@@ -41,6 +41,11 @@ Created by [Ben Sampson](https://sampo.co.uk)
 * [Localization](#localization)
 * [Overriding the getDescription method](#overriding-the-getdescription-method)
 * [Extending the Enum Base Class](#extending-the-enum-base-class)
+
+## Laravel Nova Integration
+
+Use the [nova-enum-field](https://github.com/simplesquid/nova-enum-field) package by simplesquid to easily create fields for your Enums in Nova.
+* [Laravel Nova Integration](#laravel-nova-integration)
 * [PHPStan Integration](#phpstan-integration)
 * [Artisan Command List](#artisan-command-list)
 * [Enum Class Reference](#enum-class-reference)
@@ -695,6 +700,10 @@ Enum::macro('asFlippedArray', function() {
 Now, on each of my enums, I can call it using `UserType::asFlippedArray()`.
 
 It's best to register the macro inside of a service providers' boot method.
+
+## Laravel Nova Integration
+
+Use the [nova-enum-field](https://github.com/simplesquid/nova-enum-field) package by Simple Squid to easily create fields for your Enums in Nova. See their readme for usage.
 
 ## PHPStan integration
 
