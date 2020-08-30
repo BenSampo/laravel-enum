@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v1.38.0...master)
 
+## [2.2.0](https://github.com/BenSampo/laravel-enum/compare/v2.1.0...v2.2.0) - 2020-08-30
+
+### Fixed
+
+- Model attributes which use Laravel 7 native casting now return the enum value when serialized. [#162](https://github.com/BenSampo/laravel-enum/issues/162) [#163](https://github.com/BenSampo/laravel-enum/issues/163)
+
+### Deprecated
+
+- `Enum::toArray()` should no longer be called statically, instead use `Enum::asArray()`.
+
 ## [2.1.0](https://github.com/BenSampo/laravel-enum/compare/v2.0.0...v2.1.0) - 2020-07-24
 
 ### Fixed
