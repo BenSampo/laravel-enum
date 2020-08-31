@@ -467,13 +467,7 @@ Returning `null` from the `parseDatabase` method will cause the attribute on the
 
 ### Model Annotation
 
-The package can automatically generate DocBlocks for your `Model` classes to provide type hinting & completion in your IDE.
-
-By default all `Model` classes in the root of `app` will be annotated (you can change the folder by passing a path to `--folder`)
-
-```bash
-php artisan enum:annotate-model
-```
+If you're using Laravel 7 casting, the [laravel-ide-helper](https://github.com/barryvdh/laravel-ide-helper) package can be used to automatically generate property docblocks for your models.
 
 ## Migrations
 
@@ -726,10 +720,6 @@ Create a new enum class. Pass `--flagged` as an option to create a flagged enum.
 `php artisan enum:annotate`  
 Generate DocBlock annotations for enum classes.  
 [Find out more](#instantiation)
-
-`php artisan enum:annotate-model`  
-Generate DocBlock annotations for models that have enums.  
-[Find out more](#model-annotation)
 
 ## Enum Class Reference
 
