@@ -20,7 +20,6 @@ class ArtisanCommandsTest extends ApplicationTestCase
         $commands = $this->app[Kernel::class]->all();
 
         $this->assertArrayHasKey('enum:annotate', $commands);
-        $this->assertArrayHasKey('enum:annotate-model', $commands);
         $this->assertArrayHasKey('make:enum', $commands);
     }
 
@@ -75,38 +74,6 @@ class ArtisanCommandsTest extends ApplicationTestCase
 
         $this->assertStringEqualsFile(__DIR__ . '/fixtures/annotated_class_one', $newClassOne);
         $this->assertStringEqualsFile(__DIR__ . '/fixtures/annotated_class_two', $newClassTwo);
-    }
-
-    public function test_annotate_model()
-    {
-        /** @var Filesystem $fileSystem */
-        $fileSystem = $this->app[Filesystem::class];
-
-        $fileSystem->copyDirectory(__DIR__ . '/Models/AnnotateOriginals', __DIR__ . '/Models/Annotate');
-
-        $this->assertSame(
-            0,
-            $this->artisan('enum:annotate-model', ['--folder' => __DIR__ . '/Models/Annotate'])
-        );
-
-        $newClass = $fileSystem->get(__DIR__ . '/Models/Annotate/Example.php');
-        $this->assertStringEqualsFile(__DIR__ . '/fixtures/annotated_model_class_one', $newClass);
-    }
-
-    public function test_annotate_model_with_existing_docblock_is_not_changed()
-    {
-        /** @var Filesystem $fileSystem */
-        $fileSystem = $this->app[Filesystem::class];
-
-        $original = $fileSystem->get(__DIR__ . '/Models/AnnotatedExample.php');
-
-        $this->assertSame(
-            0,
-            $this->artisan('enum:annotate-model', ['class' => AnnotatedExample::class])
-        );
-
-        $newClass = $fileSystem->get(__DIR__ . '/Models/AnnotatedExample.php');
-        $this->assertSame($original, $newClass);
     }
 
     public function test_annotate_enum_with_existing_docblock_is_not_changed()

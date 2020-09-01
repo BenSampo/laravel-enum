@@ -16,7 +16,7 @@ use Symfony\Component\Console\Input\InputArgument;
 
 abstract class AbstractAnnotationCommand extends Command
 {
-    const PARENT_CLASS = null;
+    public const PARENT_CLASS = null;
 
     /**
      * @var \Illuminate\Filesystem\Filesystem
