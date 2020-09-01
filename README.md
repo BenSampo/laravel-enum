@@ -823,12 +823,12 @@ Returns the enum key value pairs as an associative array.
 UserType::asArray(); // Returns ['Administrator' => 0, 'Moderator' => 1, 'Subscriber' => 2, 'SuperAdministrator' => 3]
 ```
 
-### static toSelectArray(): array
+### static asSelectArray(): array
 
 Returns the enum for use in a select as value => description.
 
 ```php
-UserType::toSelectArray(); // Returns [0 => 'Administrator', 1 => 'Moderator', 2 => 'Subscriber', 3 => 'Super administrator']
+UserType::asSelectArray(); // Returns [0 => 'Administrator', 1 => 'Moderator', 2 => 'Subscriber', 3 => 'Super administrator']
 ```
 
 ### static fromValue(mixed $enumValue): Enum
