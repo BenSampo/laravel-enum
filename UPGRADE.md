@@ -1,5 +1,15 @@
 # Upgrade Guide
 
+## 3.x
+
+### Laravel 8 required
+
+Laravel `8` or higher is required.
+
+### PHP 7.3 required
+
+PHP `7.3` or higher is now required.
+
 ## 2.x
 
 ### Laravel 7.5 required

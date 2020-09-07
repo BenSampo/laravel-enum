@@ -5,11 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v1.38.0...master)
+## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v3.0.0...master)
+
+## [3.0.0](https://github.com/BenSampo/laravel-enum/compare/v2.2.0...v3.0.0) - 2020-08-07
+
+### Added
+
+- Support for Laravel 8
 
 ### Fixed
 
-- Model annotation has been removed in favour of `laravel-ide-helper`
+- Model annotation has been removed in favour of `laravel-ide-helper` [#165](https://github.com/BenSampo/laravel-enum/pull/165)
 
 ## [2.2.0](https://github.com/BenSampo/laravel-enum/compare/v2.1.0...v2.2.0) - 2020-08-30
 

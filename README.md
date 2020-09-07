@@ -46,9 +46,13 @@ Created by [Ben Sampson](https://sampo.co.uk)
 * [Artisan Command List](#artisan-command-list)
 * [Enum Class Reference](#enum-class-reference)
 
-## Documentation for v1
-You are reading the documentation for `2.x`. If you're using Laravel 6 or below, please see the docs for `1.x`.
-Please see the [upgrade guide](./UPGRADE.md) for information on how to upgrade from `1.x`.
+## Documentation for older versions
+You are reading the documentation for `3.x`. 
+
+- If you're using **Laravel 7** or below, please see the [docs for `2.x`](https://github.com/BenSampo/laravel-enum/blob/v2.2.0/README.md).
+- If you're using **Laravel 6** or below, please see the [docs for `1.x`](https://github.com/BenSampo/laravel-enum/blob/v1.38.0/README.md).
+
+Please see the [upgrade guide](./UPGRADE.md) for information on how to upgrade to the latest version.
 
 ## Guide
 
@@ -58,8 +62,8 @@ I wrote a blog post about using laravel-enum: https://sampo.co.uk/blog/using-enu
 
 ### Requirements
 
-- Laravel `7.5` or higher  
-- PHP `7.2.5` or higher
+- Laravel `8` or higher  
+- PHP `7.3` or higher
 
 Via Composer
 
