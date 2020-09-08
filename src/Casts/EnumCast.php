@@ -41,7 +41,11 @@ class EnumCast implements CastsAttributes
      */
     protected function castEnum($value): ?Enum
     {
-        if ($value === null || $value instanceof $this->enumClass) {
+        if (is_null($value) && $this->enumClass::isNullable()) {
+            return new $this->enumClass($value);
+        }
+
+        if ($value instanceof $this->enumClass) {
             return $value;
         }
 

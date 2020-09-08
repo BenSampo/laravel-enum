@@ -2,19 +2,20 @@
 
 namespace BenSampo\Enum;
 
-use ReflectionClass;
-use JsonSerializable;
-use Illuminate\Support\Str;
 use BenSampo\Enum\Casts\EnumCast;
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Traits\Macroable;
 use BenSampo\Enum\Contracts\EnumContract;
 use BenSampo\Enum\Contracts\LocalizedEnum;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Database\Eloquent\Castable;
+use BenSampo\Enum\Contracts\NullableEnum;
 use BenSampo\Enum\Exceptions\InvalidEnumKeyException;
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
+use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Str;
+use Illuminate\Support\Traits\Macroable;
+use JsonSerializable;
+use ReflectionClass;
 
 abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializable
 {
@@ -59,7 +60,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      */
     public function __construct($enumValue)
     {
-        if (!static::hasValue($enumValue)) {
+        if (!(is_null($enumValue) && static::isNullable()) && !static::hasValue($enumValue)) {
             throw new InvalidEnumMemberException($enumValue, $this);
         }
 
@@ -454,6 +455,16 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     public static function getLocalizationKey(): string
     {
         return 'enums.' . static::class;
+    }
+
+    /**
+     * Check the enum implements the NullableEnum interface.
+     *
+     * @return bool
+     */
+    public static function isNullable(): bool
+    {
+        return isset(class_implements(static::class)[NullableEnum::class]);
     }
 
     /**
