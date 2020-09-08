@@ -461,6 +461,32 @@ final class UserType extends Enum
 
 Returning `null` from the `parseDatabase` method will cause the attribute on the model to also be `null`. This can be useful if your database stores inconsistent blank values such as empty strings instead of `NULL`.
 
+### Nullable Enum
+By adding `NullableEnum` interface, null values can be instantiated as an enum.
+
+```php
+final class UserType extends Enum implements NullableEnum
+{
+    const Administrator = 0;
+    const Moderator = 1;
+}
+```
+This guarantees that there is always an instance for operations like `is` or `in`.
+```php
+$example = Example::first();
+
+// Set enum value to null
+$example->user_type = null;
+
+// Without NullableEnum this will throw an error.
+$isModerator = $example->user_type->is(UserType::Moderator());
+```
+
+With this interface null enums can be directly created as well.
+```php
+$nullUserType = new UserType(null);
+```
+
 ### Model Annotation
 
 The package can automatically generate DocBlocks for your `Model` classes to provide type hinting & completion in your IDE.
