@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v1.38.0...master)
 
+### Added
+
+- Add NullableEnum Interface.
+
 ## [2.2.0](https://github.com/BenSampo/laravel-enum/compare/v2.1.0...v2.2.0) - 2020-08-30
 
 ### Fixed
