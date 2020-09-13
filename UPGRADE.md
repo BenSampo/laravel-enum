@@ -10,6 +10,10 @@ Laravel `8` or higher is required.
 
 PHP `7.3` or higher is now required.
 
+### toSelectArray() renamed to asSelectArray()
+
+You will need to change instances of `toSelectArray()` to `asSelectArray()`.
+
 ## 2.x
 
 ### Laravel 7.5 required
