@@ -414,6 +414,14 @@ User::hasFlag('permissions', UserPermissions::DeleteComments())->get();
 ```php
 User::notHasFlag('permissions', UserPermissions::DeleteComments())->get();
 ```
+#### hasAllFlags($column, $flags): Builder
+```php
+User::hasAllFlags('permissions', [UserPermissions::EditComment(), UserPermissions::ReadComment()])->get();
+```
+#### hasAnyFlags($column, $flags): Builder
+```php
+User::hasAnyFlags('permissions', [UserPermissions::DeleteComments(), UserPermissions::EditComments()])->get();
+```
 
 
 ## Attribute Casting

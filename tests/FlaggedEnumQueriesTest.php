@@ -47,5 +47,13 @@ class FlaggedEnumQueriesTest extends TestCase
         $this->assertEquals(0, ModelWithFlaggedQueries::query()->notHasFlag('superpowers', SuperPowers::Immortality)->count());
         $this->assertEquals(1, ModelWithFlaggedQueries::query()->notHasFlag('superpowers', SuperPowers::Flight)->count());
         $this->assertEquals(2, ModelWithFlaggedQueries::query()->notHasFlag('superpowers', SuperPowers::Invisibility)->count());
+
+        $this->assertEquals(0, ModelWithFlaggedQueries::query()->hasAllFlags('superpowers', [SuperPowers::Strength, SuperPowers::Flight])->count());
+        $this->assertEquals(1, ModelWithFlaggedQueries::query()->hasAllFlags('superpowers', [SuperPowers::Immortality, SuperPowers::Flight])->count());
+        $this->assertEquals(2, ModelWithFlaggedQueries::query()->hasAllFlags('superpowers', [SuperPowers::Immortality])->count());
+
+        $this->assertEquals(2, ModelWithFlaggedQueries::query()->hasAnyFlags('superpowers', [SuperPowers::Strength, SuperPowers::Flight])->count());
+        $this->assertEquals(1, ModelWithFlaggedQueries::query()->hasAnyFlags('superpowers', [SuperPowers::Invisibility, SuperPowers::Flight])->count());
+        $this->assertEquals(2, ModelWithFlaggedQueries::query()->hasAnyFlags('superpowers', [SuperPowers::Immortality])->count());
     }
 }
