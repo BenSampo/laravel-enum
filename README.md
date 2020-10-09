@@ -64,7 +64,7 @@ I wrote a blog post about using laravel-enum: https://sampo.co.uk/blog/using-enu
 Via Composer
 
 ```bash
-composer require bensampo/laravel-enum
+composer require bensampo/laravel-enum:^2.0
 ```
 
 ## Enum Library
