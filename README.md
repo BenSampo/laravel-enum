@@ -446,6 +446,49 @@ $example->user_type = UserType::Moderator;
 $example->user_type = UserType::Moderator();
 ```
 
+### Customising `$model->toArray()` behaviour
+
+When using `toArray` (or returning model/models from your controller as a response) Laravel will call the `toArray` method on the enum instance. 
+
+By default, this will return only the value in its native type. You may want to also have access to the other properties (key, description), for example to return
+to javascript app. 
+
+To customise this behaviour, you can override the `toArray` method on the enum instance.
+
+```php
+// Example Enum
+final class UserType extends Enum
+{
+    const Administrator = 0;
+    const Moderator = 1;
+}
+
+$instance = UserType::Moderator();
+
+// Default
+public function toArray()
+{
+    return $this->value;
+}
+// Returns int(1)
+
+// Return all properties
+public function toArray()
+{
+    return $this;
+}
+// Returnns an array of all the properties
+// array(3) {
+//  ["value"]=>
+//  string(5) "owner"
+//  ["key"]=>
+//  string(5) "OWNER"
+//  ["description"]=>
+//  string(5) "Owner"
+// }
+
+```
+
 ### Casting underlying native types
 Many databases return everything as strings (for example, an integer may be returned as the string `'1'`).
 To reduce friction for users of the library, we use type coercion to figure out the intended value. If you'd prefer to control this, you can override the `parseDatabase` static method on your enum class:
