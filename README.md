@@ -459,8 +459,8 @@ To customise this behaviour, you can override the `toArray` method on the enum i
 // Example Enum
 final class UserType extends Enum
 {
-    const Administrator = 0;
-    const Moderator = 1;
+    const ADMINISTRATOR = 0;
+    const MODERATOR = 1;
 }
 
 $instance = UserType::Moderator();
@@ -477,14 +477,14 @@ public function toArray()
 {
     return $this;
 }
-// Returnns an array of all the properties
+// Returns an array of all the properties
 // array(3) {
 //  ["value"]=>
-//  string(5) "owner"
+//  int(1)"
 //  ["key"]=>
-//  string(5) "OWNER"
+//  string(9) "MODERATOR"
 //  ["description"]=>
-//  string(5) "Owner"
+//  string(9) "Moderator"
 // }
 
 ```
