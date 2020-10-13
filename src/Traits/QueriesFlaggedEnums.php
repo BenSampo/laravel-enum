@@ -39,7 +39,6 @@ trait QueriesFlaggedEnums
         return $query->whereRaw("$column & ? = ?", [$mask, $mask]);
     }
 
-
     /**
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @param string $column
