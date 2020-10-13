@@ -2,9 +2,7 @@
 
 namespace BenSampo\Enum\Traits;
 
-use BenSampo\Enum\FlaggedEnum;
-
-trait FlaggedEnumQueries
+trait QueriesFlaggedEnums
 {
     /**
      * @param \Illuminate\Database\Eloquent\Builder $query

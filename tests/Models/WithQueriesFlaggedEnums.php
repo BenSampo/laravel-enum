@@ -2,12 +2,12 @@
 
 namespace BenSampo\Enum\Tests\Models;
 
-use BenSampo\Enum\Traits\FlaggedEnumQueries;
+use BenSampo\Enum\Traits\QueriesFlaggedEnums;
 use Illuminate\Database\Eloquent\Model;
 
-class ModelWithFlaggedQueries extends Model
+class WithQueriesFlaggedEnums extends Model
 {
-    use FlaggedEnumQueries;
+    use QueriesFlaggedEnums;
 
     public $table = 'test_models';
     
