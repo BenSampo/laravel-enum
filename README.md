@@ -403,8 +403,8 @@ UserPermissions::Admin()->getBitmask(); // 1111;
 UserPermissions::DeleteComments()->getBitmask(); // 1000;
 ```
 
-### Flagged enum in Eloquent queries
-To use flagged enums directly in your Eloquent queries, you may use the `FlaggedEnumQueries` trait on your model which provides you with the following methods:
+### Flagged enums in Eloquent queries
+To use flagged enums directly in your Eloquent queries, you may use the `QueriesFlaggedEnums` trait on your model which provides you with the following methods:
 
 #### hasFlag($column, $flag): Builder
 ```php
