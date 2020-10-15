@@ -74,7 +74,7 @@ class PHPStanTest extends TestCase
         $method = $this->getMethodReflection(AnnotatedConstants::class, 'InternalDeprecated');
 
         $deprecatedDescription = $method->getDeprecatedDescription();
-        $this->assertEquals('1.0 Deprecation description', $deprecatedDescription);
+        $this->assertSame('1.0 Deprecation description', $deprecatedDescription);
     }
 
     public function test_internal_constant_static_method_is_internal(): void
@@ -98,7 +98,7 @@ class PHPStanTest extends TestCase
         $method = $this->getMethodReflection(AnnotatedConstants::class, 'Deprecated');
 
         $deprecatedDescription = $method->getDeprecatedDescription();
-        $this->assertEquals('', $deprecatedDescription);
+        $this->assertNull($deprecatedDescription);
     }
 
     public function test_unannotated_constant_static_method_is_not_internal_and_not_deprecated(): void

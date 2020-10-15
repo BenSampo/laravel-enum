@@ -39,6 +39,6 @@ class EnumValidationTest extends TestCase
     {
         $rule = new Enum(UserType::class);
         
-        $this->assertEquals('enum:' . UserType::class, (string) $rule);
+        $this->assertSame('enum:' . UserType::class, (string) $rule);
     }
 }

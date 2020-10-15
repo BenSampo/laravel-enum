@@ -95,13 +95,13 @@ class EnumValueTest extends TestCase
     {
         $rule = new EnumValue(UserType::class, false);
     
-        $this->assertEquals('enum_value:' . UserType::class . ',false', (string) $rule);
+        $this->assertSame('enum_value:' . UserType::class . ',false', (string) $rule);
     }
     
     public function test_can_serialize_to_string_with_strict_type_checking()
     {
         $rule = new EnumValue(UserType::class, true);
         
-        $this->assertEquals('enum_value:' . UserType::class . ',true', (string) $rule);
+        $this->assertSame('enum_value:' . UserType::class . ',true', (string) $rule);
     }
 }

@@ -175,9 +175,9 @@ class FlaggedEnumTest extends TestCase
     public function test_can_get_bitmask_for_an_instance()
     {
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight]);
-        $this->assertEquals(1001, $powers->getBitmask());
+        $this->assertSame(1001, $powers->getBitmask());
 
-        $this->assertEquals(1101, SuperPowers::Superman()->getBitmask());
+        $this->assertSame(1101, SuperPowers::Superman()->getBitmask());
     }
 
     public function test_can_instantiate_a_flagged_enum_from_a_value_which_has_multiple_flags_set()
