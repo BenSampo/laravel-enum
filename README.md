@@ -45,6 +45,7 @@ Created by [Ben Sampson](https://sampo.co.uk)
 * [PHPStan Integration](#phpstan-integration)
 * [Artisan Command List](#artisan-command-list)
 * [Enum Class Reference](#enum-class-reference)
+* [Stubs](#stubs)
 
 ## Documentation for older versions
 You are reading the documentation for `3.x`. 
@@ -670,7 +671,7 @@ You can also use the 'pipe' syntax for rules.
 Run the following command to publish the language files to your `resources/lang` folder.
 
 ```
-php artisan vendor:publish --provider="BenSampo\Enum\EnumServiceProvider"
+php artisan vendor:publish --provider="BenSampo\Enum\EnumServiceProvider" --tag="translations"
 ```
 
 ### Enum descriptions
@@ -952,4 +953,12 @@ Attempt to instantiate a new Enum using the given key or value. Returns null if 
 UserType::coerce(0); // Returns instance of UserType with the value set to UserType::Administrator
 UserType::coerce('Administrator'); // Returns instance of UserType with the value set to UserType::Administrator
 UserType::coerce(99); // Returns null (not a valid enum value)
+```
+
+## Stubs
+
+Run the following command to publish the stub files to the `stubs` folder in the root of your application.
+
+```shell
+php artisan vendor:publish --provider="BenSampo\Enum\EnumServiceProvider" --tag="stubs"
 ```

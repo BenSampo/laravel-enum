@@ -34,6 +34,10 @@ class EnumServiceProvider extends ServiceProvider
      */
     private function bootCommands()
     {
+        $this->publishes([
+            __DIR__.'/Commands/stubs' => $this->app->basePath('stubs')
+        ], 'stubs');
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 EnumAnnotateCommand::class,
@@ -95,7 +99,7 @@ class EnumServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/laravelEnum'),
-        ]);
+        ], 'translations');
 
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang/', 'laravelEnum');
     }

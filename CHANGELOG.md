@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add the option to publish enums stubs [#182](https://github.com/BenSampo/laravel-enum/pull/182) 
 - Provide trait to query flagged enums using Eloquent
 
 ## [3.0.0](https://github.com/BenSampo/laravel-enum/compare/v2.2.0...v3.0.0) - 2020-08-07
