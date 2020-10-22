@@ -5,12 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v3.0.0...master)
+## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v3.1.0...master)
+
+## [3.1.0](https://github.com/BenSampo/laravel-enum/compare/v3.0.0...v3.1.0) - 2020-10-22
 
 ### Added
 
+- Added trait to query flagged enums using Eloquent [#180](https://github.com/BenSampo/laravel-enum/pull/180) 
 - Add the option to publish enums stubs [#182](https://github.com/BenSampo/laravel-enum/pull/182) 
-- Provide trait to query flagged enums using Eloquent
+
+### Changed
+
+- Improved test equality strictness [#185](https://github.com/BenSampo/laravel-enum/pull/185) 
+
+### Fixed
+
+- fix:`toSelectArray` breaking change + document `toArray` change [#184](https://github.com/BenSampo/laravel-enum/pull/184) 
 
 ## [3.0.0](https://github.com/BenSampo/laravel-enum/compare/v2.2.0...v3.0.0) - 2020-08-07
 
