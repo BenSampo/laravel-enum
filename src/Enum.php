@@ -397,6 +397,16 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
+     * @deprecated use self::asSelectArray()
+     *
+     * @return array
+     */
+    public static function toSelectArray(): array
+    {
+       return self::asSelectArray();
+    }
+
+    /**
      * Check that the enum contains a specific key.
      *
      * @param  string  $key
