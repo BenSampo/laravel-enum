@@ -404,6 +404,27 @@ UserPermissions::Admin()->getBitmask(); // 1111;
 UserPermissions::DeleteComments()->getBitmask(); // 1000;
 ```
 
+### Flagged enums in Eloquent queries
+To use flagged enums directly in your Eloquent queries, you may use the `QueriesFlaggedEnums` trait on your model which provides you with the following methods:
+
+#### hasFlag($column, $flag): Builder
+```php
+User::hasFlag('permissions', UserPermissions::DeleteComments())->get();
+```
+#### notHasFlag($column, $flag): Builder
+```php
+User::notHasFlag('permissions', UserPermissions::DeleteComments())->get();
+```
+#### hasAllFlags($column, $flags): Builder
+```php
+User::hasAllFlags('permissions', [UserPermissions::EditComment(), UserPermissions::ReadComment()])->get();
+```
+#### hasAnyFlags($column, $flags): Builder
+```php
+User::hasAnyFlags('permissions', [UserPermissions::DeleteComments(), UserPermissions::EditComments()])->get();
+```
+
+
 ## Attribute Casting
 
 You may cast model attributes to enums using Laravel 7.x's built in custom casting. This will cast the attribute to an enum instance when getting and back to the enum value when setting.
@@ -445,6 +466,49 @@ $example->user_type = UserType::Moderator;
 
 // Set using enum instance
 $example->user_type = UserType::Moderator();
+```
+
+### Customising `$model->toArray()` behaviour
+
+When using `toArray` (or returning model/models from your controller as a response) Laravel will call the `toArray` method on the enum instance. 
+
+By default, this will return only the value in its native type. You may want to also have access to the other properties (key, description), for example to return
+to javascript app. 
+
+To customise this behaviour, you can override the `toArray` method on the enum instance.
+
+```php
+// Example Enum
+final class UserType extends Enum
+{
+    const ADMINISTRATOR = 0;
+    const MODERATOR = 1;
+}
+
+$instance = UserType::Moderator();
+
+// Default
+public function toArray()
+{
+    return $this->value;
+}
+// Returns int(1)
+
+// Return all properties
+public function toArray()
+{
+    return $this;
+}
+// Returns an array of all the properties
+// array(3) {
+//  ["value"]=>
+//  int(1)"
+//  ["key"]=>
+//  string(9) "MODERATOR"
+//  ["description"]=>
+//  string(9) "Moderator"
+// }
+
 ```
 
 ### Casting underlying native types
