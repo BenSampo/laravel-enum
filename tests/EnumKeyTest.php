@@ -42,6 +42,6 @@ class EnumKeyTest extends TestCase
     {
         $rule = new EnumKey(UserType::class);
         
-        $this->assertEquals('enum_key:' . UserType::class, (string) $rule);
+        $this->assertSame('enum_key:' . UserType::class, (string) $rule);
     }
 }

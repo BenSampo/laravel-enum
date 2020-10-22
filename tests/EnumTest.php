@@ -12,8 +12,8 @@ class EnumTest extends TestCase
 {
     public function test_enum_values()
     {
-        $this->assertEquals(0, UserType::Administrator);
-        $this->assertEquals(3, UserType::SuperAdministrator);
+        $this->assertSame(0, UserType::Administrator);
+        $this->assertSame(3, UserType::SuperAdministrator);
     }
 
     public function test_enum_get_keys()
@@ -27,10 +27,10 @@ class EnumTest extends TestCase
     public function test_enum_coerce()
     {
         $enum = UserType::coerce(UserType::Administrator()->value);
-        $this->assertEquals(UserType::Administrator, $enum->value);
+        $this->assertSame(UserType::Administrator, $enum->value);
 
         $enum = UserType::coerce(UserType::Administrator()->key);
-        $this->assertEquals(UserType::Administrator, $enum->value);
+        $this->assertSame(UserType::Administrator, $enum->value);
 
         $enum = UserType::coerce(-1);
         $this->assertEquals(null, $enum);
@@ -49,33 +49,33 @@ class EnumTest extends TestCase
 
     public function test_enum_get_key()
     {
-        $this->assertEquals('Moderator', UserType::getKey(1));
-        $this->assertEquals('SuperAdministrator', UserType::getKey(3));
+        $this->assertSame('Moderator', UserType::getKey(1));
+        $this->assertSame('SuperAdministrator', UserType::getKey(3));
     }
 
     public function test_enum_get_key_using_string_value()
     {
-        $this->assertEquals('Administrator', StringValues::getKey('administrator'));
+        $this->assertSame('Administrator', StringValues::getKey('administrator'));
     }
 
     public function test_enum_get_value()
     {
-        $this->assertEquals(1, UserType::getValue('Moderator'));
-        $this->assertEquals(3, UserType::getValue('SuperAdministrator'));
+        $this->assertSame(1, UserType::getValue('Moderator'));
+        $this->assertSame(3, UserType::getValue('SuperAdministrator'));
     }
 
     public function test_enum_get_value_using_string_key()
     {
-        $this->assertEquals('administrator', StringValues::getValue('Administrator'));
+        $this->assertSame('administrator', StringValues::getValue('Administrator'));
     }
 
     public function test_enum_get_description()
     {
-        $this->assertEquals('Normal', MixedKeyFormats::getDescription(MixedKeyFormats::Normal));
-        $this->assertEquals('Multi word key name', MixedKeyFormats::getDescription(MixedKeyFormats::MultiWordKeyName));
-        $this->assertEquals('Uppercase', MixedKeyFormats::getDescription(MixedKeyFormats::UPPERCASE));
-        $this->assertEquals('Uppercase snake case', MixedKeyFormats::getDescription(MixedKeyFormats::UPPERCASE_SNAKE_CASE));
-        $this->assertEquals('Lowercase snake case', MixedKeyFormats::getDescription(MixedKeyFormats::lowercase_snake_case));
+        $this->assertSame('Normal', MixedKeyFormats::getDescription(MixedKeyFormats::Normal));
+        $this->assertSame('Multi word key name', MixedKeyFormats::getDescription(MixedKeyFormats::MultiWordKeyName));
+        $this->assertSame('Uppercase', MixedKeyFormats::getDescription(MixedKeyFormats::UPPERCASE));
+        $this->assertSame('Uppercase snake case', MixedKeyFormats::getDescription(MixedKeyFormats::UPPERCASE_SNAKE_CASE));
+        $this->assertSame('Lowercase snake case', MixedKeyFormats::getDescription(MixedKeyFormats::lowercase_snake_case));
     }
 
     public function test_enum_get_random_key()
@@ -181,6 +181,6 @@ class EnumTest extends TestCase
 
     public function test_enum_can_be_json_encoded()
     {
-        $this->assertEquals('1', json_encode(UserType::Moderator()));
+        $this->assertSame('1', json_encode(UserType::Moderator()));
     }
 }
