@@ -403,6 +403,27 @@ UserPermissions::Admin()->getBitmask(); // 1111;
 UserPermissions::DeleteComments()->getBitmask(); // 1000;
 ```
 
+### Flagged enums in Eloquent queries
+To use flagged enums directly in your Eloquent queries, you may use the `QueriesFlaggedEnums` trait on your model which provides you with the following methods:
+
+#### hasFlag($column, $flag): Builder
+```php
+User::hasFlag('permissions', UserPermissions::DeleteComments())->get();
+```
+#### notHasFlag($column, $flag): Builder
+```php
+User::notHasFlag('permissions', UserPermissions::DeleteComments())->get();
+```
+#### hasAllFlags($column, $flags): Builder
+```php
+User::hasAllFlags('permissions', [UserPermissions::EditComment(), UserPermissions::ReadComment()])->get();
+```
+#### hasAnyFlags($column, $flags): Builder
+```php
+User::hasAnyFlags('permissions', [UserPermissions::DeleteComments(), UserPermissions::EditComments()])->get();
+```
+
+
 ## Attribute Casting
 
 You may cast model attributes to enums using Laravel 7.x's built in custom casting. This will cast the attribute to an enum instance when getting and back to the enum value when setting.
