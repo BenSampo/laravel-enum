@@ -495,6 +495,10 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      */
     public static function serializeDatabase($value)
     {
+        if ($value instanceof self) {
+            return $value->value;
+        }
+
         return $value;
     }
 

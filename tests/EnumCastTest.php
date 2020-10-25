@@ -3,12 +3,13 @@
 namespace BenSampo\Enum\Tests;
 
 use BenSampo\Enum\Tests\Models\WithTraitButNoCasts;
+use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\TestCase;
 use BenSampo\Enum\Tests\Enums\UserType;
 use BenSampo\Enum\Tests\Models\Example;
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 
-class EnumCastTest extends TestCase
+class EnumCastTest extends ApplicationTestCase
 {
     public function test_model_can_detect_which_attributes_to_cast_to_an_enum()
     {
@@ -71,5 +72,22 @@ class EnumCastTest extends TestCase
         $model = app(WithTraitButNoCasts::class);
         $model->foo = true;
         $this->assertTrue($model->foo);
+    }
+
+    public function test_get_changes_works_correctly()
+    {
+        $id = Example::create(['user_type' => 1])->id;
+
+        $model = Example::find($id);
+
+        $this->assertEquals(UserType::Moderator(), $model->user_type);
+        $this->assertEmpty($model->getChanges());
+
+        $model->user_type = 1;
+        $this->assertEmpty($model->getChanges());
+        $model->save();
+
+        $this->assertEquals(UserType::Moderator(), $model->user_type);
+        $this->assertEmpty($model->getChanges());
     }
 }
