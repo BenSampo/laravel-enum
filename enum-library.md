@@ -10,3 +10,4 @@ If you wish to contribute an enum, please submit via a pull request.
 - [Country calling codes](https://gist.github.com/MammutAlex/af182c622fc10991ce42f2397fb54e4a) - submitted by [Alex Kovalchuk](https://github.com/MammutAlex)
 - [RFC 5424 log levels](https://gist.github.com/othyn/fd2fb2e611de832398e42130f2f2143d) - submitted by [Ben Tindall](https://github.com/othyn), [RFC spec](https://tools.ietf.org/html/rfc5424).
 - [HTTP status codes](https://gist.github.com/MatteoGgl/16d28a0b908b2340a2f461fa3d95f807) - submitted by [Matteo Guglielmetti](https://github.com/MatteoGgl)
+- [MIME types](https://gist.github.com/Hodaifa98/4a470bcb0114e3dcde3f8337a27704f3) - submitted by [Hodaifa98](https://github.com/hodaifa98)
