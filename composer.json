@@ -19,7 +19,7 @@
         }
     ],
     "require": {
-        "php": "^7.3",
+        "php": "^7.3|^8.0",
         "hanneskod/classtools": "~1.0",
         "illuminate/support": "^8.0",
         "illuminate/contracts": "^8.0",
