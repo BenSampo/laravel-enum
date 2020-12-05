@@ -1,5 +1,5 @@
 {
-    "name": "bensampo/laravel-enum",
+    "name": "taliptako/laravel-enum",
     "type": "library",
     "description": "Simple, extensible and powerful enumeration implementation for Laravel.",
     "keywords": [
