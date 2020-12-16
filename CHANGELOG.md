@@ -7,20 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v3.1.0...master)
 
+## [3.2.0](https://github.com/BenSampo/laravel-enum/compare/v3.1.0...v3.2.0) - 2020-12-15
+
+### Added
+
+- PHP 8.0 support [#203](https://github.com/BenSampo/laravel-enum/pull/203)
+
+### Changed
+
+- Switched from Travis to GitHub Actions
+
 ## [3.1.0](https://github.com/BenSampo/laravel-enum/compare/v3.0.0...v3.1.0) - 2020-10-22
 
 ### Added
 
-- Added trait to query flagged enums using Eloquent [#180](https://github.com/BenSampo/laravel-enum/pull/180) 
-- Add the option to publish enums stubs [#182](https://github.com/BenSampo/laravel-enum/pull/182) 
+- Added trait to query flagged enums using Eloquent [#180](https://github.com/BenSampo/laravel-enum/pull/180)
+- Add the option to publish enums stubs [#182](https://github.com/BenSampo/laravel-enum/pull/182)
 
 ### Changed
 
-- Improved test equality strictness [#185](https://github.com/BenSampo/laravel-enum/pull/185) 
+- Improved test equality strictness [#185](https://github.com/BenSampo/laravel-enum/pull/185)
 
 ### Fixed
 
-- fix:`toSelectArray` breaking change + document `toArray` change [#184](https://github.com/BenSampo/laravel-enum/pull/184) 
+- fix:`toSelectArray` breaking change + document `toArray` change [#184](https://github.com/BenSampo/laravel-enum/pull/184)
 
 ## [3.0.0](https://github.com/BenSampo/laravel-enum/compare/v2.2.0...v3.0.0) - 2020-08-07
 
@@ -111,7 +121,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add tests and make `EnumMethodReflection` return generating constant values for `isInternal`, `isDeprecated`, and
-    `getDeprecatedDescription` [#121](https://github.com/BenSampo/laravel-enum/pull/121)
+  `getDeprecatedDescription` [#121](https://github.com/BenSampo/laravel-enum/pull/121)
 
 ## [1.31.0](https://github.com/BenSampo/laravel-enum/compare/v1.30...v1.31) - 2020-02-09
 
