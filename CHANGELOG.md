@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v3.1.0...master)
 
+## Changed
+
+- Update laminas/laminas-code requirement from ^3.4 to ^3.4|^4.0 [#204](https://github.com/BenSampo/laravel-enum/pull/204)
+
 ## [3.2.0](https://github.com/BenSampo/laravel-enum/compare/v3.1.0...v3.2.0) - 2020-12-15
 
 ### Added

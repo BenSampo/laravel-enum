@@ -63,7 +63,7 @@ class QueriesFlaggedEnumsTest extends TestCase
 
     /** @test */
     public function it_can_ensure_any_flag_is_present()
-    {       
+    {
         $this->assertEquals(2, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Strength, SuperPowers::Flight])->count());
         $this->assertEquals(1, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Invisibility, SuperPowers::Flight])->count());
         $this->assertEquals(2, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Immortality])->count());

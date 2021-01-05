@@ -403,7 +403,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      */
     public static function toSelectArray(): array
     {
-       return self::asSelectArray();
+        return self::asSelectArray();
     }
 
     /**
@@ -505,7 +505,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      * @return string
      * @return string|\Illuminate\Contracts\Database\Eloquent\CastsAttributes|\Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes
      */
-    public static function castUsing(array $arguments) {
+    public static function castUsing(array $arguments)
+    {
         return new EnumCast(static::class);
     }
 
