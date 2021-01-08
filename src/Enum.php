@@ -117,6 +117,38 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
+     * Make an EnumKey rule instance for this Enum.
+     *
+     * @return \BenSampo\Enum\Rules\EnumKey
+     */
+    public static function validateKey(): EnumKey
+    {
+        return new EnumKey(static::class);
+    }
+
+    /**
+     * Make an EnumValue rule instance for this Enum.
+     *
+     * @param bool $strict
+     *
+     * @return \BenSampo\Enum\Rules\EnumValue
+     */
+    public static function validateValue(bool $strict = true): EnumValue
+    {
+        return new EnumValue(static::class, $strict);
+    }
+
+    /**
+     * Make an Enum rule instance for this Enum.
+     *
+     * @return \BenSampo\Enum\Rules\Enum
+     */
+    public static function validateInstance(): EnumInstanceRule
+    {
+        return new EnumInstanceRule(static::class);
+    }
+
+    /**
      * Attempt to instantiate an enum by calling the enum key as a static method.
      *
      * This function defers to the macroable __callStatic function if a macro is found using the static method called.

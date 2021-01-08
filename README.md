@@ -650,6 +650,16 @@ public function store(Request $request)
 }
 ```
 
+### Validation Helpers
+
+You can also use helper methods directly on your Enums:
+
+```php
+'user_type' => UserType::validateKey(),      // new EnumKey(UserType::class)
+'user_type' => UserType::validateValue(),    // new EnumValue(UserType::class)
+'user_type' => UserType::validateInstance(), // new Enum(UserType::class)
+```
+
 ### Pipe Validation
 
 You can also use the 'pipe' syntax for rules.

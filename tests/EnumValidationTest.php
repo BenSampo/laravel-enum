@@ -41,4 +41,37 @@ class EnumValidationTest extends TestCase
         
         $this->assertSame('enum:' . UserType::class, (string) $rule);
     }
+
+    public function test_can_use_validation_helpers_on_enum_class()
+    {
+        $keyRule = StringValues::validateKey();
+        $strictValueRule = StringValues::validateValue();
+        $permissiveValueRule = StringValues::validateValue(false);
+        $instanceRule = StringValues::validateInstance();
+
+        $class_with_to_string = new class {
+
+            public function __toString()
+            {
+                return 'administrator';
+            }
+        };
+
+        $this->assertTrue($keyRule->passes('', 'Administrator'));
+        $this->assertFalse($keyRule->passes('', 'NotAValidUserType'));
+
+        $this->assertTrue($strictValueRule->passes('', 'administrator'));
+        $this->assertFalse($strictValueRule->passes('', 'not_a_valid_user_type'));
+        $this->assertFalse($strictValueRule->passes('', $class_with_to_string));
+
+        $this->assertTrue($permissiveValueRule->passes('', 'administrator'));
+        $this->assertFalse($permissiveValueRule->passes('', 'not_a_valid_user_type'));
+        $this->assertTrue($permissiveValueRule->passes('', $class_with_to_string));
+
+        $this->assertTrue($instanceRule->passes('', StringValues::Administrator()));
+        $this->assertFalse($instanceRule->passes('', 'Administrator'));
+        $this->assertFalse($instanceRule->passes('', 'administrator'));
+        $this->assertFalse($instanceRule->passes('', $class_with_to_string));
+        $this->assertFalse($instanceRule->passes('', UserType::Administrator()));
+    }
 }
