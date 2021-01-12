@@ -30,6 +30,14 @@ class EnumValueTest extends TestCase
         $this->assertFalse($fails3);
     }
 
+    public function test_custom_validation_message_is_set()
+    {
+        $expected = 'EnumKey custom validation message';
+        $message = (new EnumValue(UserType::class, true, $expected))->message();
+
+        $this->assertSame($expected, $message);
+    }
+
     public function test_flagged_enum_passes_with_no_flags_set()
     {
         $passed = (new EnumValue(SuperPowers::class))->passes('', 0);

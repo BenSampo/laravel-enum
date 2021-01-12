@@ -31,6 +31,14 @@ class EnumKeyTest extends TestCase
         $this->assertFalse($fails3);
     }
 
+    public function test_custom_validation_message_is_set()
+    {
+        $expected = 'EnumKey custom validation message';
+        $message = (new EnumKey(UserType::class, $expected))->message();
+
+        $this->assertSame($expected, $message);
+    }
+
     public function test_an_exception_is_thrown_if_an_non_existing_class_is_passed()
     {
         $this->expectException(\InvalidArgumentException::class);
