@@ -620,6 +620,12 @@ By default, type checking is set to strict, but you can bypass this by passing `
 new EnumValue(UserType::class, false) // Turn off strict type checking.
 ```
 
+You may pass an optional third parameter to set a custom error message when the validation failed. This is useful if you want to create a dynamic error message and/or you don't want to override the localization files.
+
+```php
+new EnumValue(UserType::class, true, "This is the custom error message")
+```
+
 #### Enum key
 
 You can also validate on keys using the `EnumKey` rule. This is useful if you're taking the enum key as a URL parameter for sorting or filtering for example.
@@ -635,6 +641,12 @@ public function store(Request $request)
 }
 ```
 
+You may pass an optional second parameter to set a custom error message when the validation failed. This is useful if you want to create a dynamic error message and/or you don't want to override the localization files.
+
+```php
+new EnumKey(UserType::class, "This is the custom error message")
+```
+
 #### Enum instance
 
 Additionally you can validate that a parameter is an instance of a given enum.
@@ -648,6 +660,12 @@ public function store(Request $request)
         'user_type' => ['required', new Enum(UserType::class)],
     ]);
 }
+```
+
+You may pass an optional second parameter to set a custom error message when the validation failed. This is useful if you want to create a dynamic error message and/or you don't want to override the localization files.
+
+```php
+new Enum(UserType::class, "This is the custom error message")
 ```
 
 ### Pipe Validation
