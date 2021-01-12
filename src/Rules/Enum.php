@@ -17,16 +17,23 @@ class Enum implements Rule
     protected $enumClass;
 
     /**
+     * @var string
+     */
+    protected $message;
+
+    /**
      * Create a new rule instance.
      *
      * @param  string  $enum
+     * @param  string  $message
      * @return void
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(string $enum)
+    public function __construct(string $enum, string $message = null)
     {
         $this->enumClass = $enum;
+        $this->message = $message;
 
         if (! class_exists($this->enumClass)) {
             throw new \InvalidArgumentException("Cannot validate against the enum, the class {$this->enumClass} doesn't exist.");
@@ -52,7 +59,7 @@ class Enum implements Rule
      */
     public function message()
     {
-        return __('laravelEnum::messages.enum');
+        return $this->message ?: __('laravelEnum::messages.enum');
     }
 
     /**
