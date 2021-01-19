@@ -443,7 +443,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      */
     protected static function getFriendlyKeyName(string $key): string
     {
-        if (ctype_upper(str_replace('_', '', $key))) {
+        if (ctype_upper(preg_replace('/[^a-zA-Z]/', '', $key))) {
             $key = strtolower($key);
         }
 
