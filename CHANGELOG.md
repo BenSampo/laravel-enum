@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v3.1.0...master)
 
+### Changed
+
+- Allow passing iterables to Enum::in() [#212](https://github.com/BenSampo/laravel-enum/pull/212)
+
 ## [3.2.0](https://github.com/BenSampo/laravel-enum/compare/v3.1.0...v3.2.0) - 2020-12-15
 
 ### Added
