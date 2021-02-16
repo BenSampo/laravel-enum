@@ -187,7 +187,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      * @param  (mixed|static)[]  $values
      * @return bool
      */
-    public function in(array $values): bool
+    public function in(iterable $values): bool
     {
         foreach ($values as $value) {
             if ($this->is($value)) {
@@ -495,6 +495,10 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      */
     public static function serializeDatabase($value)
     {
+        if ($value instanceof self) {
+            return $value->value;
+        }
+
         return $value;
     }
 
