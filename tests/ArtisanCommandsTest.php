@@ -2,10 +2,10 @@
 
 namespace BenSampo\Enum\Tests;
 
-use BenSampo\Enum\Tests\Enums\Annotate\AnnotateTestOneEnum;
-use BenSampo\Enum\Tests\Enums\MixedKeyFormatsAnnotated;
-use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Contracts\Console\Kernel;
+use BenSampo\Enum\Tests\Enums\MixedKeyFormatsAnnotated;
+use BenSampo\Enum\Tests\Enums\Annotate\AnnotateTestOneEnum;
 
 class ArtisanCommandsTest extends ApplicationTestCase
 {
@@ -24,10 +24,7 @@ class ArtisanCommandsTest extends ApplicationTestCase
 
         $fileSystem->copyDirectory(__DIR__ . '/Enums/AnnotateOriginals', __DIR__ . '/Enums/Annotate');
 
-        $this->assertSame(
-            0,
-            $this->artisan('enum:annotate', ['class' => AnnotateTestOneEnum::class])
-        );
+        $this->artisan('enum:annotate', ['class' => AnnotateTestOneEnum::class])->assertExitCode(0);
 
         $newClass = $fileSystem->get(__DIR__ . '/Enums/Annotate/AnnotateTestOneEnum.php');
 
@@ -41,10 +38,7 @@ class ArtisanCommandsTest extends ApplicationTestCase
 
         $fileSystem->copyDirectory(__DIR__ . '/Enums/AnnotateOriginals', __DIR__ . '/Enums/Annotate');
 
-        $this->assertSame(
-            0,
-            $this->artisan('enum:annotate', ['class' => AnnotateTestOneEnum::class])
-        );
+        $this->artisan('enum:annotate', ['class' => AnnotateTestOneEnum::class])->assertExitCode(0);
 
         $newClass = $fileSystem->get(__DIR__ . '/Enums/Annotate/AnnotateTestOneEnum.php');
 
@@ -58,10 +52,7 @@ class ArtisanCommandsTest extends ApplicationTestCase
 
         $fileSystem->copyDirectory(__DIR__ . '/Enums/AnnotateOriginals', __DIR__ . '/Enums/Annotate');
 
-        $this->assertSame(
-            0,
-            $this->artisan('enum:annotate', ['--folder' => __DIR__ . '/Enums/Annotate'])
-        );
+        $this->artisan('enum:annotate', ['--folder' => __DIR__ . '/Enums/Annotate'])->assertExitCode(0);
 
         $newClassOne = $fileSystem->get(__DIR__ . '/Enums/Annotate/AnnotateTestOneEnum.php');
         $newClassTwo = $fileSystem->get(__DIR__ . '/Enums/Annotate/AnnotateTestTwoEnum.php');
@@ -77,11 +68,7 @@ class ArtisanCommandsTest extends ApplicationTestCase
 
         $original = $fileSystem->get(__DIR__ . '/Enums/MixedKeyFormatsAnnotated.php');
 
-
-        $this->assertSame(
-            0,
-            $this->artisan('enum:annotate', ['class' => MixedKeyFormatsAnnotated::class])
-        );
+        $this->artisan('enum:annotate', ['class' => MixedKeyFormatsAnnotated::class])->assertExitCode(0);
 
         $newClass = $fileSystem->get(__DIR__ . '/Enums/MixedKeyFormatsAnnotated.php');
         $this->assertSame($original, $newClass);
