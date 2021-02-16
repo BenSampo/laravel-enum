@@ -196,7 +196,7 @@ $admin->is(UserType::Moderator());     // false
 $admin->is('random-value');            // false
 ```
 
-You can also check to see if the instance's value matches against an array of possible values using the `in` method.
+You can also check to see if the instance's value matches against an array of possible values using the `in` method. Iterables can also be checked against.
 
 ```php
 $admin = UserType::fromValue(UserType::Administrator);

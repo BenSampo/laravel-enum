@@ -2,6 +2,7 @@
 
 namespace BenSampo\Enum\Tests;
 
+use ArrayIterator;
 use BenSampo\Enum\Tests\Enums\IntegerValues;
 use BenSampo\Enum\Tests\Enums\StringValues;
 use BenSampo\Enum\Tests\Enums\UserType;
@@ -63,6 +64,22 @@ class EnumComparisonTest extends TestCase
         ]));
         $this->assertTrue($administrator->in([StringValues::Administrator]));
         $this->assertFalse($administrator->in([StringValues::Moderator]));
+    }
+
+    public function test_enum_instance_in_iterator()
+    {
+        $administrator = new StringValues(StringValues::Administrator);
+
+        $this->assertTrue($administrator->in(new ArrayIterator([
+            StringValues::Moderator,
+            StringValues::Administrator
+        ])));
+        $this->assertTrue($administrator->in(new ArrayIterator([
+            new StringValues(StringValues::Moderator),
+            new StringValues(StringValues::Administrator)
+        ])));
+        $this->assertTrue($administrator->in(new ArrayIterator([StringValues::Administrator])));
+        $this->assertFalse($administrator->in(new ArrayIterator([StringValues::Moderator])));
     }
 
     /**
