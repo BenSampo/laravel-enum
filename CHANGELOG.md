@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v3.1.0...master)
 
+## [3.3.0](https://github.com/BenSampo/laravel-enum/compare/v3.2.0...v3.3.0) - 2021-02-16
+
 ### Changed
 
 - Update doctrine/dbal requirement from ^2.9 to ^2.9|^3.0 [#208](https://github.com/BenSampo/laravel-enum/pull/208)
