@@ -27,7 +27,7 @@
         "nikic/php-parser": "^4.10"
     },
     "require-dev": {
-        "doctrine/dbal": "^2.9",
+        "doctrine/dbal": "^2.9|^3.0",
         "orchestra/testbench": "^6.2",
         "mockery/mockery": "^1.4",
         "phpstan/phpstan": "^0.12.59",
