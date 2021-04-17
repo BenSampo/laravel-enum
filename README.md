@@ -431,6 +431,21 @@ You may cast model attributes to enums using Laravel 7.x's built in custom casti
 Since `Enum::class` implements the `Castable` contract, you just need to specify the classname of the enum:
 
 ```php
+use BenSampo\Enum\Tests\Enums\UserType;
+use Illuminate\Database\Eloquent\Model;
+
+class Example extends Model
+{
+    protected $casts = [
+        'random_flag' => 'boolean',     // Example standard laravel cast
+        'user_type' => UserType::class, // Example enum cast
+    ];
+}
+```
+
+Or you may cast model attributes to enums using the `CastsEnums` trait. This will cast the attribute to an enum instance when getting and back to the enum value when setting.
+
+```php
 use BenSampo\Enum\Traits\CastsEnums;
 use BenSampo\Enum\Tests\Enums\UserType;
 use Illuminate\Database\Eloquent\Model;
@@ -439,9 +454,17 @@ class Example extends Model
 {
     use CastsEnums;
 
+    protected $enumCasts = [
+        // 'attribute_name' => Enum::class
+        'user_type' => UserType::class,
+    ];
+
+    /**
+     * Existing casts are processed before $enumCasts which can be useful if you're 
+     * taking input from forms and your enum values are integers.
+     */
     protected $casts = [
-        'random_flag' => 'boolean',     // Example standard laravel cast
-        'user_type' => UserType::class, // Example enum cast
+        'user_type' => 'int',
     ];
 }
 ```
