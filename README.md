@@ -334,7 +334,8 @@ $permissions->addFlags([UserPermissions::EditComments, UserPermissions::WriteCom
 Add all flags to the enum
 
 ```php
-$permissions = UserPermissions::flags()->addAllFlags();
+$permissions = UserPermissions::flags([UserPermissions::ReadComments]);
+$permissions->addAllFlags(); // Enum now has all flags
 ```
 
 #### removeFlag($flag): Enum
