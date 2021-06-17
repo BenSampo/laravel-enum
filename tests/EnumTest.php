@@ -5,6 +5,7 @@ namespace BenSampo\Enum\Tests;
 use BenSampo\Enum\Enum;
 use PHPUnit\Framework\TestCase;
 use BenSampo\Enum\Tests\Enums\UserType;
+use BenSampo\Enum\Tests\Enums\SuperPowers;
 use BenSampo\Enum\Tests\Enums\StringValues;
 use BenSampo\Enum\Tests\Enums\MixedKeyFormats;
 
@@ -27,16 +28,36 @@ class EnumTest extends TestCase
     public function test_enum_coerce()
     {
         $enum = UserType::coerce(UserType::Administrator()->value);
+        $this->assertInstanceOf(UserType::class, $enum);
         $this->assertSame(UserType::Administrator, $enum->value);
 
         $enum = UserType::coerce(UserType::Administrator()->key);
+        $this->assertInstanceOf(UserType::class, $enum);
         $this->assertSame(UserType::Administrator, $enum->value);
 
         $enum = UserType::coerce(-1);
-        $this->assertEquals(null, $enum);
+        $this->assertNull($enum);
 
         $enum = UserType::coerce(null);
-        $this->assertEquals(null, $enum);
+        $this->assertNull($enum);
+
+        $enum = UserType::coerce(UserType::Administrator());
+        $this->assertSame(UserType::Administrator, $enum->value);
+
+        $enum = SuperPowers::coerce(SuperPowers::LaserVision);
+        $this->assertInstanceOf(SuperPowers::class, $enum);
+
+        $enum = SuperPowers::coerce(SuperPowers::LaserVision()->key);
+        $this->assertInstanceOf(SuperPowers::class, $enum);
+
+        $enum = SuperPowers::coerce(3);
+        $this->assertInstanceOf(SuperPowers::class, $enum);
+
+        $enum = SuperPowers::coerce(SuperPowers::flags([SuperPowers::Flight, SuperPowers::LaserVision]));
+        $this->assertInstanceOf(SuperPowers::class, $enum);
+
+        $enum = SuperPowers::coerce('Test');
+        $this->assertNull($enum);
     }
 
     public function test_enum_get_values()

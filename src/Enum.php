@@ -14,7 +14,6 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use BenSampo\Enum\Exceptions\InvalidEnumKeyException;
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
-use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializable
 {
@@ -61,7 +60,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      */
     public function __construct($enumValue)
     {
-        if (!static::hasValue($enumValue)) {
+        if (! static::hasValue($enumValue)) {
             throw new InvalidEnumMemberException($enumValue, $this);
         }
 
@@ -86,12 +85,12 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Alias for fromValue();
+     * Alias for fromValue();.
      *
      * @param  mixed  $enumValue
      * @return static
      *
-     * @deprecated in favor of fromValue(), might be removed in a major version
+     * @deprecated in favour of fromValue(), might be removed in a major version
      */
     public static function getInstance($enumValue): self
     {
@@ -110,6 +109,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     {
         if (static::hasKey($key)) {
             $enumValue = static::getValue($key);
+
             return new static($enumValue);
         }
 
@@ -178,7 +178,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      */
     public function isNot($enumValue): bool
     {
-        return !$this->is($enumValue);
+        return ! $this->is($enumValue);
     }
 
     /**
@@ -225,12 +225,17 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
             return null;
         }
 
+        if ($enumKeyOrValue instanceof static) {
+            return $enumKeyOrValue;
+        }
+
         if (static::hasValue($enumKeyOrValue)) {
             return static::fromValue($enumKeyOrValue);
         }
 
         if (is_string($enumKeyOrValue) && static::hasKey($enumKeyOrValue)) {
             $enumValue = static::getValue($enumKeyOrValue);
+
             return new static($enumValue);
         }
 
@@ -246,7 +251,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     {
         $calledClass = get_called_class();
 
-        if (!array_key_exists($calledClass, static::$constCacheArray)) {
+        if (! array_key_exists($calledClass, static::$constCacheArray)) {
             $reflect = new ReflectionClass($calledClass);
             static::$constCacheArray[$calledClass] = $reflect->getConstants();
         }
@@ -286,7 +291,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Get the value for a single enum key
+     * Get the value for a single enum key.
      *
      * @param  string  $key
      * @return mixed
@@ -297,7 +302,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Get the description for an enum value
+     * Get the description for an enum value.
      *
      * @param  mixed  $value
      * @return string
@@ -403,7 +408,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      */
     public static function toSelectArray(): array
     {
-       return self::asSelectArray();
+        return self::asSelectArray();
     }
 
     /**
@@ -418,7 +423,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Check that the enum contains a specific value
+     * Check that the enum contains a specific value.
      *
      * @param  mixed  $value
      * @param  bool  $strict (Optional, defaults to True)
@@ -509,12 +514,13 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      * @return string
      * @return string|\Illuminate\Contracts\Database\Eloquent\CastsAttributes|\Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes
      */
-    public static function castUsing(array $arguments) {
+    public static function castUsing(array $arguments)
+    {
         return new EnumCast(static::class);
     }
 
     /**
-     * Transform the enum instance when it's converted to an array
+     * Transform the enum instance when it's converted to an array.
      *
      * @return string
      */
@@ -524,7 +530,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Transform the enum when it's passed through json_encode
+     * Transform the enum when it's passed through json_encode.
      *
      * @return string
      */

@@ -31,6 +31,21 @@ abstract class FlaggedEnum extends Enum
     }
 
     /**
+     * Attempt to instantiate a new Enum using the given key or value.
+     *
+     * @param  mixed  $enumKeyOrValue
+     * @return static|null
+     */
+    public static function coerce($enumKeyOrValue): ?self
+    {
+        if (is_integer($enumKeyOrValue)) {
+            return static::fromValue($enumKeyOrValue);
+        }
+
+        return parent::coerce($enumKeyOrValue);
+    }
+
+    /**
      * Return a FlaggedEnum instance with defined flags.
      *
      * @param  int[]|\BenSampo\Enum\Enum[]  $flags
