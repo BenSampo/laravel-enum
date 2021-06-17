@@ -14,7 +14,7 @@ abstract class FlaggedEnum extends Enum
      * @param  int[]|\BenSampo\Enum\Enum[]  $flags
      * @return void
      */
-    public function __construct($flags)
+    public function __construct($flags = [])
     {
         $this->key = null;
         $this->description = null;
@@ -85,6 +85,16 @@ abstract class FlaggedEnum extends Enum
     }
 
     /**
+     * Add all flags to the enum.
+     *
+     * @return self
+     */
+    public function addAllFlags(): self
+    {
+        return (new static)->addFlags(self::getValues());
+    }
+
+    /**
      * Remove the given flag from the enum.
      *
      * @param  int|\BenSampo\Enum\Enum  $flag
@@ -92,7 +102,7 @@ abstract class FlaggedEnum extends Enum
      */
     public function removeFlag($flag): self
     {
-        $this->value &= ~ static::fromValue($flag)->value;
+        $this->value &= ~static::fromValue($flag)->value;
 
         return $this;
     }
@@ -110,6 +120,16 @@ abstract class FlaggedEnum extends Enum
         }, $flags);
 
         return $this;
+    }
+
+    /**
+     * Remove all flags from the enum.
+     *
+     * @return self
+     */
+    public function removeAllFlags(): self
+    {
+        return static::None();
     }
 
     /**

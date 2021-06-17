@@ -2,8 +2,8 @@
 
 namespace BenSampo\Enum\Tests;
 
-use BenSampo\Enum\Tests\Enums\SuperPowers;
 use PHPUnit\Framework\TestCase;
+use BenSampo\Enum\Tests\Enums\SuperPowers;
 
 class FlaggedEnumTest extends TestCase
 {
@@ -185,5 +185,30 @@ class FlaggedEnumTest extends TestCase
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight]);
 
         $this->assertEquals($powers, SuperPowers::fromValue($powers->value));
+    }
+
+    public function test_can_add_all_flags_to_an_enum()
+    {
+        $powers = new SuperPowers([
+            SuperPowers::Flight,
+            SuperPowers::Invisibility,
+            SuperPowers::LaserVision,
+            SuperPowers::Strength,
+            SuperPowers::Teleportation,
+            SuperPowers::Immortality,
+            SuperPowers::TimeTravel,
+        ]);
+
+        $this->assertEquals($powers, (new SuperPowers)->addAllFlags());
+    }
+
+    public function test_can_remove_all_flags_from_an_enum()
+    {
+        $powers = new SuperPowers([
+            SuperPowers::Flight,
+            SuperPowers::Invisibility,
+        ]);
+
+        $this->assertEquals(SuperPowers::None(), $powers->removeAllFlags());
     }
 }

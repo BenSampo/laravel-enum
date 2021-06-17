@@ -10,45 +10,46 @@
 
 Simple, extensible and powerful enumeration implementation for Laravel.
 
-* Enum key value pairs as class constants
-* Full featured suite of methods
-* Enum instantiation
-* Flagged/Bitwise enums
-* Type hinting
-* Attribute casting
-* Enum artisan generator
-* Validation rules for passing enum key or values as input parameters
-* Localization support
-* Extendable via Macros
+- Enum key value pairs as class constants
+- Full featured suite of methods
+- Enum instantiation
+- Flagged/Bitwise enums
+- Type hinting
+- Attribute casting
+- Enum artisan generator
+- Validation rules for passing enum key or values as input parameters
+- Localization support
+- Extendable via Macros
 
 Created by [Ben Sampson](https://sampo.co.uk)
 
 ## Jump To
 
-* [Guide](#guide)
-* [Installation](#installation)
-* [Enum Library](enum-library.md)
-* [Basic Usage](#basic-usage)
-    * [Enum definition](#enum-definition)
-    * [Instantiation](#instantiation)
-    * [Instance Properties](#instance-properties)
-    * [Instance Equality](#instance-equality)
-    * [Type Hinting](#instance-equality)
-* [Flagged/Bitwise Enum](#flaggedbitwise-enum)
-* [Attribute Casting](#attribute-casting)
-* [Migrations](#migrations)
-* [Validation](#validation)
-* [Localization](#localization)
-* [Overriding the getDescription method](#overriding-the-getdescription-method)
-* [Extending the Enum Base Class](#extending-the-enum-base-class)
-* [Laravel Nova Integration](#laravel-nova-integration)
-* [PHPStan Integration](#phpstan-integration)
-* [Artisan Command List](#artisan-command-list)
-* [Enum Class Reference](#enum-class-reference)
-* [Stubs](#stubs)
+- [Guide](#guide)
+- [Installation](#installation)
+- [Enum Library](enum-library.md)
+- [Basic Usage](#basic-usage)
+  - [Enum definition](#enum-definition)
+  - [Instantiation](#instantiation)
+  - [Instance Properties](#instance-properties)
+  - [Instance Equality](#instance-equality)
+  - [Type Hinting](#instance-equality)
+- [Flagged/Bitwise Enum](#flaggedbitwise-enum)
+- [Attribute Casting](#attribute-casting)
+- [Migrations](#migrations)
+- [Validation](#validation)
+- [Localization](#localization)
+- [Overriding the getDescription method](#overriding-the-getdescription-method)
+- [Extending the Enum Base Class](#extending-the-enum-base-class)
+- [Laravel Nova Integration](#laravel-nova-integration)
+- [PHPStan Integration](#phpstan-integration)
+- [Artisan Command List](#artisan-command-list)
+- [Enum Class Reference](#enum-class-reference)
+- [Stubs](#stubs)
 
 ## Documentation for older versions
-You are reading the documentation for `3.x`. 
+
+You are reading the documentation for `3.x`.
 
 - If you're using **Laravel 7** or below, please see the [docs for `2.x`](https://github.com/BenSampo/laravel-enum/blob/v2.2.0/README.md).
 - If you're using **Laravel 6** or below, please see the [docs for `1.x`](https://github.com/BenSampo/laravel-enum/blob/v1.38.0/README.md).
@@ -63,7 +64,7 @@ I wrote a blog post about using laravel-enum: https://sampo.co.uk/blog/using-enu
 
 ### Requirements
 
-- Laravel `8` or higher  
+- Laravel `8` or higher
 - PHP `7.3` or higher
 
 Via Composer
@@ -239,7 +240,7 @@ You can create a flagged enum using the following artisan command:
 
 ### Defining values
 
-When defining values you must use powers of 2, the easiest way to do this is by using the *shift left* `<<` operator like so:
+When defining values you must use powers of 2, the easiest way to do this is by using the _shift left_ `<<` operator like so:
 
 ```php
 final class UserPermissions extends FlaggedEnum
@@ -254,7 +255,7 @@ final class UserPermissions extends FlaggedEnum
 
 ### Defining shortcuts
 
-You can use the bitwise *or* `|` to set a shortcut value which represents a given set of values.
+You can use the bitwise _or_ `|` to set a shortcut value which represents a given set of values.
 
 ```php
 final class UserPermissions extends FlaggedEnum
@@ -263,7 +264,7 @@ final class UserPermissions extends FlaggedEnum
     const WriteComments     = 1 << 1;
     const EditComments      = 1 << 2;
     const DeleteComments    = 1 << 3;
-    
+
     // Shortcuts
     const Member = self::ReadComments | self::WriteComments; // Read and write.
     const Moderator = self::Member | self::EditComments; // All the permissions a Member has, plus Edit.
@@ -297,11 +298,12 @@ UserPermissions::flags([])->value === UserPermissions::None; // True
 
 ### Flagged enum methods
 
-In addition to the standard enum methods, there are a suite of helpful methods available on flagged enums. 
+In addition to the standard enum methods, there are a suite of helpful methods available on flagged enums.
 
 Note: Anywhere where a static property is passed, you can also pass an enum instance.
 
 #### setFlags(array $flags): Enum
+
 Set the flags for the enum to the given array of flags.
 
 ```php
@@ -310,6 +312,7 @@ $permissions->flags([UserPermissions::EditComments, UserPermissions::DeleteComme
 ```
 
 #### addFlag($flag): Enum
+
 Add the given flag to the enum
 
 ```php
@@ -318,6 +321,7 @@ $permissions->addFlag(UserPermissions::EditComments); // Flags are now: ReadComm
 ```
 
 #### addFlags(array $flags): Enum
+
 Add the given flags to the enum
 
 ```php
@@ -325,7 +329,16 @@ $permissions = UserPermissions::flags([UserPermissions::ReadComments]);
 $permissions->addFlags([UserPermissions::EditComments, UserPermissions::WriteComments]); // Flags are now: ReadComments, EditComments, WriteComments.
 ```
 
+#### addAllFlags(): Enum
+
+Add all flags to the enum
+
+```php
+$permissions = UserPermissions::flags()->addAllFlags();
+```
+
 #### removeFlag($flag): Enum
+
 Remove the given flag from the enum
 
 ```php
@@ -334,6 +347,7 @@ $permissions->removeFlag(UserPermissions::ReadComments); // Flags are now: Write
 ```
 
 #### removeFlags(array $flags): Enum
+
 Remove the given flags from the enum
 
 ```php
@@ -341,7 +355,17 @@ $permissions = UserPermissions::flags([UserPermissions::ReadComments, UserPermis
 $permissions->removeFlags([UserPermissions::ReadComments, UserPermissions::WriteComments]); // Flags are now: EditComments.
 ```
 
+#### removeAllFlags(): Enum
+
+Remove all flags from the enum
+
+```php
+$permissions = UserPermissions::flags([UserPermissions::ReadComments, UserPermissions::WriteComments]);
+$permissions->removeAllFlags();
+```
+
 #### hasFlag($flag): bool
+
 Check if the enum has the specified flag.
 
 ```php
@@ -351,6 +375,7 @@ $permissions->hasFlag(UserPermissions::EditComments); // False
 ```
 
 #### hasFlags(array $flags): bool
+
 Check if the enum has all of the specified flags.
 
 ```php
@@ -360,6 +385,7 @@ $permissions->hasFlags([UserPermissions::ReadComments, UserPermissions::EditComm
 ```
 
 #### notHasFlag($flag): bool
+
 Check if the enum does not have the specified flag.
 
 ```php
@@ -369,6 +395,7 @@ $permissions->notHasFlag(UserPermissions::ReadComments); // False
 ```
 
 #### notHasFlags(array $flags): bool
+
 Check if the enum doesn't have any of the specified flags.
 
 ```php
@@ -378,6 +405,7 @@ $permissions->notHasFlags([UserPermissions::ReadComments, UserPermissions::Write
 ```
 
 #### getFlags(): Enum[]
+
 Return the flags as an array of instances.
 
 ```php
@@ -386,6 +414,7 @@ $permissions->getFlags(); // [UserPermissions::ReadComments(), UserPermissions::
 ```
 
 #### hasMultipleFlags(): bool
+
 Check if there are multiple flags set on the enum.
 
 ```php
@@ -395,6 +424,7 @@ $permissions->removeFlag(UserPermissions::ReadComments)->hasMultipleFlags(); // 
 ```
 
 #### getBitmask(): int
+
 Get the bitmask for the enum.
 
 ```php
@@ -405,25 +435,32 @@ UserPermissions::DeleteComments()->getBitmask(); // 1000;
 ```
 
 ### Flagged enums in Eloquent queries
+
 To use flagged enums directly in your Eloquent queries, you may use the `QueriesFlaggedEnums` trait on your model which provides you with the following methods:
 
 #### hasFlag($column, $flag): Builder
+
 ```php
 User::hasFlag('permissions', UserPermissions::DeleteComments())->get();
 ```
+
 #### notHasFlag($column, $flag): Builder
+
 ```php
 User::notHasFlag('permissions', UserPermissions::DeleteComments())->get();
 ```
+
 #### hasAllFlags($column, $flags): Builder
+
 ```php
 User::hasAllFlags('permissions', [UserPermissions::EditComment(), UserPermissions::ReadComment()])->get();
 ```
+
 #### hasAnyFlags($column, $flags): Builder
+
 ```php
 User::hasAnyFlags('permissions', [UserPermissions::DeleteComments(), UserPermissions::EditComments()])->get();
 ```
-
 
 ## Attribute Casting
 
@@ -470,10 +507,10 @@ $example->user_type = UserType::Moderator();
 
 ### Customising `$model->toArray()` behaviour
 
-When using `toArray` (or returning model/models from your controller as a response) Laravel will call the `toArray` method on the enum instance. 
+When using `toArray` (or returning model/models from your controller as a response) Laravel will call the `toArray` method on the enum instance.
 
 By default, this will return only the value in its native type. You may want to also have access to the other properties (key, description), for example to return
-to javascript app. 
+to javascript app.
 
 To customise this behaviour, you can override the `toArray` method on the enum instance.
 
@@ -512,6 +549,7 @@ public function toArray()
 ```
 
 ### Casting underlying native types
+
 Many databases return everything as strings (for example, an integer may be returned as the string `'1'`).
 To reduce friction for users of the library, we use type coercion to figure out the intended value. If you'd prefer to control this, you can override the `parseDatabase` static method on your enum class:
 
@@ -520,7 +558,7 @@ final class UserType extends Enum
 {
     const Administrator = 0;
     const Moderator = 1;
-    
+
     public static function parseDatabase($value)
     {
         return (int) $value;
@@ -870,7 +908,7 @@ UserType::getRandomValue(); // Returns 0, 1, 2 or 3
 
 Returns a random instance of the enum. Useful for factories.
 
-``` php
+```php
 UserType::getRandomInstance(); // Returns an instance of UserType with a random value
 ```
 
@@ -894,7 +932,7 @@ UserType::asSelectArray(); // Returns [0 => 'Administrator', 1 => 'Moderator', 2
 
 Returns an instance of the called enum. Read more about [enum instantiation](#instantiation).
 
-``` php
+```php
 UserType::fromValue(UserType::Administrator); // Returns instance of Enum with the value set to UserType::Administrator
 ```
 
