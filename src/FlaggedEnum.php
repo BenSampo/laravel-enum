@@ -36,7 +36,7 @@ abstract class FlaggedEnum extends Enum
      * @param  mixed  $enumKeyOrValue
      * @return static|null
      */
-    public static function coerce($enumKeyOrValue): ?self
+    public static function coerce($enumKeyOrValue): ?Enum
     {
         if (is_integer($enumKeyOrValue)) {
             return static::fromValue($enumKeyOrValue);

@@ -219,7 +219,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      * @param  mixed  $enumKeyOrValue
      * @return static|null
      */
-    public static function coerce($enumKeyOrValue): ?self
+    public static function coerce($enumKeyOrValue): ?Enum
     {
         if ($enumKeyOrValue === null) {
             return null;
