@@ -11,7 +11,7 @@ use BenSampo\Enum\Enum;
  */
 final class DummyClass extends Enum
 {
-    const OptionOne =   0;
-    const OptionTwo =   1;
-    const OptionThree = 2;
+    public const OptionOne = 0;
+    public const OptionTwo = 1;
+    public const OptionThree = 2;
 }
