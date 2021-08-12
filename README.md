@@ -469,14 +469,11 @@ You may cast model attributes to enums using Laravel 7.x's built in custom casti
 Since `Enum::class` implements the `Castable` contract, you just need to specify the classname of the enum:
 
 ```php
-use BenSampo\Enum\Traits\CastsEnums;
 use BenSampo\Enum\Tests\Enums\UserType;
 use Illuminate\Database\Eloquent\Model;
 
 class Example extends Model
 {
-    use CastsEnums;
-
     protected $casts = [
         'random_flag' => 'boolean',     // Example standard laravel cast
         'user_type' => UserType::class, // Example enum cast
