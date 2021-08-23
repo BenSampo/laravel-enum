@@ -262,7 +262,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Get all or a custom set of the enum keys.
      *
-     * @param  array|string|null  $values
+     * @param  mixed  $values
      *
      * @return array
      */
@@ -282,7 +282,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Get all or a custom set of the enum values.
      *
-     * @param  array|string|null  $keys
+     * @param  string|string[]|null  $keys
      *
      * @return array
      */
