@@ -75,7 +75,18 @@ class EnumTest extends TestCase
     {
         $values = UserType::getValues();
         $expectedValues = [0, 1, 2, 3];
+        $this->assertEquals($expectedValues, $values);
 
+        $values = UserType::getValues('Administrator');
+        $expectedValues = [0];
+        $this->assertEquals($expectedValues, $values);
+
+        $values = UserType::getValues('Administrator', 'Moderator');
+        $expectedValues = [0, 1];
+        $this->assertEquals($expectedValues, $values);
+
+        $values = UserType::getValues(['Administrator', 'Moderator']);
+        $expectedValues = [0, 1];
         $this->assertEquals($expectedValues, $values);
     }
 
