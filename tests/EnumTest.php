@@ -21,7 +21,18 @@ class EnumTest extends TestCase
     {
         $keys = UserType::getKeys();
         $expectedKeys = ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator'];
+        $this->assertEquals($expectedKeys, $keys);
 
+        $keys = UserType::getKeys(UserType::Administrator);
+        $expectedKeys = ['Administrator'];
+        $this->assertEquals($expectedKeys, $keys);
+
+        $keys = UserType::getKeys(UserType::Administrator, UserType::Moderator);
+        $expectedKeys = ['Administrator', 'Moderator'];
+        $this->assertEquals($expectedKeys, $keys);
+
+        $keys = UserType::getKeys([UserType::Administrator, UserType::Moderator]);
+        $expectedKeys = ['Administrator', 'Moderator'];
         $this->assertEquals($expectedKeys, $keys);
     }
 
