@@ -280,13 +280,23 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Get all of the enum values.
+     * Get all or a custom set of the enum values.
+     *
+     * @param  array|string|null  $keys
      *
      * @return array
      */
-    public static function getValues(): array
+    public static function getValues($keys = null): array
     {
-        return array_values(static::getConstants());
+        if ($keys === null) {
+            return array_values(static::getConstants());
+        }
+
+        return collect(is_array($keys) ? $keys : func_get_args())
+            ->map(function ($key) {
+                return static::getValue($key);
+            })
+            ->toArray();
     }
 
     /**
