@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v3.4.1...master)
 
+### Fixed
+
+- Fixed broken enums due to wrapping of long constant names in method annotations
+
 ## [3.4.0](https://github.com/BenSampo/laravel-enum/compare/v3.3.0...v3.4.1) - 2021-06-17
 
 ### Added

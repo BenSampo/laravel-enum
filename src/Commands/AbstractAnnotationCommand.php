@@ -149,7 +149,8 @@ abstract class AbstractAnnotationCommand extends Command
 
     protected function getDocBlock(ReflectionClass $reflectionClass): DocBlockGenerator
     {
-        $docBlock = DocBlockGenerator::fromArray([]);
+        $docBlock = DocBlockGenerator::fromArray([])
+            ->setWordWrap(false);
 
         $originalDocBlock = null;
 
