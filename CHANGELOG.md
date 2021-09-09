@@ -5,13 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v3.4.1...master)
+## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v3.4.2...master)
+
+## [3.4.2](https://github.com/BenSampo/laravel-enum/compare/v3.4.1...v3.4.2) - 2021-09-09
 
 ### Fixed
 
-- Fixed broken enums due to wrapping of long constant names in method annotations
+- Fixed broken enums due to wrapping of long constant names in method annotations [#226](https://github.com/BenSampo/laravel-enum/pull/226)
 
-## [3.4.0](https://github.com/BenSampo/laravel-enum/compare/v3.3.0...v3.4.1) - 2021-06-17
+## [3.4.1](https://github.com/BenSampo/laravel-enum/compare/v3.4.0...v3.4.1) - 2021-06-17
+
+### Fixed
+
+- Fixed type issued in PHP 7.3
+
+## [3.4.0](https://github.com/BenSampo/laravel-enum/compare/v3.3.0...v3.4.0) - 2021-06-17
 
 ### Added
 
