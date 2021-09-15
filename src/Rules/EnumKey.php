@@ -52,7 +52,9 @@ class EnumKey implements Rule
      */
     public function message()
     {
-        return __('laravelEnum::messages.enum_key');
+        return trans()->has('validation.enum_key')
+            ? __('validation.enum_key')
+            : __('laravelEnum::messages.enum_key');
     }
 
     /**

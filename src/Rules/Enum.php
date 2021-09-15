@@ -52,7 +52,9 @@ class Enum implements Rule
      */
     public function message()
     {
-        return __('laravelEnum::messages.enum');
+        return trans()->has('validation.enum')
+            ? __('validation.enum')
+            : __('laravelEnum::messages.enum');
     }
 
     /**

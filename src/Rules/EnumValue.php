@@ -68,7 +68,9 @@ class EnumValue implements Rule
      */
     public function message()
     {
-        return __('laravelEnum::messages.enum_value');
+        return trans()->has('validation.enum_value')
+            ? __('validation.enum_value')
+            : __('laravelEnum::messages.enum_value');
     }
 
     /**
