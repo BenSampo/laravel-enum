@@ -58,22 +58,22 @@ class EnumLocalizationTest extends ApplicationTestCase
 
         $this->assertSame(
             'The value you have provided is not a valid enum instance.',
-            $validator->make(['input' => 'test'], ['input' => 'enum:' . UserType::class])->errors()->first()
+            $validator->make(['input' => 'test'], ['input' => 'enum:BenSampo\Enum\Tests\Enums\UserType'])->errors()->first()
         );
         $this->assertSame(
             'Wrong key.',
-            $validator->make(['input' => 'test'], ['input' => 'enum_key:' . UserType::class])->errors()->first()
+            $validator->make(['input' => 'test'], ['input' => 'enum_key:BenSampo\Enum\Tests\Enums\UserType'])->errors()->first()
         );
 
         $this->app->setLocale('es');
 
         $this->assertSame(
             'The value you have provided is not a valid enum instance.', // No Spanish translations out of the box
-            $validator->make(['input' => 'test'], ['input' => 'enum:' . UserType::class])->errors()->first()
+            $validator->make(['input' => 'test'], ['input' => 'enum:BenSampo\Enum\Tests\Enums\UserType'])->errors()->first()
         );
         $this->assertSame(
             'Llave incorrecta.',
-            $validator->make(['input' => 'test'], ['input' => 'enum_key:' . UserType::class])->errors()->first()
+            $validator->make(['input' => 'test'], ['input' => 'enum_key:BenSampo\Enum\Tests\Enums\UserType'])->errors()->first()
         );
     }
 }
