@@ -117,7 +117,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Get attribute by value
+     * Get attribute by value.
      * 
      * @return mixed
      */
