@@ -117,6 +117,20 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
+     * Get attribute by value
+     * 
+     * @return mixed
+     */
+    public function __get(string $name): mixed
+    {
+        $methodName = Str::camel("get_{$name}_attribute");
+
+        if (method_exists($this, $methodName)) {
+            return $this->{$methodName}($this->value);
+        }
+    }
+
+    /**
      * Attempt to instantiate an enum by calling the enum key as a static method.
      *
      * This function defers to the macroable __callStatic function if a macro is found using the static method called.
@@ -129,6 +143,10 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     {
         if (static::hasMacro($method)) {
             return static::macroCallStatic($method, $parameters);
+        }
+
+        if (method_exists(static::class, static::getAttributeToMethodName($method))) {
+            return static::getValueAttributes($method);
         }
 
         return static::fromKey($method);
@@ -260,6 +278,42 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
+     * Find original method from attribute.
+     * Example: "title" -> "getTitleAttribute"
+     * 
+     * @return string
+     */
+    protected static function getAttributeToMethodName(string $attributeName): string
+    {
+        return Str::of($attributeName)
+            ->singular()
+            ->replace('getAll', '')
+            ->ucfirst()
+            ->prepend('get')
+            ->append('Attribute')
+            ->__toString();
+    }
+
+    /**
+     * Get all values by attribute.
+     * 
+     * @return array
+     */
+    protected static function getValueAttributes(string $attributeName): array
+    {
+        $formattedValues = [];
+
+        $method = static::getAttributeToMethodName($attributeName);
+        $values = static::getValues();
+
+        foreach ($values as $value) {
+            $formattedValues[$value] = static::{$method}($value);
+        }
+
+        return $formattedValues;
+    }
+
+    /**
      * Get all of the enum keys.
      *
      * @return array
@@ -277,6 +331,26 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     public static function getValues(): array
     {
         return array_values(static::getConstants());
+    }
+
+    /**
+     * Get attributes.
+     * 
+     * @return array
+     */
+    public static function pluck(array $attributes): array
+    {
+        $values = [];
+
+        foreach (static::getValues() as $value) {
+            foreach ($attributes as $attribute) {
+                $method = static::getAttributeToMethodName($attribute);
+
+                $values[$value][$attribute] = static::{$method}($value);
+            }
+        }
+
+        return $values;
     }
 
     /**
