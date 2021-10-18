@@ -260,6 +260,45 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
+     * Get all attribute values.
+     * 
+     * @return array
+     */
+    protected static function getAttributeValues(string $attributeName): array
+    {
+        $formattedValues = [];
+        $values = static::getValues();
+        
+        foreach ($values as $value) {
+            $formattedValues[$value] = (new static($value))->{$attributeName}();
+        }
+
+        return $formattedValues;
+    }
+
+    /**
+     * Get attributes.
+     * 
+     * @return array
+     */
+    public static function getAll(string|array $attributes): array
+    {
+        if (is_string($attributes)) {
+            return static::getAttributeValues($attributes);
+        }
+
+        $values = [];
+
+        foreach (static::getValues() as $value) {
+            foreach ($attributes as $attribute) {
+                $values[$value][$attribute] = (new static($value))->{$attribute}();
+            }
+        }
+
+        return $values;
+    }
+
+    /**
      * Get all of the enum keys.
      *
      * @return array
