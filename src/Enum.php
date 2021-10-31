@@ -184,7 +184,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Checks if a matching enum instance or value is in the given array.
      *
-     * @param  (mixed|static)[]  $values
+     * @param iterable $values
      * @return bool
      */
     public function in(iterable $values): bool
@@ -196,6 +196,23 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
         }
 
         return false;
+    }
+
+    /**
+     * Checks if a matching enum instance or value is in the given array.
+     *
+     * @param iterable $values
+     * @return bool
+     */
+    public function notIn(iterable $values): bool
+    {
+        foreach ($values as $value) {
+            if ($this->is($value)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
