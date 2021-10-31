@@ -199,7 +199,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Checks if a matching enum instance or value is in the given array.
+     * Checks if a matching enum instance or value is not in the given array.
      *
      * @param iterable $values
      * @return bool
