@@ -49,7 +49,7 @@ Created by [Ben Sampson](https://sampo.co.uk)
 
 ## Documentation for older versions
 
-You are reading the documentation for `3.x`.
+You are reading the documentation for `4.x`.
 
 - If you're using **Laravel 7** or below, please see the [docs for `2.x`](https://github.com/BenSampo/laravel-enum/blob/v2.2.0/README.md).
 - If you're using **Laravel 6** or below, please see the [docs for `1.x`](https://github.com/BenSampo/laravel-enum/blob/v1.38.0/README.md).
