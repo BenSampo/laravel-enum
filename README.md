@@ -197,7 +197,7 @@ $admin->is(UserType::Moderator());     // false
 $admin->is('random-value');            // false
 ```
 
-You can also check to see if the instance's value matches against an array of possible values using the `in` method. Iterables can also be checked against.
+You can also check to see if the instance's value matches against an array of possible values using the `in` method, and use `notIn` to check if instance value is not in an array of values. Iterables can also be checked against.
 
 ```php
 $admin = UserType::fromValue(UserType::Administrator);
@@ -207,6 +207,12 @@ $admin->in([UserType::Moderator(), UserType::Administrator()]); // true
 
 $admin->in([UserType::Moderator, UserType::Subscriber]);        // false
 $admin->in(['random-value']);                                   // false
+
+$admin->notIn([UserType::Moderator, UserType::Administrator]);     // false
+$admin->notIn([UserType::Moderator(), UserType::Administrator()]); // false
+
+$admin->notIn([UserType::Moderator, UserType::Subscriber]);        // true
+$admin->notIn(['random-value']);                                   // true
 ```
 
 ### Type Hinting

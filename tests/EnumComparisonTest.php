@@ -82,6 +82,38 @@ class EnumComparisonTest extends TestCase
         $this->assertFalse($administrator->in(new ArrayIterator([StringValues::Moderator])));
     }
 
+    public function test_enum_instance_not_in_array()
+    {
+        $administrator = new StringValues(StringValues::Administrator);
+
+        $this->assertFalse($administrator->notIn([
+            StringValues::Moderator,
+            StringValues::Administrator
+        ]));
+        $this->assertFalse($administrator->notIn([
+            new StringValues(StringValues::Moderator),
+            new StringValues(StringValues::Administrator)
+        ]));
+        $this->assertFalse($administrator->notIn([StringValues::Administrator]));
+        $this->assertTrue($administrator->notIn([StringValues::Moderator]));
+    }
+
+    public function test_enum_instance_not_in_iterator()
+    {
+        $administrator = new StringValues(StringValues::Administrator);
+
+        $this->assertFalse($administrator->notIn(new ArrayIterator([
+            StringValues::Moderator,
+            StringValues::Administrator
+        ])));
+        $this->assertFalse($administrator->notIn(new ArrayIterator([
+            new StringValues(StringValues::Moderator),
+            new StringValues(StringValues::Administrator)
+        ])));
+        $this->assertFalse($administrator->notIn(new ArrayIterator([StringValues::Administrator])));
+        $this->assertTrue($administrator->notIn(new ArrayIterator([StringValues::Moderator])));
+    }
+
     /**
      * @test
      * Verify that relational comparision of Enum object uses attribute `$value`
