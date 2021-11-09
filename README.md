@@ -197,7 +197,7 @@ $admin->is(UserType::Moderator());     // false
 $admin->is('random-value');            // false
 ```
 
-You can also check to see if the instance's value matches against an array of possible values using the `in` method. Iterables can also be checked against.
+You can also check to see if the instance's value matches against an array of possible values using the `in` method, and use `notIn` to check if instance value is not in an array of values. Iterables can also be checked against.
 
 ```php
 $admin = UserType::fromValue(UserType::Administrator);
@@ -207,6 +207,12 @@ $admin->in([UserType::Moderator(), UserType::Administrator()]); // true
 
 $admin->in([UserType::Moderator, UserType::Subscriber]);        // false
 $admin->in(['random-value']);                                   // false
+
+$admin->notIn([UserType::Moderator, UserType::Administrator]);     // false
+$admin->notIn([UserType::Moderator(), UserType::Administrator()]); // false
+
+$admin->notIn([UserType::Moderator, UserType::Subscriber]);        // true
+$admin->notIn(['random-value']);                                   // true
 ```
 
 ### Type Hinting
@@ -824,20 +830,26 @@ Generate DocBlock annotations for enum classes.
 
 ## Enum Class Reference
 
-### static getKeys(): array
+### static getKeys(mixed $values = null): array
 
-Returns an array of the keys for an enum.
+Returns an array of all or a custom set of the keys for an enum.
 
 ```php
 UserType::getKeys(); // Returns ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator']
+UserType::getKeys(UserType::Administrator); // Returns ['Administrator']
+UserType::getKeys(UserType::Administrator, UserType::Moderator); // Returns ['Administrator', 'Moderator']
+UserType::getKeys([UserType::Administrator, UserType::Moderator]); // Returns ['Administrator', 'Moderator']
 ```
 
-### static getValues(): array
+### static getValues(mixed $keys = null): array
 
-Returns an array of the values for an enum.
+Returns an array of all or a custom set of the values for an enum.
 
 ```php
 UserType::getValues(); // Returns [0, 1, 2, 3]
+UserType::getValues('Administrator'); // Returns [0]
+UserType::getValues('Administrator', 'Moderator'); // Returns [0, 1]
+UserType::getValues(['Administrator', 'Moderator']); // Returns [0, 1]
 ```
 
 ### static getKey(mixed $value): string

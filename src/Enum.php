@@ -184,7 +184,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Checks if a matching enum instance or value is in the given array.
      *
-     * @param  (mixed|static)[]  $values
+     * @param iterable $values
      * @return bool
      */
     public function in(iterable $values): bool
@@ -196,6 +196,23 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
         }
 
         return false;
+    }
+
+    /**
+     * Checks if a matching enum instance or value is not in the given array.
+     *
+     * @param iterable $values
+     * @return bool
+     */
+    public function notIn(iterable $values): bool
+    {
+        foreach ($values as $value) {
+            if ($this->is($value)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -260,23 +277,43 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Get all of the enum keys.
+     * Get all or a custom set of the enum keys.
+     *
+     * @param  mixed  $values
      *
      * @return array
      */
-    public static function getKeys(): array
+    public static function getKeys($values = null): array
     {
-        return array_keys(static::getConstants());
+        if ($values === null) {
+            return array_keys(static::getConstants());
+        }
+
+        return collect(is_array($values) ? $values : func_get_args())
+            ->map(function ($value) {
+                return static::getKey($value);
+            })
+            ->toArray();
     }
 
     /**
-     * Get all of the enum values.
+     * Get all or a custom set of the enum values.
+     *
+     * @param  string|string[]|null  $keys
      *
      * @return array
      */
-    public static function getValues(): array
+    public static function getValues($keys = null): array
     {
-        return array_values(static::getConstants());
+        if ($keys === null) {
+            return array_values(static::getConstants());
+        }
+
+        return collect(is_array($keys) ? $keys : func_get_args())
+            ->map(function ($key) {
+                return static::getValue($key);
+            })
+            ->toArray();
     }
 
     /**

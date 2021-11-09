@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed validation error message localization when using string validation rules [#227](https://github.com/BenSampo/laravel-enum/pull/227)
 
+### Changed
+
+- Extend the functionality of the `getKeys()` and `getValues()` methods
+
 ## [3.4.2](https://github.com/BenSampo/laravel-enum/compare/v3.4.1...v3.4.2) - 2021-09-09
 
 ### Fixed
