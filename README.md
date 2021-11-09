@@ -824,20 +824,26 @@ Generate DocBlock annotations for enum classes.
 
 ## Enum Class Reference
 
-### static getKeys(): array
+### static getKeys(mixed $values = null): array
 
-Returns an array of the keys for an enum.
+Returns an array of all or a custom set of the keys for an enum.
 
 ```php
 UserType::getKeys(); // Returns ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator']
+UserType::getKeys(UserType::Administrator); // Returns ['Administrator']
+UserType::getKeys(UserType::Administrator, UserType::Moderator); // Returns ['Administrator', 'Moderator']
+UserType::getKeys([UserType::Administrator, UserType::Moderator]); // Returns ['Administrator', 'Moderator']
 ```
 
-### static getValues(): array
+### static getValues(mixed $keys = null): array
 
-Returns an array of the values for an enum.
+Returns an array of all or a custom set of the values for an enum.
 
 ```php
 UserType::getValues(); // Returns [0, 1, 2, 3]
+UserType::getValues('Administrator'); // Returns [0]
+UserType::getValues('Administrator', 'Moderator'); // Returns [0, 1]
+UserType::getValues(['Administrator', 'Moderator']); // Returns [0, 1]
 ```
 
 ### static getKey(mixed $value): string
