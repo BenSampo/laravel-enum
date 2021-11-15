@@ -23,7 +23,7 @@
         "hanneskod/classtools": "^1.2",
         "illuminate/contracts": "^8.0",
         "illuminate/support": "^8.0",
-        "laminas/laminas-code": "^3.4",
+        "laminas/laminas-code": "^3.4|^4.0",
         "nikic/php-parser": "^4.10"
     },
     "require-dev": {
