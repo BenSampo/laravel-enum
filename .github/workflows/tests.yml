@@ -12,7 +12,7 @@ jobs:
         php: [7.3, 7.4, 8.0, 8.1]
         dependency-version: [prefer-lowest, prefer-stable]
         exclude:
-          - php-version: 8.1
+          - php: 8.1
             dependency-version: prefer-lowest
 
     name: P${{ matrix.php }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
