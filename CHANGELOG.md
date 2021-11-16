@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v4.0.0...master)
 
+### Added
+
+- Allow package to be installed with PHP 8.1
+
+### Changed
+
+- Allow `laminas/laminas-code:^4.0` as a dependency
+
 ## [4.0.0](https://github.com/BenSampo/laravel-enum/compare/v3.4.2...v4.0.0) - 2021-11-09
 
 ### Fixed
