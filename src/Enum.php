@@ -571,7 +571,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      *
      * @return string
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): string
     {
         return $this->toArray();
     }
