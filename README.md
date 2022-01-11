@@ -11,7 +11,7 @@
 Simple, extensible and powerful enumeration implementation for Laravel.
 
 - Enum key value pairs as class constants
-- Full featured suite of methods
+- Full-featured suite of methods
 - Enum instantiation
 - Flagged/Bitwise enums
 - Type hinting

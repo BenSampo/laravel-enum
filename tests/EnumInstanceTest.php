@@ -55,13 +55,6 @@ class EnumInstanceTest extends TestCase
         $this->assertEquals($userType->key, UserType::getKey(UserType::Administrator));
     }
 
-    public function test_can_get_the_description_for_an_enum_instance()
-    {
-        $userType = UserType::fromValue(UserType::Administrator);
-
-        $this->assertEquals($userType->description, UserType::getDescription(UserType::Administrator));
-    }
-
     public function test_can_get_enum_instance_by_calling_an_enum_key_as_a_static_method()
     {
         $this->assertInstanceOf(UserType::class, UserType::Administrator());

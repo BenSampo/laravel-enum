@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v4.1.0...master)
 
+### Added
+
+- Use constant PHPDoc as `Enum::$description`
+
 ## [4.1.0](https://github.com/BenSampo/laravel-enum/compare/v4.0.0...v4.1.0) - 2021-11-16
 
 ### Added

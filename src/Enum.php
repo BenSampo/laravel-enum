@@ -44,11 +44,11 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     public $description;
 
     /**
-     * Constants cache.
+     * Caches reflections of enum subclasses.
      *
-     * @var array
+     * @var array<class-string<static>, ReflectionClass<static>
      */
-    protected static $constCacheArray = [];
+    protected static $reflectionCache = [];
 
     /**
      * Construct an Enum instance.
@@ -65,8 +65,12 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
         }
 
         $this->value = $enumValue;
-        $this->key = static::getKey($enumValue);
-        $this->description = static::getDescription($enumValue);
+
+        $key = static::getKey($enumValue);
+        $this->key = $key;
+
+        $this->description = static::getLocalizedDescription($enumValue)
+            ?? static::getDescriptionForKey($key);
     }
 
     /**
@@ -85,16 +89,26 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Alias for fromValue();.
-     *
-     * @param  mixed  $enumValue
-     * @return static
-     *
      * @deprecated in favour of fromValue(), might be removed in a major version
      */
     public static function getInstance($enumValue): self
     {
         return static::fromValue($enumValue);
+    }
+
+    /**
+     * Returns a reflection of the enum subclass.
+     *
+     * @return ReflectionClass<static>
+     */
+    protected static function getReflection(): ReflectionClass
+    {
+        $class = static::class;
+
+        // TODO use ??= from PHP 7.4+
+        return isset(static::$reflectionCache[$class])
+            ? static::$reflectionCache[$class]
+            : (static::$reflectionCache[$class] = new ReflectionClass($class));
     }
 
     /**
@@ -140,7 +154,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      * While it is not typical to use the magic instantiation dynamically, it may happen
      * incidentally when calling the instantiation in an instance method of itself.
      * Even when using the `static::KEY()` syntax, PHP still interprets this is a call to
-     * an instance method when it happens inside of an instance method of the same class.
+     * an instance method when it happens inside an instance method of the same class.
      *
      * @param  string  $method
      * @param  mixed  $parameters
@@ -184,7 +198,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Checks if a matching enum instance or value is in the given array.
      *
-     * @param iterable $values
+     * @param  iterable  $values
      * @return bool
      */
     public function in(iterable $values): bool
@@ -201,7 +215,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Checks if a matching enum instance or value is not in the given array.
      *
-     * @param iterable $values
+     * @param  iterable  $values
      * @return bool
      */
     public function notIn(iterable $values): bool
@@ -218,12 +232,12 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Return instances of all the contained values.
      *
-     * @return static[]
+     * @return array<int, static>
      */
     public static function getInstances(): array
     {
         return array_map(
-            function ($constantValue) {
+            static function ($constantValue): self {
                 return new static($constantValue);
             },
             static::getConstants()
@@ -260,20 +274,13 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Get all of the constants defined on the class.
+     * Get all constants defined in the class.
      *
      * @return array
      */
     protected static function getConstants(): array
     {
-        $calledClass = get_called_class();
-
-        if (! array_key_exists($calledClass, static::$constCacheArray)) {
-            $reflect = new ReflectionClass($calledClass);
-            static::$constCacheArray[$calledClass] = $reflect->getConstants();
-        }
-
-        return static::$constCacheArray[$calledClass];
+        return self::getReflection()->getConstants();
     }
 
     /**
@@ -346,31 +353,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      */
     public static function getDescription($value): string
     {
-        return
-            static::getLocalizedDescription($value) ??
-            static::getFriendlyKeyName(static::getKey($value));
-    }
-
-    /**
-     * Get the localized description of a value.
-     *
-     * This works only if localization is enabled
-     * for the enum and if the key exists in the lang file.
-     *
-     * @param  mixed  $value
-     * @return string|null
-     */
-    protected static function getLocalizedDescription($value): ?string
-    {
-        if (static::isLocalizable()) {
-            $localizedStringKey = static::getLocalizationKey() . '.' . $value;
-
-            if (Lang::has($localizedStringKey)) {
-                return __($localizedStringKey);
-            }
-        }
-
-        return null;
+        return static::getLocalizedDescription($value)
+            ?? static::getDescriptionForKey(static::getKey($value));
     }
 
     /**
@@ -408,23 +392,19 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Return the enum as an array.
+     * Returns a map from enum keys to values.
      *
-     * [string $key => mixed $value]
-     *
-     * @return array
+     * @return array<string, mixed>
      */
-    public static function asArray()
+    public static function asArray(): array
     {
         return static::getConstants();
     }
 
     /**
-     * Get the enum as an array formatted for a select.
+     * Returns a map from enum values to descriptions.
      *
-     * [mixed $value => string description]
-     *
-     * @return array
+     * @return array<array-key, string>
      */
     public static function asSelectArray(): array
     {
@@ -478,18 +458,35 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Transform the key name into a friendly, formatted version.
+     * Get the localized description of a value.
      *
-     * @param  string  $key
-     * @return string
+     * This works only if localization is enabled
+     * for the enum and if the key exists in the lang file.
+     *
+     * @param  mixed  $value
+     * @return string|null
      */
-    protected static function getFriendlyKeyName(string $key): string
+    protected static function getLocalizedDescription($value): ?string
     {
-        if (ctype_upper(preg_replace('/[^a-zA-Z]/', '', $key))) {
-            $key = strtolower($key);
+        if (static::isLocalizable()) {
+            $localizedStringKey = static::getLocalizationKey() . '.' . $value;
+
+            if (Lang::has($localizedStringKey)) {
+                return __($localizedStringKey);
+            }
         }
 
-        return ucfirst(str_replace('_', ' ', Str::snake($key)));
+        return null;
+    }
+
+    /**
+     * Get the default localization key.
+     *
+     * @return string
+     */
+    public static function getLocalizationKey(): string
+    {
+        return 'enums.' . static::class;
     }
 
     /**
@@ -503,13 +500,36 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Get the default localization key.
+     * Returns the description for a given enum key.
      *
+     * @param  string  $key
      * @return string
      */
-    public static function getLocalizationKey(): string
+    protected static function getDescriptionForKey(string $key): string
     {
-        return 'enums.' . static::class;
+        $constant = static::getReflection()->getReflectionConstant($key);
+
+        $docComment = $constant->getDocComment();
+        if (is_string($docComment)) {
+            return PHPDoc::unwrapDocblock($docComment);
+        }
+
+        return static::getFriendlyKeyName($key);
+    }
+
+    /**
+     * Transform the key name into a friendly, formatted version.
+     *
+     * @param  string  $key
+     * @return string
+     */
+    protected static function getFriendlyKeyName(string $key): string
+    {
+        if (ctype_upper(preg_replace('/[^a-zA-Z]/', '', $key))) {
+            $key = strtolower($key);
+        }
+
+        return ucfirst(str_replace('_', ' ', Str::snake($key)));
     }
 
     /**
