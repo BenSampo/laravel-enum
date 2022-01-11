@@ -718,7 +718,7 @@ php artisan vendor:publish --provider="BenSampo\Enum\EnumServiceProvider" --tag=
 
 ### Enum descriptions
 
-You can translate the strings returned by the `getDescription` method using Laravel's built in [localization](https://laravel.com/docs/5.6/localization) features.
+You can translate the strings returned by the `getDescription` method using Laravel's built-in [localization](https://laravel.com/docs/localization) features.
 
 Add a new `enums.php` keys file for each of your supported languages. In this example there is one for English and one for Spanish.
 
@@ -768,22 +768,24 @@ final class UserType extends Enum implements LocalizedEnum
 
 The `getDescription` method will now look for the value in your localization files. If a value doesn't exist for a given key, the default description is returned instead.
 
-## Overriding the getDescription method
+## Customize descriptions
 
-If you'd like to return a custom value from the getDescription method, you may do so by overriding the method on your enum:
+If you'd like to return a custom value for your enum values, add a PHPDoc to your Enum constants:
 
 ```php
-public static function getDescription($value): string
-{
-    if ($value === self::SuperAdministrator) {
-        return 'Super admin';
-    }
+use BenSampo\Enum\Enum;
 
-    return parent::getDescription($value);
+final class UserType extends Enum
+{
+    /** Can do most things */
+    const Administrator = 'Administrator';
+
+    /** Can do absolutely everything */
+    const SuperAdministrator = 'SuperAdministrator';
 }
 ```
 
-Calling `UserType::getDescription(3);` now returns `Super admin` instead of `Super administator`.
+Calling `UserType::Administrator()->description` now returns `Can do most things` instead of `Administrator`.
 
 ## Extending the Enum Base Class
 
@@ -799,7 +801,7 @@ Enum::macro('asFlippedArray', function() {
 
 Now, on each of my enums, I can call it using `UserType::asFlippedArray()`.
 
-It's best to register the macro inside of a service providers' boot method.
+It's best to register the macro inside a service providers' boot method.
 
 ## Laravel Nova Integration
 
