@@ -2,6 +2,7 @@
 
 namespace BenSampo\Enum;
 
+use Exception;
 use ReflectionClass;
 use JsonSerializable;
 use Illuminate\Support\Str;
@@ -365,8 +366,12 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
         if (static::isLocalizable()) {
             $localizedStringKey = static::getLocalizationKey() . '.' . $value;
 
-            if (Lang::has($localizedStringKey)) {
-                return __($localizedStringKey);
+            try {
+                if (Lang::has($localizedStringKey)) {
+                    return __($localizedStringKey);
+                }
+            } catch (Exception $exception) {
+                return null;
             }
         }
 
