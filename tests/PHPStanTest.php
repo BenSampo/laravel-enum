@@ -2,13 +2,13 @@
 
 namespace BenSampo\Enum\Tests;
 
-use BenSampo\Enum\PHPStan\EnumMethodsClassReflectionExtension;
-use BenSampo\Enum\Tests\Enums\AnnotatedConstants;
+use PHPStan\Testing\PHPStanTestCase;
 use BenSampo\Enum\Tests\Enums\UserType;
 use PHPStan\Reflection\MethodReflection;
-use PHPStan\Testing\TestCase;
+use BenSampo\Enum\Tests\Enums\AnnotatedConstants;
+use BenSampo\Enum\PHPStan\EnumMethodsClassReflectionExtension;
 
-class PHPStanTest extends TestCase
+class PHPStanTest extends PHPStanTestCase
 {
     /**
      * @var \BenSampo\Enum\PHPStan\EnumMethodsClassReflectionExtension
