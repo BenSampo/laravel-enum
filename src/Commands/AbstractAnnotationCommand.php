@@ -6,17 +6,16 @@ namespace BenSampo\Enum\Commands;
 use ReflectionClass;
 use InvalidArgumentException;
 use Illuminate\Console\Command;
-use Symfony\Component\Finder\Finder;
 use Illuminate\Filesystem\Filesystem;
+use Composer\Autoload\ClassMapGenerator;
 use Laminas\Code\Generator\DocBlockGenerator;
 use Laminas\Code\Reflection\DocBlockReflection;
-use hanneskod\classtools\Iterator\ClassIterator;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
 abstract class AbstractAnnotationCommand extends Command
 {
-    public const PARENT_CLASS = null;
+    public const PARENT_CLASS = '';
 
     /**
      * @var \Illuminate\Filesystem\Filesystem
@@ -73,11 +72,13 @@ abstract class AbstractAnnotationCommand extends Command
      */
     protected function annotateFolder()
     {
-        $classes = new ClassIterator($this->getClassFinder());
+        $classMap = ClassMapGenerator::createMap($this->searchDirectory());
+        
+        /** @var \ReflectionClass[] $classes */
+        $classes = array_map(function ($class) {
+            return new ReflectionClass($class);
+        }, array_keys($classMap));
 
-        $classes->enableAutoloading();
-
-        /** @var \ReflectionClass $reflection */
         foreach ($classes as $reflection) {
             if ($reflection->isSubclassOf(static::PARENT_CLASS)) {
                 $this->annotate($reflection);
@@ -180,5 +181,5 @@ abstract class AbstractAnnotationCommand extends Command
 
     abstract protected function annotate(ReflectionClass $reflectionClass);
 
-    abstract protected function getClassFinder(): Finder;
+    abstract protected function searchDirectory(): string;
 }

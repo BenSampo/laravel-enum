@@ -4,7 +4,6 @@ namespace BenSampo\Enum\Commands;
 
 use ReflectionClass;
 use BenSampo\Enum\Enum;
-use Symfony\Component\Finder\Finder;
 use Laminas\Code\Generator\DocBlockGenerator;
 use Laminas\Code\Reflection\DocBlockReflection;
 use Laminas\Code\Generator\DocBlock\Tag\MethodTag;
@@ -64,11 +63,8 @@ class EnumAnnotateCommand extends AbstractAnnotationCommand
             ->toArray();
     }
 
-    protected function getClassFinder(): Finder
+    protected function searchDirectory(): string
     {
-        $finder = new Finder();
-        $scanPath = $this->option('folder') ?? app_path(self::DEFAULT_SCAN_FOLDER);
-
-        return $finder->files()->in($scanPath)->name('*.php');
+        return $this->option('folder') ?? app_path(self::DEFAULT_SCAN_FOLDER);
     }
 }
