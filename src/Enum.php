@@ -559,7 +559,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Transform the enum instance when it's converted to an array.
      *
-     * @return string
+     * @return mixed
      */
     public function toArray()
     {
@@ -569,8 +569,9 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Transform the enum when it's passed through json_encode.
      *
-     * @return string
+     * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->toArray();
