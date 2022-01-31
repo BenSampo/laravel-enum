@@ -49,7 +49,7 @@ abstract class FlaggedEnum extends Enum
      * Return a FlaggedEnum instance with defined flags.
      *
      * @param  int[]|\BenSampo\Enum\Enum[]  $flags
-     * @return void
+     * @return self
      */
     public static function flags($flags): self
     {
