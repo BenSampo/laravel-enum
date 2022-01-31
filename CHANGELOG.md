@@ -5,13 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v4.1.0...master)
+## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v4.2.0...master)
+
+### Changed
+
+- The `annotate` command now uses composer to parse directories for instances of enums instead of `hanneskod/classtools`
 
 ## [4.2.0](https://github.com/BenSampo/laravel-enum/compare/v4.1.0...v4.2.0) - 2022-01-31
 
 ### Fixed
 
-- Fix return type on FlaggedEnum flags method #241 [241](https://github.com/BenSampo/laravel-enum/pull/241)
+- Fix return type on FlaggedEnum flags method [241](https://github.com/BenSampo/laravel-enum/pull/241)
 - Suppress deprecated notice on PHP8.1 [236](https://github.com/BenSampo/laravel-enum/pull/236)
 
 ## [4.1.0](https://github.com/BenSampo/laravel-enum/compare/v4.0.0...v4.1.0) - 2021-11-16
