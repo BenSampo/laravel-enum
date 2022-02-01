@@ -19,7 +19,7 @@
         }
     ],
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^8.0",
         "composer/composer": "^2.2",
         "illuminate/contracts": "^9.0",
         "illuminate/support": "^9.0",
