@@ -2,12 +2,12 @@
 
 namespace BenSampo\Enum\Tests;
 
-use BenSampo\Enum\Tests\Enums\SuperPowers;
-use BenSampo\Enum\Tests\Models\WithQueriesFlaggedEnums as TestModel;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\TestCase;
+use Illuminate\Foundation\Application;
+use Illuminate\Database\Schema\Blueprint;
+use BenSampo\Enum\Tests\Enums\SuperPowers;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use BenSampo\Enum\Tests\Models\WithQueriesFlaggedEnums as TestModel;
 
 class QueriesFlaggedEnumsTest extends TestCase
 {
@@ -63,7 +63,7 @@ class QueriesFlaggedEnumsTest extends TestCase
 
     /** @test */
     public function it_can_ensure_any_flag_is_present()
-    {       
+    {
         $this->assertEquals(2, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Strength, SuperPowers::Flight])->count());
         $this->assertEquals(1, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Invisibility, SuperPowers::Flight])->count());
         $this->assertEquals(2, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Immortality])->count());
