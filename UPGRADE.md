@@ -1,5 +1,21 @@
 # Upgrade Guide
 
+## 5.x
+
+### Laravel 9 required
+
+Laravel `9` or higher is required.
+
+### PHP 8.0 required
+
+PHP `8.0` or higher is now required.
+
+## 4.x
+
+### Review use of Localization features
+
+You should make sure that any enums using localization features are still translated as expected.
+
 ## 3.x
 
 ### Laravel 8 required
@@ -23,7 +39,7 @@ PHP `7.2.5` or higher is now required.
 ### Switch to native casting
 
 You should update your models to use Laravel 7 native casting. Remove the trait and
-move the casts from `$enumCasts` to `$casts`. 
+move the casts from `$enumCasts` to `$casts`.
 
 Trait based casting is still present, but is now deprecated and will be removed in the next major version.
 

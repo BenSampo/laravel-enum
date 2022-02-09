@@ -49,9 +49,10 @@ Created by [Ben Sampson](https://sampo.co.uk)
 
 ## Documentation for older versions
 
-You are reading the documentation for `4.x`.
+You are reading the documentation for `5.x`.
 
-- If you're using **Laravel 7** or below, please see the [docs for `2.x`](https://github.com/BenSampo/laravel-enum/blob/v2.2.0/README.md).
+- If you're using **Laravel 8** please see the [docs for `4.x`](https://github.com/BenSampo/laravel-enum/blob/v4.2.0/README.md).
+- If you're using **Laravel 7** please see the [docs for `2.x`](https://github.com/BenSampo/laravel-enum/blob/v2.2.0/README.md).
 - If you're using **Laravel 6** or below, please see the [docs for `1.x`](https://github.com/BenSampo/laravel-enum/blob/v1.38.0/README.md).
 
 Please see the [upgrade guide](./UPGRADE.md) for information on how to upgrade to the latest version.
@@ -64,8 +65,8 @@ I wrote a blog post about using laravel-enum: https://sampo.co.uk/blog/using-enu
 
 ### Requirements
 
-- Laravel `8` or higher
-- PHP `7.3` or higher
+- Laravel `9` or higher
+- PHP `8.0` or higher
 
 Via Composer
 
@@ -574,7 +575,7 @@ Returning `null` from the `parseDatabase` method will cause the attribute on the
 
 ### Model Annotation
 
-If you're using Laravel 7 casting, the [laravel-ide-helper](https://github.com/barryvdh/laravel-ide-helper) package can be used to automatically generate property docblocks for your models.
+If you're casting attributes on your model to enums, the [laravel-ide-helper](https://github.com/barryvdh/laravel-ide-helper) package can be used to automatically generate property docblocks for you.
 
 ## Migrations
 
@@ -718,7 +719,7 @@ php artisan vendor:publish --provider="BenSampo\Enum\EnumServiceProvider" --tag=
 
 ### Enum descriptions
 
-You can translate the strings returned by the `getDescription` method using Laravel's built in [localization](https://laravel.com/docs/5.6/localization) features.
+You can translate the strings returned by the `getDescription` method using Laravel's built in [localization](https://laravel.com/docs/localization) features.
 
 Add a new `enums.php` keys file for each of your supported languages. In this example there is one for English and one for Spanish.
 
@@ -787,7 +788,7 @@ Calling `UserType::getDescription(3);` now returns `Super admin` instead of `Sup
 
 ## Extending the Enum Base Class
 
-The `Enum` base class implements the [Laravel `Macroable`](https://laravel.com/api/5.6/Illuminate/Support/Traits/Macroable.html) trait, meaning it's easy to extend it with your own functions. If you have a function that you often add to each of your enums, you can use a macro.
+The `Enum` base class implements the [Laravel `Macroable`](https://laravel.com/api/9.x/Illuminate/Support/Traits/Macroable.html) trait, meaning it's easy to extend it with your own functions. If you have a function that you often add to each of your enums, you can use a macro.
 
 Let's say we want to be able to get a flipped version of the enum `asArray` method, we can do this using:
 
