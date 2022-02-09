@@ -2,12 +2,14 @@
 
 namespace BenSampo\Enum;
 
+use Exception;
 use ReflectionClass;
 use JsonSerializable;
 use Illuminate\Support\Str;
 use BenSampo\Enum\Casts\EnumCast;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Traits\Macroable;
+use BenSampo\Enum\Attributes\Description;
 use BenSampo\Enum\Contracts\EnumContract;
 use BenSampo\Enum\Contracts\LocalizedEnum;
 use Illuminate\Contracts\Support\Arrayable;
@@ -44,11 +46,11 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     public $description;
 
     /**
-     * Constants cache.
+     * Caches reflections of enum subclasses.
      *
-     * @var array
+     * @var array<class-string<static>, ReflectionClass<static>
      */
-    protected static $constCacheArray = [];
+    protected static $reflectionCache = [];
 
     /**
      * Construct an Enum instance.
@@ -95,6 +97,18 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     public static function getInstance($enumValue): self
     {
         return static::fromValue($enumValue);
+    }
+
+    /**
+     * Returns a reflection of the enum subclass.
+     *
+     * @return ReflectionClass<static>
+     */
+    protected static function getReflection(): ReflectionClass
+    {
+        $class = static::class;
+
+        return static::$reflectionCache[$class] ??= new ReflectionClass($class);
     }
 
     /**
@@ -218,12 +232,12 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Return instances of all the contained values.
      *
-     * @return static[]
+     * @return array<int, static>
      */
     public static function getInstances(): array
     {
         return array_map(
-            function ($constantValue) {
+            static function ($constantValue): self {
                 return new static($constantValue);
             },
             static::getConstants()
@@ -266,14 +280,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      */
     protected static function getConstants(): array
     {
-        $calledClass = get_called_class();
-
-        if (! array_key_exists($calledClass, static::$constCacheArray)) {
-            $reflect = new ReflectionClass($calledClass);
-            static::$constCacheArray[$calledClass] = $reflect->getConstants();
-        }
-
-        return static::$constCacheArray[$calledClass];
+        return self::getReflection()->getConstants();
     }
 
     /**
@@ -348,6 +355,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     {
         return
             static::getLocalizedDescription($value) ??
+            static::getAttributeDescription($value) ??
             static::getFriendlyKeyName(static::getKey($value));
     }
 
@@ -368,6 +376,30 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
             if (Lang::has($localizedStringKey)) {
                 return __($localizedStringKey);
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the description of a value from its PHP attribute.
+     *
+     * @param  mixed  $value
+     * @return string|null
+     */
+    protected static function getAttributeDescription($value): ?string
+    {
+        $reflection = self::getReflection();
+        $constantName = static::getKey($value);
+        $constReflection = $reflection->getReflectionConstant($constantName);
+        $descriptionAttributes = $constReflection->getAttributes(Description::class);
+
+        if (count($descriptionAttributes) === 1) {
+            return $descriptionAttributes[0]->newInstance()->description;
+        }
+
+        if (count($descriptionAttributes) > 1) {
+            throw new Exception('You cannot use more than 1 description attribute on ' . class_basename(static::class) . '::' . $constantName);
         }
 
         return null;
@@ -410,11 +442,9 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Return the enum as an array.
      *
-     * [string $key => mixed $value]
-     *
-     * @return array
+     * @return array<string, mixed>
      */
-    public static function asArray()
+    public static function asArray(): array
     {
         return static::getConstants();
     }
@@ -422,9 +452,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Get the enum as an array formatted for a select.
      *
-     * [mixed $value => string description]
-     *
-     * @return array
+     * @return array<array-key, string>
      */
     public static function asSelectArray(): array
     {
