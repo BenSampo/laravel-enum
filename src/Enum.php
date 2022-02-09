@@ -107,7 +107,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     {
         $class = static::class;
 
-        return static::$reflectionCache[$class] ??= new ReflectionClass($class));
+        return static::$reflectionCache[$class] ??= new ReflectionClass($class);
     }
 
     /**
