@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use BenSampo\Enum\Casts\EnumCast;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Traits\Macroable;
+use BenSampo\Enum\Attributes\Description;
 use BenSampo\Enum\Contracts\EnumContract;
 use BenSampo\Enum\Contracts\LocalizedEnum;
 use Illuminate\Contracts\Support\Arrayable;
@@ -348,6 +349,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     {
         return
             static::getLocalizedDescription($value) ??
+            static::getAttributeDescription($value) ??
             static::getFriendlyKeyName(static::getKey($value));
     }
 
@@ -368,6 +370,28 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
             if (Lang::has($localizedStringKey)) {
                 return __($localizedStringKey);
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the description of a value from its PHP attribute.
+     *
+     * @param  mixed  $value
+     * @return string|null
+     */
+    protected static function getAttributeDescription($value): ?string
+    {
+        $reflection = new ReflectionClass(static::class);
+        $constantName = static::getKey($value);
+        $constReflection = $reflection->getReflectionConstant($constantName);
+        $descriptionAttributes = $constReflection->getAttributes(Description::class);
+
+        if (count($descriptionAttributes)) {
+            $attribute = $descriptionAttributes[0];
+
+            return $attribute->newInstance()->description;
         }
 
         return null;
