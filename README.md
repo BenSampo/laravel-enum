@@ -786,7 +786,7 @@ final class UserType extends Enum
 }
 ```
 
-Calling `UserType::SuperAdministrator()->description` now returns `Super admin` instead of `SuperAdministrator`.
+Calling `UserType::SuperAdministrator()->description` now returns `Super admin` instead of `Super administrator`.
 
 You may also override the `getDescription` method on the base Enum class if you wish to have more control of the description.
 
@@ -896,7 +896,7 @@ UserType::hasValue('1', false); // Returns 'True'
 
 ### static getDescription(mixed $value): string
 
-Returns the key in sentence case for the enum value. It's possible to [override the getDescription](#overriding-the-getDescription-method) method to return custom descriptions.
+Returns the key in sentence case for the enum value. It's possible to [customize the description](#customizing-descriptions) if the guessed description is not appropriate.
 
 ```php
 UserType::getDescription(3); // Returns 'Super administrator'
