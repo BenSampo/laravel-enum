@@ -2,7 +2,6 @@
 
 namespace BenSampo\Enum\Tests\Models;
 
-use BenSampo\Enum\Traits\CastsEnums;
 use BenSampo\Enum\Tests\Enums\UserType;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,9 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class AnnotatedExample extends Model
 {
-    use CastsEnums;
-
-    protected $enumCasts = [
+    protected $casts = [
         'user_type' => UserType::class,
     ];
 
