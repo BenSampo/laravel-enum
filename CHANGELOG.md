@@ -5,11 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v4.2.0...master)
+## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v5.0.0...master)
+
+## [5.0.0](https://github.com/BenSampo/laravel-enum/compare/v4.2.0...v5.0.0) - 2022-02-09
+
+### Added
+
+- Support for Laravel 9
 
 ### Changed
 
 - The `annotate` command now uses composer to parse directories for instances of enums instead of `hanneskod/classtools`
+
+### Removed
+
+- Removed old `CastsEnums` trait. Laravel attribute casting should be used now instead. [247](https://github.com/BenSampo/laravel-enum/pull/247)
 
 ## [4.2.0](https://github.com/BenSampo/laravel-enum/compare/v4.1.0...v4.2.0) - 2022-01-31
 
