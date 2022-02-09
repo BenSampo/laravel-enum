@@ -17,6 +17,10 @@ final class DescriptionFromAttribute extends Enum
 
     const SuperAdministrator = 3;
 
+    #[Description('First description')]
+    #[Description('Second description')]
+    const InvalidCaseWithMultipleDescriptions = 4;
+
     public static function getDescription($value): string
     {
         if ($value === self::SuperAdministrator) {

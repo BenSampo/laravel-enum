@@ -2,6 +2,7 @@
 
 namespace BenSampo\Enum\Tests;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use BenSampo\Enum\Tests\Enums\DescriptionFromAttribute;
 
@@ -16,5 +17,12 @@ class EnumAttributeDescriptionTest extends TestCase
     public function test_enum_description_falls_back_to_get_description_method_when_not_defined_using_attribute()
     {
         $this->assertSame('Super Admin', DescriptionFromAttribute::getDescription(DescriptionFromAttribute::SuperAdministrator));
+    }
+
+    public function test_an_exception_is_thrown_when_accessing_a_description_which_is_annotated_with_multiple_description_attributes()
+    {
+        $this->expectException(Exception::class);
+
+        DescriptionFromAttribute::InvalidCaseWithMultipleDescriptions()->description;
     }
 }

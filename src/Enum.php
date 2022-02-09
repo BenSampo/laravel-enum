@@ -2,6 +2,7 @@
 
 namespace BenSampo\Enum;
 
+use Exception;
 use ReflectionClass;
 use JsonSerializable;
 use Illuminate\Support\Str;
@@ -393,10 +394,12 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
         $constReflection = $reflection->getReflectionConstant($constantName);
         $descriptionAttributes = $constReflection->getAttributes(Description::class);
 
-        if (count($descriptionAttributes)) {
-            $attribute = $descriptionAttributes[0];
+        if (count($descriptionAttributes) > 1) {
+            throw new Exception('You cannot use more than 1 description attribute on ' . class_basename(static::class) . '::' . $constantName);
+        }
 
-            return $attribute->newInstance()->description;
+        if (count($descriptionAttributes) === 1) {
+            return $descriptionAttributes[0]->newInstance()->description;
         }
 
         return null;
