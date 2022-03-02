@@ -72,6 +72,17 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
+     * Restores an enum instance exported by var_export().
+     *
+     * @param  array{value: mixed, key: string, description: string}  $enum
+     * @return static
+     */
+    public static function __set_state(array $enum): static
+    {
+        return new static($enum['value']);
+    }
+
+    /**
      * Make a new instance from an enum value.
      *
      * @param  mixed  $enumValue
