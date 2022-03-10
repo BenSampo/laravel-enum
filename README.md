@@ -3,7 +3,7 @@
 <a href="https://travis-ci.org/BenSampo/laravel-enum"><img src="https://travis-ci.org/BenSampo/laravel-enum.svg?branch=master" alt="Build Status"></a>
 <a href="https://packagist.org/packages/bensampo/laravel-enum"><img src="https://img.shields.io/packagist/v/bensampo/laravel-enum.svg?style=flat-square&label=stable" alt="Packagist Stable Version"></a>
 <a href="https://packagist.org/packages/bensampo/laravel-enum"><img src="https://img.shields.io/packagist/dt/bensampo/laravel-enum.svg?style=flat-square" alt="Packagist downloads"></a>
-<a href="LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT Software License"></a>
+<a href="LICENSE.txt"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT Software License"></a>
 </p>
 
 ## About Laravel Enum
