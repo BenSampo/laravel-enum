@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v5.1.0...master)
 
+### Added
+
+- Restore enum instance from `var_export()`
+
 ## [5.1.0](https://github.com/BenSampo/laravel-enum/compare/v5.0.0...v5.1.0) - 2022-02-09
 
 ### Added
