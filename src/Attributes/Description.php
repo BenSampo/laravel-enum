@@ -9,5 +9,6 @@ class Description
 {
     public function __construct(
         public string $description,
-    ) {}
+    ) {
+    }
 }
