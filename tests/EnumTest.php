@@ -3,6 +3,7 @@
 namespace BenSampo\Enum\Tests;
 
 use BenSampo\Enum\Enum;
+use Illuminate\Support\Collection;
 use PHPUnit\Framework\TestCase;
 use BenSampo\Enum\Tests\Enums\UserType;
 use BenSampo\Enum\Tests\Enums\SuperPowers;
@@ -227,5 +228,11 @@ class EnumTest extends TestCase
     public function test_enum_can_be_json_encoded()
     {
         $this->assertSame('1', json_encode(UserType::Moderator()));
+    }
+
+    public function test_enum_shows_just_value_when_laravel_recursively_converts_arrayable()
+    {
+        $enums = new Collection([UserType::Moderator()]);
+        $this->assertSame([UserType::Moderator], $enums->toArray());
     }
 }

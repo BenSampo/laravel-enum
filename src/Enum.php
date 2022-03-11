@@ -72,6 +72,17 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
+     * Restores an enum instance exported by var_export().
+     *
+     * @param  array{value: mixed, key: string, description: string}  $enum
+     * @return static
+     */
+    public static function __set_state(array $enum): static
+    {
+        return new static($enum['value']);
+    }
+
+    /**
      * Make a new instance from an enum value.
      *
      * @param  mixed  $enumValue
@@ -576,7 +587,6 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      * Get the name of the caster class to use when casting from / to this cast target.
      *
      * @param  array  $arguments
-     * @return string
      * @return string|\Illuminate\Contracts\Database\Eloquent\CastsAttributes|\Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes
      */
     public static function castUsing(array $arguments)
@@ -585,28 +595,27 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Transform the enum instance when it's converted to an array.
+     * Return a plain representation of the enum.
      *
-     * @return mixed
+     * This method is not meant to be called directly, but rather be called
+     * by Laravel through a recursive serialization with @see \Illuminate\Contracts\Support\Arrayable.
+     * Thus, it returns a value meant to be included in a plain array.
      */
-    public function toArray()
+    public function toArray(): mixed
     {
         return $this->value;
     }
 
     /**
-     * Transform the enum when it's passed through json_encode.
-     *
-     * @return mixed
+     * Return a JSON-serializable representation of the enum.
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
-        return $this->toArray();
+        return $this->value;
     }
 
     /**
-     * @return string
+     * Return a string representation of the enum.
      */
     public function __toString(): string
     {

@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Publish language definitions to `lang` directory
 
+### Added
+
+- Restore enum instance from `var_export()`
+
 ## [5.1.0](https://github.com/BenSampo/laravel-enum/compare/v5.0.0...v5.1.0) - 2022-02-09
 
 ### Added
