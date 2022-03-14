@@ -472,7 +472,7 @@ User::hasAnyFlags('permissions', [UserPermissions::DeleteComments(), UserPermiss
 
 ## Attribute Casting
 
-You may cast model attributes to enums using Laravel 7.x's built in custom casting. This will cast the attribute to an enum instance when getting and back to the enum value when setting.
+You may cast model attributes to enums using Laravel's built in custom casting. This will cast the attribute to an enum instance when getting and back to the enum value when setting.
 Since `Enum::class` implements the `Castable` contract, you just need to specify the classname of the enum:
 
 ```php
