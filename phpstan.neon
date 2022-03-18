@@ -1,0 +1,17 @@
+includes:
+- extension.neon
+- vendor/nunomaduro/larastan/extension.neon
+- vendor/phpstan/phpstan/conf/bleedingEdge.neon
+- vendor/phpstan/phpstan-mockery/extension.neon
+- vendor/phpstan/phpstan-phpunit/extension.neon
+- vendor/phpstan/phpstan-phpunit/rules.neon
+parameters:
+  # TODO level up to max
+  level: 2
+  paths:
+  - src
+  - tests
+  checkOctaneCompatibility: true
+  ignoreErrors:
+  # This is a library, so it should be extendable
+  - '#Unsafe usage of new static.*#'
