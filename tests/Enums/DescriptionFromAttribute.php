@@ -18,6 +18,7 @@ final class DescriptionFromAttribute extends Enum
     const SuperAdministrator = 3;
 
     #[Description('First description')]
+    // @phpstan-ignore-next-line intentionally wrong
     #[Description('Second description')]
     const InvalidCaseWithMultipleDescriptions = 4;
 

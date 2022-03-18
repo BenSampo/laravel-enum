@@ -173,24 +173,36 @@ class EnumTest extends TestCase
 
     public function test_enum_is_macroable_with_static_methods()
     {
-        Enum::macro('asFlippedArray', function () {
+        $name = 'asFlippedArray';
+
+        Enum::macro($name, function () {
+            // @phpstan-ignore-next-line self is rebound to Enum
             return array_flip(self::asArray());
         });
 
-        $this->assertTrue(UserType::hasMacro('asFlippedArray'));
-        $this->assertEquals(UserType::asFlippedArray(), array_flip(UserType::asArray()));
+        $this->assertTrue(UserType::hasMacro($name));
+
+        $reimplementedResult = array_flip(UserType::asArray());
+        // @phpstan-ignore-next-line TODO make extension recognize macro
+        $macroResult = UserType::asFlippedArray();
+        $this->assertEquals($reimplementedResult, $macroResult);
     }
 
     public function test_enum_is_macroable_with_instance_methods()
     {
-        Enum::macro('macroGetValue', function () {
+        $name = 'macroGetValue';
+        Enum::macro($name, function () {
+            // @phpstan-ignore-next-line $this is rebound to Enum
             return $this->value;
         });
 
-        $this->assertTrue(UserType::hasMacro('macroGetValue'));
+        $this->assertTrue(UserType::hasMacro($name));
 
-        $user = new UserType(UserType::Administrator);
-        $this->assertSame(UserType::Administrator, $user->macroGetValue());
+        $value = UserType::Administrator;
+        $user = new UserType($value);
+        // @phpstan-ignore-next-line TODO make extension recognize macro
+        $valueFromMacro = $user->macroGetValue();
+        $this->assertSame($value, $valueFromMacro);
     }
 
     public function test_enum_get_instances()
