@@ -12,7 +12,7 @@ jobs:
         php: [8.0, 8.1]
         dependency-versions: [lowest, highest]
 
-    name: P${{ matrix.php }} - ${{ matrix.dependency-versions }} - ${{ matrix.os }}
+    name: Tests - P${{ matrix.php }} - ${{ matrix.dependency-versions }} - ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
@@ -41,7 +41,7 @@ jobs:
         php: [8.0, 8.1]
         dependency-versions: [lowest, highest]
 
-    name: P${{ matrix.php }} - ${{ matrix.dependency-versions }}
+    name: Static Analysis - P${{ matrix.php }} - ${{ matrix.dependency-versions }}
 
     steps:
       - uses: actions/checkout@v2
