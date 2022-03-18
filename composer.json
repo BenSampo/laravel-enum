@@ -73,12 +73,13 @@
     },
     "scripts": {
         "all": [
+            "composer normalize",
             "@fix",
             "@test",
             "@stan"
         ],
         "fix": "phpcbf -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests",
-        "test": "phpunit",
-        "stan": "phpstan"
+        "stan": "phpstan",
+        "test": "phpunit"
     }
 }
