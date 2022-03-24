@@ -697,10 +697,29 @@ public function store(Request $request)
 
 You can also use the 'pipe' syntax for rules.
 
+BE CAREFULL: if you want to have a validation message, you must declare they on resources/lang/[locale]/validation.php
+```php
+...
+    'enum' => 'The value you have provided is not a valid enum instance.',
+    'enum_value' => 'The value you have entered is invalid.',
+    'enum_key' => 'The key you have entered is invalid.',
+...
+```
+or define a custom message
+```php
+'custom' => [
+        'attribute-name' => [
+            'enum' => '...',
+            'enum_value' => '..',
+            'enum_key' => '...',
+        ],
+    ],
+```
+
 **enum_value**_:enum_class,[strict]_  
 **enum_key**_:enum_class_  
 **enum**_:enum_class_
-
+#### Example
 ```php
 'user_type' => 'required|enum_value:' . UserType::class,
 'user_type' => 'required|enum_key:' . UserType::class,
