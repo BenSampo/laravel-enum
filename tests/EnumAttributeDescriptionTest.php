@@ -25,4 +25,9 @@ class EnumAttributeDescriptionTest extends TestCase
 
         DescriptionFromAttribute::InvalidCaseWithMultipleDescriptions()->description;
     }
+
+    public function test_an_exception_is_not_thrown_when_accessing_a_description_for_an_invalid_value()
+    {
+        $this->assertSame('', DescriptionFromAttribute::getDescription('invalid'));
+    }
 }
