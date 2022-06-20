@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v5.1.0...master)
+## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v5.3.0...master)
+
+## [5.3.0](https://github.com/BenSampo/laravel-enum/compare/v5.2.0...v5.3.0) - 2022-04-08
+
+### Fixed
+
+- Return value for invalid enum case when using the `Description` attribute [264](https://github.com/BenSampo/laravel-enum/pull/264)
 
 ### Fixed
 

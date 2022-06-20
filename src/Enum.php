@@ -403,6 +403,9 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
         $reflection = self::getReflection();
         $constantName = static::getKey($value);
         $constReflection = $reflection->getReflectionConstant($constantName);
+        if ($constReflection === false) {
+            return null;
+        }
         $descriptionAttributes = $constReflection->getAttributes(Description::class);
 
         if (count($descriptionAttributes) === 1) {
