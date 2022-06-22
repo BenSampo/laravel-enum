@@ -93,7 +93,7 @@ php artisan make:enum UserType
 Now, you just need to add the possible values your enum can have as constants.
 
 ```php
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Enums;
 
@@ -725,7 +725,7 @@ Add a new `enums.php` keys file for each of your supported languages. In this ex
 
 ```php
 // resources/lang/en/enums.php
-<?php
+<?php declare(strict_types=1);
 
 use App\Enums\UserType;
 
@@ -741,7 +741,7 @@ return [
 
 ```php
 // resources/lang/es/enums.php
-<?php
+<?php declare(strict_types=1);
 
 use App\Enums\UserType;
 
