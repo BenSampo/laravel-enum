@@ -8,25 +8,15 @@ use PHPStan\Reflection\FunctionVariant;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\TrinaryLogic;
 use PHPStan\Type\Generic\TemplateTypeMap;
-use PHPStan\Type\ObjectType;
+use PHPStan\Type\StaticType;
 use PHPStan\Type\Type;
 
 class EnumMethodReflection implements MethodReflection
 {
-    /**
-     * @var \PHPStan\Reflection\ClassReflection
-     */
-    private $classReflection;
-
-    /**
-     * @var string
-     */
-    private $name;
-
-    public function __construct(ClassReflection $classReflection, string $name)
-    {
-        $this->classReflection = $classReflection;
-        $this->name = $name;
+    public function __construct(
+        private ClassReflection $classReflection,
+        private string $name
+    ) {
     }
 
     public function getDeclaringClass(): ClassReflection
@@ -68,7 +58,7 @@ class EnumMethodReflection implements MethodReflection
                 null,
                 [],
                 false,
-                new ObjectType($this->classReflection->getName())
+                new StaticType($this->classReflection)
             ),
         ];
     }
