@@ -34,21 +34,21 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * The key of one of the enum members.
      *
-     * @var mixed
+     * @var string
      */
     public $key;
 
     /**
      * The description of one of the enum members.
      *
-     * @var mixed
+     * @var string
      */
     public $description;
 
     /**
      * Caches reflections of enum subclasses.
      *
-     * @var array<class-string<static>, ReflectionClass<static>
+     * @var array<class-string<static>, ReflectionClass<static>>
      */
     protected static $reflectionCache = [];
 

@@ -77,6 +77,7 @@ class EnumInstanceTest extends TestCase
     {
         $this->expectException(InvalidEnumKeyException::class);
 
+        // @phpstan-ignore-next-line intentionally wrong
         UserType::KeyWhichDoesNotExist();
     }
 

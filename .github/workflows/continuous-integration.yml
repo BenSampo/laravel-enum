@@ -1,0 +1,59 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest]
+        php: [8.0, 8.1]
+        dependency-versions: [lowest, highest]
+
+    name: Tests - P${{ matrix.php }} - ${{ matrix.dependency-versions }} - ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
+          coverage: none
+
+      - run: |
+          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+      - uses: ramsey/composer-install@v2
+        with:
+          dependency-versions: ${{ matrix.dependency-versions }}
+
+      - run: vendor/bin/phpunit
+
+  static-analysis:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [8.0, 8.1]
+        dependency-versions: [lowest, highest]
+
+    name: Static Analysis - P${{ matrix.php }} - ${{ matrix.dependency-versions }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
+          coverage: none
+
+      - uses: ramsey/composer-install@v2
+        with:
+          dependency-versions: ${{ matrix.dependency-versions }}
+
+      - run: vendor/bin/phpstan

@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Return value for invalid enum case when using the `Description` attribute [264](https://github.com/BenSampo/laravel-enum/pull/264)
 
+### Fixed
+
+- Type-hint `Enum::$key` and `Enum::$description` as `string`
+- Type-hint `FlaggedEnum::$value` as `int`
+
 ## [5.2.0](https://github.com/BenSampo/laravel-enum/compare/v5.1.0...v5.2.0) - 2022-03-11
 
 ### Fixed

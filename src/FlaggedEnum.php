@@ -6,6 +6,13 @@ use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 
 abstract class FlaggedEnum extends Enum
 {
+    /**
+     * The value of one of the enum members.
+     *
+     * @var int
+     */
+    public $value;
+
     const None = 0;
 
     /**
