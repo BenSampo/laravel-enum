@@ -1,5 +1,22 @@
 # Upgrade Guide
 
+## 6.x
+
+### Native types
+
+The library now uses native types whenever possible.
+When you override methods or implement interfaces, you will need to add them.
+
+### `Enum::getDescription()` throws
+
+Instead of returning an empty string `''` on invalid values,
+`Enum::getDescription()` will throw an `InvalidEnumMemberException`.
+
+### Construct `InvalidEnumMemberException`
+
+The constructor of `InvalidEnumMemberException` now expects the class name
+of an enum instead of an enum instance.
+
 ## 5.x
 
 ### Laravel 9 required

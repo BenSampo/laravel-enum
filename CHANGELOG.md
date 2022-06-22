@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Require composer/class-map-generator over composer/composer [268](https://github.com/BenSampo/laravel-enum/pull/268)
+- Use native types whenever possible
+- Throw when calling `Enum::getDescription()` with invalid values
+- Expect class-string in `InvalidEnumMemberException` constructor
+
+### Fixed
+
+- Leverage late static binding for instantiation methods in PHPStan extension
 
 ## [5.3.1](https://github.com/BenSampo/laravel-enum/compare/v5.3.0...v5.3.1) - 2022-06-22
 
