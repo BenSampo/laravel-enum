@@ -34,11 +34,11 @@ class EnumValidationTest extends TestCase
 
         (new Enum('PathToAClassThatDoesntExist'))->passes('', 'Test');
     }
-    
+
     public function test_can_serialize_to_string()
     {
         $rule = new Enum(UserType::class);
-        
+
         $this->assertSame('enum:' . UserType::class, (string) $rule);
     }
 }

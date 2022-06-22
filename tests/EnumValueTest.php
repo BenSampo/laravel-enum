@@ -90,18 +90,18 @@ class EnumValueTest extends TestCase
 
         (new EnumValue('PathToAClassThatDoesntExist'))->passes('', 'Test');
     }
-    
+
     public function test_can_serialize_to_string_without_strict_type_checking()
     {
         $rule = new EnumValue(UserType::class, false);
-    
+
         $this->assertSame('enum_value:' . UserType::class . ',false', (string) $rule);
     }
-    
+
     public function test_can_serialize_to_string_with_strict_type_checking()
     {
         $rule = new EnumValue(UserType::class, true);
-        
+
         $this->assertSame('enum_value:' . UserType::class . ',true', (string) $rule);
     }
 }

@@ -36,7 +36,7 @@ class QueriesFlaggedEnumsTest extends TestCase
             $table->timestamps();
         });
     }
-    
+
     /** @test */
     public function it_can_ensure_a_flag_is_present()
     {

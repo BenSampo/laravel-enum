@@ -10,6 +10,6 @@ class WithQueriesFlaggedEnums extends Model
     use QueriesFlaggedEnums;
 
     public $table = 'test_models';
-    
+
     protected $guarded = [];
 }

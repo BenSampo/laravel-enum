@@ -14,10 +14,10 @@ use BenSampo\Enum\FlaggedEnum;
  */
 final class DummyClass extends FlaggedEnum
 {
-    const FlagOne   = 1 << 0;
-    const FlagTwo   = 1 << 1;
+    const FlagOne = 1 << 0;
+    const FlagTwo = 1 << 1;
     const FlagThree = 1 << 2;
-    const FlagFour  = 1 << 3;
+    const FlagFour = 1 << 3;
 
     // Shortcuts
     const FlagOneAndTwo = self::FlagOne | self::FlagTwo;
