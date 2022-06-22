@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v5.3.0...master)
 
+### Changed
+
+- Require composer/class-map-generator over composer/composer [268](https://github.com/BenSampo/laravel-enum/pull/268)
+
 ## [5.3.1](https://github.com/BenSampo/laravel-enum/compare/v5.3.0...v5.3.1) - 2022-06-22
 
 ### Fixed
