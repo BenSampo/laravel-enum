@@ -31,7 +31,7 @@ class EnumKey implements Rule
      */
     public function passes($attribute, $value): bool
     {
-        return $this->enumClass::hasKey($value);
+        return is_string($value) && $this->enumClass::hasKey($value);
     }
 
     /**

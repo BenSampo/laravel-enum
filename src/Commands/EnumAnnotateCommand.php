@@ -34,11 +34,12 @@ class EnumAnnotateCommand extends AbstractAnnotationCommand
     protected function annotate(ReflectionClass $reflectionClass): void
     {
         $docBlock = DocBlockGenerator::fromArray([]);
-        $originalDocBlock =  null;
 
-        if (strlen($reflectionClass->getDocComment()) !== 0) {
-            $originalDocBlock = DocBlockGenerator::fromReflection(new DocBlockReflection($reflectionClass));
-            $docBlock->setShortDescription($originalDocBlock->getShortDescription());
+        if ($reflectionClass->getDocComment()) {
+            $docBlock->setShortDescription(
+                DocBlockGenerator::fromReflection(new DocBlockReflection($reflectionClass))
+                    ->getShortDescription()
+            );
         }
 
         $this->updateClassDocblock($reflectionClass, $this->getDocBlock($reflectionClass));
