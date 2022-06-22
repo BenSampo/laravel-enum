@@ -48,14 +48,12 @@ class EnumAnnotateCommand extends AbstractAnnotationCommand
     {
         $constants = $reflectionClass->getConstants();
 
-        $existingTags = array_filter($originalTags, function (TagInterface $tag) use ($constants) {
-            return !$tag instanceof MethodTag || !in_array($tag->getMethodName(), array_keys($constants), true);
-        });
+        $existingTags = array_filter($originalTags, fn (TagInterface $tag): bool =>
+            ! $tag instanceof MethodTag
+            || ! in_array($tag->getMethodName(), array_keys($constants), true));
 
         return collect($constants)
-            ->map(function ($value, $constantName) {
-                return new MethodTag($constantName, ['static'], null, true);
-            })
+            ->map(fn (mixed $value, string $constantName): MethodTag => new MethodTag($constantName, ['static'], null, true))
             ->merge($existingTags)
             ->toArray();
     }

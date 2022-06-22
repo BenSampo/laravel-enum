@@ -30,7 +30,7 @@ abstract class FlaggedEnum extends Enum
         } else {
             try {
                 parent::__construct($flags);
-            } catch (InvalidEnumMemberException $exception) {
+            } catch (InvalidEnumMemberException) {
                 $this->value = $flags;
             }
         }
@@ -89,9 +89,9 @@ abstract class FlaggedEnum extends Enum
      */
     public function addFlags(array $flags): static
     {
-        array_map(function ($flag) {
+        foreach ($flags as $flag) {
             $this->addFlag($flag);
-        }, $flags);
+        }
 
         return $this;
     }
@@ -121,9 +121,9 @@ abstract class FlaggedEnum extends Enum
      */
     public function removeFlags(array $flags): static
     {
-        array_map(function ($flag) {
+        foreach ($flags as $flag) {
             $this->removeFlag($flag);
-        }, $flags);
+        }
 
         return $this;
     }

@@ -220,9 +220,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     public static function getInstances(): array
     {
         return array_map(
-            static function ($constantValue): self {
-                return new static($constantValue);
-            },
+            static fn (mixed $constantValue): self => new static($constantValue),
             static::getConstants()
         );
     }
@@ -274,11 +272,10 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
             return array_keys(static::getConstants());
         }
 
-        return collect(is_array($values) ? $values : func_get_args())
-            ->map(function ($value) {
-                return static::getKey($value);
-            })
-            ->toArray();
+        return array_map(
+            [static::class, 'getKey'],
+            is_array($values) ? $values : func_get_args(),
+        );
     }
 
     /**
@@ -294,11 +291,10 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
             return array_values(static::getConstants());
         }
 
-        return collect(is_array($keys) ? $keys : func_get_args())
-            ->map(function ($key) {
-                return static::getValue($key);
-            })
-            ->toArray();
+        return array_map(
+            [static::class, 'getValue'],
+            is_array($keys) ? $keys : func_get_args(),
+        );
     }
 
     /**
@@ -419,7 +415,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
         $array = static::asArray();
         $selectArray = [];
 
-        foreach ($array as $key => $value) {
+        foreach ($array as $value) {
             $selectArray[$value] = static::getDescription($value);
         }
 

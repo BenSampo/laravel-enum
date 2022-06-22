@@ -60,14 +60,9 @@ abstract class AbstractAnnotationCommand extends Command
      */
     protected function annotateFolder(): void
     {
-        $classMap = ClassMapGenerator::createMap($this->searchDirectory());
+        foreach (ClassMapGenerator::createMap($this->searchDirectory()) as $class => $_) {
+            $reflection = new ReflectionClass($class);
 
-        /** @var \ReflectionClass[] $classes */
-        $classes = array_map(function ($class) {
-            return new ReflectionClass($class);
-        }, array_keys($classMap));
-
-        foreach ($classes as $reflection) {
             if ($reflection->isSubclassOf(static::PARENT_CLASS)) {
                 $this->annotate($reflection);
             }
