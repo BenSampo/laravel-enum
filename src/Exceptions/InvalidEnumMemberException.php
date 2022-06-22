@@ -3,18 +3,13 @@
 namespace BenSampo\Enum\Exceptions;
 
 use Exception;
-use BenSampo\Enum\Enum;
 
 class InvalidEnumMemberException extends Exception
 {
     /**
-     * Create an InvalidEnumMemberException.
-     *
-     * @param  mixed  $invalidValue
-     * @param  \BenSampo\Enum\Enum  $enum
-     * @return void
+     * @param class-string<\BenSampo\Enum\Enum> $enum
      */
-    public function __construct($invalidValue, Enum $enum)
+    public function __construct(mixed $invalidValue, string $enum)
     {
         $invalidValueType = gettype($invalidValue);
         $enumValues = implode(', ', $enum::getValues());

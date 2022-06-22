@@ -56,7 +56,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     public function __construct(mixed $enumValue)
     {
         if (! static::hasValue($enumValue)) {
-            throw new InvalidEnumMemberException($enumValue, $this);
+            throw new InvalidEnumMemberException($enumValue, static::class);
         }
 
         $this->value = $enumValue;
@@ -302,7 +302,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      */
     public static function getKey(mixed $value): string
     {
-        return array_search($value, static::getConstants(), true);
+        return array_search($value, static::getConstants(), true)
+            ?: throw new InvalidEnumMemberException($value, static::class);
     }
 
     /**
