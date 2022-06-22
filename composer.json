@@ -20,7 +20,7 @@
     "homepage": "https://github.com/bensampo/laravel-enum",
     "require": {
         "php": "^8",
-        "composer/composer": "^2.2",
+        "composer/class-map-generator": "^1",
         "illuminate/contracts": "^9",
         "illuminate/support": "^9",
         "laminas/laminas-code": "^3.4 || ^4",

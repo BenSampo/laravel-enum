@@ -7,7 +7,7 @@ use ReflectionClass;
 use InvalidArgumentException;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Composer\Autoload\ClassMapGenerator;
+use Composer\ClassMapGenerator\ClassMapGenerator;
 use Laminas\Code\Generator\DocBlockGenerator;
 use Laminas\Code\Reflection\DocBlockReflection;
 use Symfony\Component\Console\Input\InputOption;
@@ -73,7 +73,7 @@ abstract class AbstractAnnotationCommand extends Command
     protected function annotateFolder()
     {
         $classMap = ClassMapGenerator::createMap($this->searchDirectory());
-        
+
         /** @var \ReflectionClass[] $classes */
         $classes = array_map(function ($class) {
             return new ReflectionClass($class);
