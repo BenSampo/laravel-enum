@@ -11,7 +11,7 @@ final class UserTypeCustomCast extends Enum
     const Subscriber = 2;
     const SuperAdministrator = 3;
 
-    public static function parseDatabase($value)
+    public static function parseDatabase(mixed $value): mixed
     {
         if (! $value) {
             return null;
@@ -20,7 +20,7 @@ final class UserTypeCustomCast extends Enum
         return explode('-', $value)[1] ?? null;
     }
 
-    public static function serializeDatabase($value)
+    public static function serializeDatabase(mixed $value): mixed
     {
         if (! $value) {
             return null;

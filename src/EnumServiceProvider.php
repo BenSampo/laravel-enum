@@ -14,10 +14,8 @@ class EnumServiceProvider extends ServiceProvider
 {
     /**
      * Perform post-registration booting of services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->bootCommands();
         $this->bootValidationTranslation();
@@ -26,11 +24,9 @@ class EnumServiceProvider extends ServiceProvider
     }
 
     /**
-     * Boot the custom commands
-     *
-     * @return void
+     * Boot the custom commands.
      */
-    private function bootCommands()
+    private function bootCommands(): void
     {
         $this->publishes([
             __DIR__.'/Commands/stubs' => $this->app->basePath('stubs')
@@ -45,11 +41,9 @@ class EnumServiceProvider extends ServiceProvider
     }
 
     /**
-     * Boot the custom validators
-     *
-     * @return void
+     * Boot the custom validators.
      */
-    private function bootValidators()
+    private function bootValidators(): void
     {
         $this->app['validator']->extend('enum_key', function ($attribute, $value, $parameters, $validator) {
             $enum = $parameters[0] ?? null;
@@ -80,10 +74,8 @@ class EnumServiceProvider extends ServiceProvider
 
     /**
      * Boot the Doctrine type.
-     *
-     * @return void
      */
-    private function bootDoctrineType()
+    private function bootDoctrineType(): void
     {
         // Not included by default in Laravel
         if (class_exists('Doctrine\DBAL\Types\Type')) {
@@ -93,7 +85,7 @@ class EnumServiceProvider extends ServiceProvider
         }
     }
 
-    private function bootValidationTranslation()
+    private function bootValidationTranslation(): void
     {
         $this->publishes([
             __DIR__ . '/../lang' => lang_path('vendor/laravelEnum'),

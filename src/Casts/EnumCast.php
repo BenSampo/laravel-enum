@@ -7,31 +7,24 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 class EnumCast implements CastsAttributes
 {
-    /** @var string */
-    protected $enumClass;
-
-    public function __construct(string $enumClass)
-    {
-        $this->enumClass = $enumClass;
+    public function __construct(
+        protected string $enumClass
+    ) {
     }
 
-    public function get($model, string $key, $value, array $attributes)
+    public function get($model, string $key, $value, array $attributes): ?Enum
     {
         return $this->castEnum($value);
     }
 
-    public function set($model, string $key, $value, array $attributes)
+    public function set($model, string $key, $value, array $attributes): array
     {
         $value = $this->castEnum($value);
 
         return [$key => $this->enumClass::serializeDatabase($value)];
     }
 
-    /**
-     * @param  mixed  $value
-     * @return \BenSampo\Enum\Enum|null
-     */
-    protected function castEnum($value): ?Enum
+    protected function castEnum(mixed $value): ?Enum
     {
         if ($value === null || $value instanceof $this->enumClass) {
             return $value;
@@ -47,12 +40,9 @@ class EnumCast implements CastsAttributes
     }
 
     /**
-     * Retrieve the value that can be casted into Enum
-     *
-     * @param  mixed  $value
-     * @return mixed
+     * Retrieve the value that can be cast into Enum
      */
-    protected function getCastableValue($value)
+    protected function getCastableValue(mixed $value): mixed
     {
         // If the enum has overridden the `parseDatabase` method, use it to get the cast value
         $value = $this->enumClass::parseDatabase($value);

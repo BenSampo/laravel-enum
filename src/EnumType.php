@@ -16,12 +16,10 @@ class EnumType extends Type
     /**
      * Gets the SQL declaration snippet for a field of this type.
      *
-     * @param  mixed[]  $fieldDeclaration The field declaration.
+     * @param  array<mixed>  $column The column definition.
      * @param  \Doctrine\DBAL\Platforms\AbstractPlatform  $platform The currently used database platform.
-     *
-     * @return string
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         $values = implode(
             ',',
@@ -29,7 +27,7 @@ class EnumType extends Type
                 function (string $value): string {
                     return "'$value'";
                 },
-                $fieldDeclaration['allowed']
+                $column['allowed']
             )
         );
 
@@ -38,19 +36,16 @@ class EnumType extends Type
 
     /**
      * Gets the name of this type.
-     *
-     * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return self::ENUM;
     }
 
     /**
-     * @param  \Doctrine\DBAL\Platforms\AbstractPlatform  $platform
-     * @return string[]
+     * @return array<string>
      */
-    public function getMappedDatabaseTypes(AbstractPlatform $platform)
+    public function getMappedDatabaseTypes(AbstractPlatform $platform): array
     {
         return [
             self::ENUM,

@@ -22,7 +22,7 @@ final class DescriptionFromAttribute extends Enum
     #[Description('Second description')]
     const InvalidCaseWithMultipleDescriptions = 4;
 
-    public static function getDescription($value): string
+    public static function getDescription(mixed $value): string
     {
         if ($value === self::SuperAdministrator) {
             return 'Super Admin';

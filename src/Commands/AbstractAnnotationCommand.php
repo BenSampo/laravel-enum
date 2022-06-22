@@ -16,15 +16,8 @@ abstract class AbstractAnnotationCommand extends Command
 {
     public const PARENT_CLASS = '';
 
-    /**
-     * @var \Illuminate\Filesystem\Filesystem
-     */
-    protected $filesystem;
+    protected Filesystem $filesystem;
 
-    /**
-     * @param \Illuminate\Filesystem\Filesystem $filesystem
-     * @return void
-     */
     public function __construct(Filesystem $filesystem)
     {
         parent::__construct();
@@ -48,10 +41,8 @@ abstract class AbstractAnnotationCommand extends Command
 
     /**
      * Handle the command call.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         if ($this->argument('class')) {
             $this->annotateClass($this->argument('class'));
@@ -65,11 +56,9 @@ abstract class AbstractAnnotationCommand extends Command
     }
 
     /**
-     * Annotate classes in a given folder
-     *
-     * @return void
+     * Annotate classes in a given folder.
      */
-    protected function annotateFolder()
+    protected function annotateFolder(): void
     {
         $classMap = ClassMapGenerator::createMap($this->searchDirectory());
 
@@ -88,13 +77,10 @@ abstract class AbstractAnnotationCommand extends Command
     /**
      * Annotate a specific class by name
      *
-     * @param  string  $className
-     * @return void
-     *
      * @throws \InvalidArgumentException
      * @throws \ReflectionException
      */
-    protected function annotateClass(string $className)
+    protected function annotateClass(string $className): void
     {
         if (!is_subclass_of($className, static::PARENT_CLASS)) {
             throw new InvalidArgumentException(
@@ -107,13 +93,9 @@ abstract class AbstractAnnotationCommand extends Command
     }
 
     /**
-     * Write new DocBlock to the class
-     *
-     * @param  \ReflectionClass  $reflectionClass
-     * @param  \Laminas\Code\Generator\DocBlockGenerator  $docBlock
-     * @return void
+     * Write new DocBlock to the class.
      */
-    protected function updateClassDocblock(ReflectionClass $reflectionClass, DocBlockGenerator $docBlock)
+    protected function updateClassDocblock(ReflectionClass $reflectionClass, DocBlockGenerator $docBlock): void
     {
         $shortName = $reflectionClass->getShortName();
         $fileName = $reflectionClass->getFileName();
@@ -178,7 +160,7 @@ abstract class AbstractAnnotationCommand extends Command
 
     abstract protected function getDocblockTags(array $originalTags, ReflectionClass $reflectionClass): array;
 
-    abstract protected function annotate(ReflectionClass $reflectionClass);
+    abstract protected function annotate(ReflectionClass $reflectionClass): void;
 
     abstract protected function searchDirectory(): string;
 }

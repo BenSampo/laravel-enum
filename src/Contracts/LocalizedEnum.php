@@ -6,8 +6,6 @@ interface LocalizedEnum
 {
     /**
      * Get the default localization key.
-     *
-     * @return string
      */
-    public static function getLocalizationKey();
+    public static function getLocalizationKey(): string;
 }

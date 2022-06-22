@@ -29,12 +29,9 @@ class EnumAnnotateCommand extends AbstractAnnotationCommand
     protected $description = 'Generate DocBlock annotations for enum classes';
 
     /**
-     * Apply annotations to a reflected class
-     *
-     * @param  \ReflectionClass  $reflectionClass
-     * @return void
+     * Apply annotations to a reflected class.
      */
-    protected function annotate(ReflectionClass $reflectionClass)
+    protected function annotate(ReflectionClass $reflectionClass): void
     {
         $docBlock = DocBlockGenerator::fromArray([]);
         $originalDocBlock =  null;

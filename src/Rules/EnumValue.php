@@ -10,32 +10,15 @@ class EnumValue implements Rule
     /**
      * The name of the rule.
      */
-    protected $rule = 'enum_value';
+    protected string $rule = 'enum_value';
 
     /**
-     * @var string|\BenSampo\Enum\Enum
-     */
-    protected $enumClass;
-
-    /**
-     * @var bool
-     */
-    protected $strict;
-
-    /**
-     * Create a new rule instance.
-     *
-     * @param  string  $enumClass
-     * @param  bool  $strict
-     * @return void
-     *
      * @throws \InvalidArgumentException
      */
-    public function __construct(string $enumClass, bool $strict = true)
-    {
-        $this->enumClass = $enumClass;
-        $this->strict = $strict;
-
+    public function __construct(
+        protected string $enumClass,
+        protected bool $strict = true
+    ) {
         if (! class_exists($this->enumClass)) {
             throw new \InvalidArgumentException("Cannot validate against the enum, the class {$this->enumClass} doesn't exist.");
         }
@@ -46,9 +29,8 @@ class EnumValue implements Rule
      *
      * @param  string  $attribute
      * @param  mixed  $value
-     * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         if (is_subclass_of($this->enumClass, FlaggedEnum::class) && (is_integer($value) || ctype_digit($value))) {
             // Unset all possible flag values
@@ -66,9 +48,9 @@ class EnumValue implements Rule
     /**
      * Get the validation error message.
      *
-     * @return string|array
+     * @return string|array<string>
      */
-    public function message()
+    public function message(): string|array
     {
         return trans()->has('validation.enum_value')
             ? __('validation.enum_value')
@@ -78,11 +60,9 @@ class EnumValue implements Rule
     /**
      * Convert the rule to a validation string.
      *
-     * @return string
-     *
      * @see \Illuminate\Validation\ValidationRuleParser::parseParameters
      */
-    public function __toString()
+    public function __toString(): string
     {
         $strict = $this->strict ? 'true' : 'false';
 
