@@ -7,7 +7,7 @@ use BenSampo\Enum\Tests\Enums\UserTypeCustomCast;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property UserType $user_type
+ * @property UserType|null $user_type
  * @property UserTypeCustomCast $user_type_custom
  */
 class NativeCastModel extends Model

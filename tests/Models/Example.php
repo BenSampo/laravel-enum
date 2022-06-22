@@ -6,7 +6,7 @@ use BenSampo\Enum\Tests\Enums\UserType;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property UserType $user_type
+ * @property UserType|null $user_type
  */
 class Example extends Model
 {
