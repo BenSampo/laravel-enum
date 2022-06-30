@@ -769,7 +769,26 @@ final class UserType extends Enum implements LocalizedEnum
 
 The `getDescription` method will now look for the value in your localization files. If a value doesn't exist for a given key, the default description is returned instead.
 
-## Customizing descriptions
+## Customizing enum class description
+
+If you'd like to return a custom description for your enum class, add a `Description` attribute to your Enum class:
+
+```php
+use BenSampo\Enum\Enum;
+use BenSampo\Enum\Attributes\Description;
+
+#[Description('List of available User types')]
+final class UserType extends Enum
+{
+    ...
+}
+```
+
+Calling `UserType::getClassDescription()` now returns `List of available User types` instead of `User type`.
+
+You may also override the `getClassDescription` method on the base Enum class if you wish to have more control of the description.
+
+## Customizing value descriptions
 
 If you'd like to return a custom description for your enum values, add a `Description` attribute to your Enum constants:
 
@@ -892,6 +911,14 @@ UserType::hasValue(1); // Returns 'True'
 // It's possible to disable the strict type checking:
 UserType::hasValue('1'); // Returns 'False'
 UserType::hasValue('1', false); // Returns 'True'
+```
+
+### static getClassDescription(): string
+
+Returns the class name in sentence case for the enum class. It's possible to [customize the description](#customizing-descriptions) if the guessed description is not appropriate.
+
+```php
+UserType::getClassDescription(); // Returns 'User type'
 ```
 
 ### static getDescription(mixed $value): string

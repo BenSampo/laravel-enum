@@ -124,6 +124,11 @@ class EnumTest extends TestCase
         $this->assertSame('Lowercase snake case numeric suffix 2', MixedKeyFormats::getDescription(MixedKeyFormats::lowercase_snake_case_numeric_suffix_2));
     }
 
+    public function test_enum_get_class_description()
+    {
+        $this->assertSame('Mixed key formats', MixedKeyFormats::getClassDescription());
+    }
+
     public function test_enum_get_random_key()
     {
         $this->assertContains(UserType::getRandomKey(), UserType::getKeys());

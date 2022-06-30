@@ -367,7 +367,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
         return
             static::getLocalizedDescription($value) ??
             static::getAttributeDescription($value) ??
-            static::getFriendlyKeyName(static::getKey($value));
+            static::getFriendlyName(static::getKey($value));
     }
 
     /**
@@ -414,6 +414,36 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
 
         if (count($descriptionAttributes) > 1) {
             throw new Exception('You cannot use more than 1 description attribute on ' . class_basename(static::class) . '::' . $constantName);
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the description of the enum class.
+     * Default to Enum class short name
+     *
+     * @return string
+     * @throws Exception
+     */
+    public static function getClassDescription(): string
+    {
+        return static::getClassAttributeDescription()
+            ?? static::getFriendlyName(self::getReflection()->getShortName());
+    }
+
+    protected static function getClassAttributeDescription(): ?string
+    {
+        $reflection = self::getReflection();
+
+        $descriptionAttributes = $reflection->getAttributes(Description::class);
+
+        if (count($descriptionAttributes) === 1) {
+            return $descriptionAttributes[0]->newInstance()->description;
+        }
+
+        if (count($descriptionAttributes) > 1) {
+            throw new Exception('You cannot use more than 1 description attribute on '.class_basename(static::class));
         }
 
         return null;
@@ -520,12 +550,13 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Transform the key name into a friendly, formatted version.
+     * Transform the name into a friendly, formatted version.
      *
      * @param  string  $key
+     *
      * @return string
      */
-    protected static function getFriendlyKeyName(string $key): string
+    protected static function getFriendlyName(string $key): string
     {
         if (ctype_upper(preg_replace('/[^a-zA-Z]/', '', $key))) {
             $key = strtolower($key);
