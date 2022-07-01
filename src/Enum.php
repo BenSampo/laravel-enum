@@ -406,17 +406,14 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
         if ($constReflection === false) {
             return null;
         }
+
         $descriptionAttributes = $constReflection->getAttributes(Description::class);
 
-        if (count($descriptionAttributes) === 1) {
-            return $descriptionAttributes[0]->newInstance()->description;
-        }
-
-        if (count($descriptionAttributes) > 1) {
-            throw new Exception('You cannot use more than 1 description attribute on ' . class_basename(static::class) . '::' . $constantName);
-        }
-
-        return null;
+        return match(count($descriptionAttributes)) {
+            0 => null,
+            1 => $descriptionAttributes[0]->newInstance()->description,
+            default => throw new Exception('You cannot use more than 1 description attribute on ' . class_basename(static::class) . '::' . $constantName),
+        };
     }
 
     /**
