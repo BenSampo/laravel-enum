@@ -358,7 +358,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
 
         $descriptionAttributes = $constReflection->getAttributes(Description::class);
 
-        return match(count($descriptionAttributes)) {
+        return match (count($descriptionAttributes)) {
             0 => null,
             1 => $descriptionAttributes[0]->newInstance()->description,
             default => throw new Exception('You cannot use more than 1 description attribute on ' . class_basename(static::class) . '::' . $constantName),
