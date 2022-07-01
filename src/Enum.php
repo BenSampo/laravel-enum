@@ -424,7 +424,6 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      * Default to Enum class short name
      *
      * @return string
-     * @throws Exception
      */
     public static function getClassDescription(): string
     {
@@ -432,9 +431,6 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
             ?? static::getFriendlyName(self::getReflection()->getShortName());
     }
 
-    /**
-     * @throws \Exception
-     */
     protected static function getClassAttributeDescription(): ?string
     {
         $reflection = self::getReflection();
@@ -444,9 +440,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
         return match (count($descriptionAttributes)) {
             0 => null,
             1 => $descriptionAttributes[0]->newInstance()->description,
-            default => throw new Exception(
-                'You cannot use more than 1 description attribute on '.class_basename(static::class)
-            )
+            default => throw new Exception('You cannot use more than 1 description attribute on '.class_basename(static::class))
         };
     }
 
