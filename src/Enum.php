@@ -432,21 +432,22 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
             ?? static::getFriendlyName(self::getReflection()->getShortName());
     }
 
+    /**
+     * @throws \Exception
+     */
     protected static function getClassAttributeDescription(): ?string
     {
         $reflection = self::getReflection();
 
         $descriptionAttributes = $reflection->getAttributes(Description::class);
 
-        if (count($descriptionAttributes) === 1) {
-            return $descriptionAttributes[0]->newInstance()->description;
-        }
-
-        if (count($descriptionAttributes) > 1) {
-            throw new Exception('You cannot use more than 1 description attribute on '.class_basename(static::class));
-        }
-
-        return null;
+        return match (count($descriptionAttributes)) {
+            0 => null,
+            1 => $descriptionAttributes[0]->newInstance()->description,
+            default => throw new Exception(
+                'You cannot use more than 1 description attribute on '.class_basename(static::class)
+            )
+        };
     }
 
     /**
@@ -552,17 +553,17 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Transform the name into a friendly, formatted version.
      *
-     * @param  string  $key
+     * @param  string  $name
      *
      * @return string
      */
-    protected static function getFriendlyName(string $key): string
+    protected static function getFriendlyName(string $name): string
     {
-        if (ctype_upper(preg_replace('/[^a-zA-Z]/', '', $key))) {
-            $key = strtolower($key);
+        if (ctype_upper(preg_replace('/[^a-zA-Z]/', '', $name))) {
+            $name = strtolower($name);
         }
 
-        return ucfirst(str_replace('_', ' ', Str::snake($key)));
+        return ucfirst(str_replace('_', ' ', Str::snake($name)));
     }
 
     /**
