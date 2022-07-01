@@ -3,13 +3,26 @@
 namespace BenSampo\Enum\Tests;
 
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
+use BenSampo\Enum\Tests\Enums\InvalidMultipleClassDescriptionFromAttribute;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use BenSampo\Enum\Tests\Enums\DescriptionFromAttribute;
 
 class EnumAttributeDescriptionTest extends TestCase
 {
-    public function test_enum_can_get_description_defined_using_attribute()
+    public function test_enum_can_get_class_description_defined_using_attribute()
+    {
+        $this->assertSame('Enum description', DescriptionFromAttribute::getClassDescription());
+    }
+
+    public function test_an_exception_is_thrown_when_accessing_a_class_description_which_is_annotated_with_multiple_description_attributes()
+    {
+        $this->expectException(Exception::class);
+
+        InvalidMultipleClassDescriptionFromAttribute::getClassDescription();
+    }
+
+    public function test_enum_can_get_value_description_defined_using_attribute()
     {
         $this->assertSame('Admin', DescriptionFromAttribute::getDescription(DescriptionFromAttribute::Administrator));
         $this->assertSame('Mod (Level 1)', DescriptionFromAttribute::getDescription(DescriptionFromAttribute::Moderator));

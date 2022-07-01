@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v5.3.0...master)
 
+### Added
+
+- Allow Description attribute usage on class [270](https://github.com/BenSampo/laravel-enum/pull/270)
+
 ### Changed
 
 - Require composer/class-map-generator over composer/composer [268](https://github.com/BenSampo/laravel-enum/pull/268)
