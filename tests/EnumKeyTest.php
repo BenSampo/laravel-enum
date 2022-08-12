@@ -34,8 +34,8 @@ class EnumKeyTest extends TestCase
     public function test_an_exception_is_thrown_if_an_non_existing_class_is_passed()
     {
         $this->expectException(\InvalidArgumentException::class);
-
-        (new EnumKey('PathToAClassThatDoesntExist'))->passes('', 'Test');
+        // @phpstan-ignore-next-line intentionally wrong
+        new EnumKey('PathToAClassThatDoesntExist');
     }
 
     public function test_can_serialize_to_string()

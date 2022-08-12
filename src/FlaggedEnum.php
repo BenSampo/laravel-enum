@@ -5,7 +5,7 @@ namespace BenSampo\Enum;
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 
 /**
- * @extends Enum<int>
+ * @extends Enum<int|\BenSampo\Enum\Enum|array<int|\BenSampo\Enum\Enum>>
  *
  * @method static static None()
  */
@@ -14,7 +14,7 @@ abstract class FlaggedEnum extends Enum
     /**
      * The value of one of the enum members.
      *
-     * @var int
+     * @var int|\BenSampo\Enum\Enum|array<int|\BenSampo\Enum\Enum>
      */
     public $value;
 
@@ -70,7 +70,7 @@ abstract class FlaggedEnum extends Enum
      */
     public function setFlags(array $flags): static
     {
-        $this->value = array_reduce($flags, function ($carry, $flag) {
+        $this->value = array_reduce($flags, function ($carry, int|Enum $flag): int {
             return $carry | static::fromValue($flag)->value;
         }, 0);
 
@@ -114,6 +114,7 @@ abstract class FlaggedEnum extends Enum
      */
     public function removeFlag(int|Enum $flag): static
     {
+        // @phpstan-ignore-next-line not sure how to fix this
         $this->value &= ~static::fromValue($flag)->value;
 
         return $this;
