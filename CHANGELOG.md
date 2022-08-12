@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Allow Description attribute usage on class [270](https://github.com/BenSampo/laravel-enum/pull/270)
+- Add generic type `TValue` to `Enum` class
 
 ### Changed
 

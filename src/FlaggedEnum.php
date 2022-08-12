@@ -5,6 +5,8 @@ namespace BenSampo\Enum;
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 
 /**
+ * @extends Enum<int>
+ *
  * @method static static None()
  */
 abstract class FlaggedEnum extends Enum

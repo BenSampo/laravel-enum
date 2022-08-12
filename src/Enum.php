@@ -17,6 +17,9 @@ use Illuminate\Contracts\Database\Eloquent\Castable;
 use BenSampo\Enum\Exceptions\InvalidEnumKeyException;
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 
+/**
+ * @template TValue
+ */
 abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializable
 {
     use Macroable {
@@ -27,7 +30,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * The value of one of the enum members.
      *
-     * @var mixed
+     * @var TValue
      */
     public $value;
 
@@ -51,6 +54,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Construct an Enum instance.
      *
+     * @param  TValue  $enumValue
+     *
      * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException
      */
     public function __construct(mixed $enumValue)
@@ -67,7 +72,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Restores an enum instance exported by var_export().
      *
-     * @param  array{value: mixed, key: string, description: string}  $enum
+     * @param  array{value: TValue, key: string, description: string}  $enum
      */
     public static function __set_state(array $enum): static
     {
@@ -76,6 +81,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
 
     /**
      * Make a new instance from an enum value.
+     *
+     * @param  TValue  $enumValue
      */
     public static function fromValue(mixed $enumValue): static
     {
@@ -244,7 +251,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Get all constants defined on the class.
      *
-     * @return array<string, mixed>
+     * @return array<string, TValue>
      */
     protected static function getConstants(): array
     {
@@ -254,6 +261,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Get all or a custom set of the enum keys.
      *
+     * @param  TValue|array<TValue>|null  $values
      * @return array<int, string>
      */
     public static function getKeys(mixed $values = null): array
@@ -273,7 +281,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      *
      * @param  string|array<string>|null  $keys
      *
-     * @return array<int, mixed>
+     * @return array<int, TValue>
      */
     public static function getValues(string|array|null $keys = null): array
     {
@@ -289,6 +297,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
 
     /**
      * Get the key for a single enum value.
+     *
+     * @param  TValue  $value
      */
     public static function getKey(mixed $value): string
     {
@@ -298,6 +308,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
 
     /**
      * Get the value for a single enum key.
+     *
+     * @return TValue
      */
     public static function getValue(string $key): mixed
     {
@@ -306,6 +318,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
 
     /**
      * Get the description for an enum value.
+     *
+     * @param  TValue  $value
      */
     public static function getDescription(mixed $value): string
     {
@@ -320,6 +334,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      *
      * This works only if localization is enabled
      * for the enum and if the key exists in the lang file.
+     *
+     * @param  TValue  $value
      */
     protected static function getLocalizedDescription(mixed $value): ?string
     {
@@ -336,6 +352,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
 
     /**
      * Get the description of a value from its PHP attribute.
+     *
+     * @param  TValue  $value
      */
     protected static function getAttributeDescription(mixed $value): ?string
     {
@@ -392,6 +410,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
 
     /**
      * Get a random value from the enum.
+     *
+     * @return TValue
      */
     public static function getRandomValue(): mixed
     {
@@ -411,7 +431,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Return the enum as an array.
      *
-     * @return array<string, mixed>
+     * @return array<string, TValue>
      */
     public static function asArray(): array
     {
@@ -455,6 +475,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
 
     /**
      * Check that the enum contains a specific value.
+     *
+     * @param  TValue  $value
      */
     public static function hasValue(mixed $value, bool $strict = true): bool
     {
@@ -502,7 +524,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      * from a raw database query or a similar data source.
      *
      * @param  mixed  $value  A raw value that may have any native type
-     * @return mixed  The value cast into the type this enum expects
+     * @return TValue  The value cast into the type this enum expects
      */
     public static function parseDatabase(mixed $value): mixed
     {
@@ -516,7 +538,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      * type to that used internally in your enum.
      *
      * @param  mixed  $value  A raw value that may have any native type
-     * @return mixed  The value cast into the type this database expects
+     * @return TValue  The value cast into the type this database expects
      */
     public static function serializeDatabase(mixed $value): mixed
     {
@@ -543,6 +565,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      * This method is not meant to be called directly, but rather be called
      * by Laravel through a recursive serialization with @see \Illuminate\Contracts\Support\Arrayable.
      * Thus, it returns a value meant to be included in a plain array.
+     *
+     * @return TValue
      */
     public function toArray(): mixed
     {
@@ -551,6 +575,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
 
     /**
      * Return a JSON-serializable representation of the enum.
+     *
+     * @return TValue
      */
     public function jsonSerialize(): mixed
     {
