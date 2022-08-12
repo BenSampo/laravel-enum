@@ -36,7 +36,7 @@ class EnumCast implements CastsAttributes
             return null;
         }
 
-        return $this->enumClass::getInstance($value);
+        return $this->enumClass::fromValue($value);
     }
 
     /**
