@@ -40,6 +40,7 @@ class EnumCastTest extends ApplicationTestCase
         // @phpstan-ignore-next-line loose typing
         $model->user_type = UserType::Moderator;
 
+        // @phpstan-ignore-next-line casts change the set property
         $this->assertInstanceOf(UserType::class, $model->user_type);
     }
 

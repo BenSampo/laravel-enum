@@ -31,8 +31,8 @@ class EnumValidationTest extends TestCase
     public function test_an_exception_is_thrown_if_an_non_existing_class_is_passed()
     {
         $this->expectException(\InvalidArgumentException::class);
-
-        (new Enum('PathToAClassThatDoesntExist'))->passes('', 'Test');
+        // @phpstan-ignore-next-line intentionally wrong
+        new Enum('PathToAClassThatDoesntExist');
     }
 
     public function test_can_serialize_to_string()

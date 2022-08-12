@@ -37,6 +37,7 @@ class EnumAttributeDescriptionTest extends TestCase
     {
         $this->expectException(Exception::class);
 
+        // @phpstan-ignore-next-line wrongly flagged as no-op
         DescriptionFromAttribute::InvalidCaseWithMultipleDescriptions()->description;
     }
 
