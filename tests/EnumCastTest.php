@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace BenSampo\Enum\Tests;
 
@@ -19,6 +19,7 @@ class EnumCastTest extends ApplicationTestCase
     public function test_can_set_model_value_using_enum_value()
     {
         $model = new Example;
+        // @phpstan-ignore-next-line loose typing
         $model->user_type = UserType::Moderator;
 
         $this->assertEquals(UserType::Moderator(), $model->user_type);
@@ -26,15 +27,17 @@ class EnumCastTest extends ApplicationTestCase
 
     public function test_cannot_set_model_value_using_invalid_enum_value()
     {
-        $this->expectException(InvalidEnumMemberException::class);
-
         $model = new Example;
+
+        $this->expectException(InvalidEnumMemberException::class);
+        // @phpstan-ignore-next-line intentionally wrong
         $model->user_type = 5;
     }
 
     public function test_getting_model_value_returns_enum_instance()
     {
         $model = new Example;
+        // @phpstan-ignore-next-line loose typing
         $model->user_type = UserType::Moderator;
 
         $this->assertInstanceOf(UserType::class, $model->user_type);

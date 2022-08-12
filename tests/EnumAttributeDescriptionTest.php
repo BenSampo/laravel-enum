@@ -1,7 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace BenSampo\Enum\Tests;
 
+use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 use BenSampo\Enum\Tests\Enums\InvalidMultipleClassDescriptionFromAttribute;
 use Exception;
 use PHPUnit\Framework\TestCase;
@@ -39,8 +40,10 @@ class EnumAttributeDescriptionTest extends TestCase
         DescriptionFromAttribute::InvalidCaseWithMultipleDescriptions()->description;
     }
 
-    public function test_an_exception_is_not_thrown_when_accessing_a_description_for_an_invalid_value()
+    public function test_an_exception_is_thrown_when_accessing_a_description_for_an_invalid_value()
     {
-        $this->assertSame('', DescriptionFromAttribute::getDescription('invalid'));
+        $this->expectException(InvalidEnumMemberException::class);
+
+        DescriptionFromAttribute::getDescription('invalid');
     }
 }

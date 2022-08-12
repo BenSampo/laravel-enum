@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 return [
     'enum' => 'The value you have provided is not a valid enum instance.',

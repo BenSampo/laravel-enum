@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace BenSampo\Enum\Rules;
 
@@ -9,25 +9,15 @@ class EnumKey implements Rule
     /**
      * The name of the rule.
      */
-    protected $rule = 'enum_key';
+    protected string $rule = 'enum_key';
 
     /**
-     * @var string|\BenSampo\Enum\Enum
-     */
-    protected $enumClass;
-
-    /**
-     * Create a new rule instance.
-     *
-     * @param  string  $enum
-     * @return void
-     *
      * @throws \InvalidArgumentException
      */
-    public function __construct(string $enum)
-    {
-        $this->enumClass = $enum;
-
+    public function __construct(
+        /** @var class-string<\BenSampo\Enum\Enum> */
+        protected string $enumClass
+    ) {
         if (! class_exists($this->enumClass)) {
             throw new \InvalidArgumentException("Cannot validate against the enum, the class {$this->enumClass} doesn't exist.");
         }
@@ -38,19 +28,18 @@ class EnumKey implements Rule
      *
      * @param  string  $attribute
      * @param  mixed  $value
-     * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
-        return $this->enumClass::hasKey($value);
+        return is_string($value) && $this->enumClass::hasKey($value);
     }
 
     /**
      * Get the validation error message.
      *
-     * @return string|array
+     * @return string|array<string>
      */
-    public function message()
+    public function message(): string|array
     {
         return trans()->has('validation.enum_key')
             ? __('validation.enum_key')
@@ -60,11 +49,9 @@ class EnumKey implements Rule
     /**
      * Convert the rule to a validation string.
      *
-     * @return string
-     *
      * @see \Illuminate\Validation\ValidationRuleParser::parseParameters
      */
-    public function __toString()
+    public function __toString(): string
     {
         return "{$this->rule}:{$this->enumClass}";
     }

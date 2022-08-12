@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace BenSampo\Enum\Tests;
 
@@ -37,11 +37,11 @@ class EnumKeyTest extends TestCase
 
         (new EnumKey('PathToAClassThatDoesntExist'))->passes('', 'Test');
     }
-    
+
     public function test_can_serialize_to_string()
     {
         $rule = new EnumKey(UserType::class);
-        
+
         $this->assertSame('enum_key:' . UserType::class, (string) $rule);
     }
 }

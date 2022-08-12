@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace BenSampo\Enum\Tests;
 
@@ -161,7 +161,7 @@ class FlaggedEnumTest extends TestCase
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::LaserVision, SuperPowers::Flight]);
         $this->assertTrue($powers->hasFlag(SuperPowers::Superman));
 
-        $powers->removeFlag([SuperPowers::LaserVision]);
+        $powers->removeFlag(SuperPowers::LaserVision);
         $this->assertFalse($powers->hasFlag(SuperPowers::Superman));
     }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace BenSampo\Enum\Tests\Models;
 
@@ -10,6 +10,6 @@ class WithQueriesFlaggedEnums extends Model
     use QueriesFlaggedEnums;
 
     public $table = 'test_models';
-    
+
     protected $guarded = [];
 }

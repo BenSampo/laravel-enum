@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace BenSampo\Enum\Commands;
 
@@ -30,10 +30,8 @@ class MakeEnumCommand extends GeneratorCommand
 
     /**
      * Get the stub file for the generator.
-     *
-     * @return string
      */
-    protected function getStub()
+    protected function getStub(): string
     {
         return $this->option('flagged')
             ? $this->resolveStubPath('/stubs/enum.flagged.stub')
@@ -42,11 +40,8 @@ class MakeEnumCommand extends GeneratorCommand
 
     /**
      * Resolve the fully-qualified path to the stub.
-     *
-     * @param  string  $stub
-     * @return string
      */
-    protected function resolveStubPath($stub)
+    protected function resolveStubPath(string $stub): string
     {
         return file_exists($customPath = $this->laravel->basePath(trim($stub, '/')))
             ? $customPath
@@ -55,21 +50,16 @@ class MakeEnumCommand extends GeneratorCommand
 
     /**
      * Get the default namespace for the class.
-     *
-     * @param  string  $rootNamespace
-     * @return string
      */
-    protected function getDefaultNamespace($rootNamespace)
+    protected function getDefaultNamespace($rootNamespace): string
     {
         return "{$rootNamespace}\Enums";
     }
 
     /**
      * Get the console command options.
-     *
-     * @return array
      */
-    protected function getOptions()
+    protected function getOptions(): array
     {
         return [
             ['flagged', 'f', InputOption::VALUE_NONE, 'Generate a flagged enum'],

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace BenSampo\Enum\Commands;
 
@@ -29,19 +29,17 @@ class EnumAnnotateCommand extends AbstractAnnotationCommand
     protected $description = 'Generate DocBlock annotations for enum classes';
 
     /**
-     * Apply annotations to a reflected class
-     *
-     * @param  \ReflectionClass  $reflectionClass
-     * @return void
+     * Apply annotations to a reflected class.
      */
-    protected function annotate(ReflectionClass $reflectionClass)
+    protected function annotate(ReflectionClass $reflectionClass): void
     {
         $docBlock = DocBlockGenerator::fromArray([]);
-        $originalDocBlock =  null;
 
-        if (strlen($reflectionClass->getDocComment()) !== 0) {
-            $originalDocBlock = DocBlockGenerator::fromReflection(new DocBlockReflection($reflectionClass));
-            $docBlock->setShortDescription($originalDocBlock->getShortDescription());
+        if ($reflectionClass->getDocComment()) {
+            $docBlock->setShortDescription(
+                DocBlockGenerator::fromReflection(new DocBlockReflection($reflectionClass))
+                    ->getShortDescription()
+            );
         }
 
         $this->updateClassDocblock($reflectionClass, $this->getDocBlock($reflectionClass));
@@ -51,14 +49,12 @@ class EnumAnnotateCommand extends AbstractAnnotationCommand
     {
         $constants = $reflectionClass->getConstants();
 
-        $existingTags = array_filter($originalTags, function (TagInterface $tag) use ($constants) {
-            return !$tag instanceof MethodTag || !in_array($tag->getMethodName(), array_keys($constants), true);
-        });
+        $existingTags = array_filter($originalTags, fn (TagInterface $tag): bool =>
+            ! $tag instanceof MethodTag
+            || ! in_array($tag->getMethodName(), array_keys($constants), true));
 
         return collect($constants)
-            ->map(function ($value, $constantName) {
-                return new MethodTag($constantName, ['static'], null, true);
-            })
+            ->map(fn (mixed $value, string $constantName): MethodTag => new MethodTag($constantName, ['static'], null, true))
             ->merge($existingTags)
             ->toArray();
     }

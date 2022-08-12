@@ -49,7 +49,7 @@ Created by [Ben Sampson](https://sampo.co.uk)
 
 ## Documentation for older versions
 
-You are reading the documentation for `5.x`.
+You are reading the documentation for `6.x`.
 
 - If you're using **Laravel 8** please see the [docs for `4.x`](https://github.com/BenSampo/laravel-enum/blob/v4.2.0/README.md).
 - If you're using **Laravel 7** please see the [docs for `2.x`](https://github.com/BenSampo/laravel-enum/blob/v2.2.0/README.md).
@@ -93,7 +93,7 @@ php artisan make:enum UserType
 Now, you just need to add the possible values your enum can have as constants.
 
 ```php
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Enums;
 
@@ -109,7 +109,7 @@ final class UserType extends Enum
 ```
 
 That's it! Note that because the enum values are defined as plain constants,
-you can simple access them like any other class constant.
+you can simply access them like any other class constant.
 
 ```php
 UserType::Administrator // Has a value of 0
@@ -725,7 +725,7 @@ Add a new `enums.php` keys file for each of your supported languages. In this ex
 
 ```php
 // resources/lang/en/enums.php
-<?php
+<?php declare(strict_types=1);
 
 use App\Enums\UserType;
 
@@ -741,7 +741,7 @@ return [
 
 ```php
 // resources/lang/es/enums.php
-<?php
+<?php declare(strict_types=1);
 
 use App\Enums\UserType;
 

@@ -1,38 +1,25 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace BenSampo\Enum\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
+
 trait QueriesFlaggedEnums
 {
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $column
-     * @param int $flag
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeHasFlag($query, $column, $flag)
+    public function scopeHasFlag(Builder $query, string $column, int $flag): Builder
     {
         return $query->whereRaw("$column & ? > 0", [$flag]);
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $column
-     * @param int $flag
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeNotHasFlag($query, $column, $flag)
+    public function scopeNotHasFlag(Builder $query, string $column, int $flag): Builder
     {
         return $query->whereRaw("not $column & ? > 0", [$flag]);
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $column
-     * @param int[] $flags
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param array<int> $flags
      */
-    public function scopeHasAllFlags($query, $column, $flags)
+    public function scopeHasAllFlags(Builder $query, string $column, array $flags): Builder
     {
         $mask = array_sum($flags);
 
@@ -40,12 +27,9 @@ trait QueriesFlaggedEnums
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $column
-     * @param int[] $flags
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param array<int> $flags
      */
-    public function scopeHasAnyFlags($query, $column, $flags)
+    public function scopeHasAnyFlags(Builder $query, string $column, array $flags): Builder
     {
         $mask = array_sum($flags);
 
