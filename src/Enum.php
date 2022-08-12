@@ -87,16 +87,6 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     }
 
     /**
-     * Alias for fromValue();.
-     *
-     * @deprecated in favour of fromValue(), might be removed in a major version
-     */
-    public static function getInstance(mixed $enumValue): static
-    {
-        return static::fromValue($enumValue);
-    }
-
-    /**
      * Returns a reflection of the enum subclass.
      *
      * @return ReflectionClass<static>

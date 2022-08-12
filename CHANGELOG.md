@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Leverage late static binding for instantiation methods in PHPStan extension
 
+### Removed
+
+- Remove `Enum::getInstance()` in favor or `Enum::fromValue()`
+
 ## [5.3.1](https://github.com/BenSampo/laravel-enum/compare/v5.3.0...v5.3.1) - 2022-06-22
 
 ### Fixed
