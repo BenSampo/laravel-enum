@@ -55,5 +55,7 @@ jobs:
       - uses: ramsey/composer-install@v2
         with:
           dependency-versions: ${{ matrix.dependency-versions }}
+      
+      - run: vendor/bin/testbench package:discover
 
       - run: vendor/bin/phpstan
