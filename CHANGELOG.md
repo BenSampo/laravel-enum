@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Provide more accurate type hints in `Enum` and `FlaggedEnum` [283](https://github.com/BenSampo/laravel-enum/pull/283)
+- Accept `FlaggedEnum` instances in `QueriesFlaggedEnums` scopes [283](https://github.com/BenSampo/laravel-enum/pull/283)
 
 ## [6.0.0](https://github.com/BenSampo/laravel-enum/compare/v5.3.1...v6.0.0) - 2022-08-22
 

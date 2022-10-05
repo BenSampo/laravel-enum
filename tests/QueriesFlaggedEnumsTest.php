@@ -39,29 +39,41 @@ final class QueriesFlaggedEnumsTest extends TestCase
 
     public function test_ensure_a_flag_is_present(): void
     {
-        $this->assertEquals(2, TestModel::query()->hasFlag('superpowers', SuperPowers::Immortality)->count());
-        $this->assertEquals(1, TestModel::query()->hasFlag('superpowers', SuperPowers::Flight)->count());
-        $this->assertEquals(0, TestModel::query()->hasFlag('superpowers', SuperPowers::Invisibility)->count());
+        $this->assertSame(2, TestModel::query()->hasFlag('superpowers', SuperPowers::Immortality)->count());
+        $this->assertSame(2, TestModel::query()->hasFlag('superpowers', SuperPowers::Immortality())->count());
+        $this->assertSame(1, TestModel::query()->hasFlag('superpowers', SuperPowers::Flight)->count());
+        $this->assertSame(1, TestModel::query()->hasFlag('superpowers', SuperPowers::Flight())->count());
+        $this->assertSame(0, TestModel::query()->hasFlag('superpowers', SuperPowers::Invisibility)->count());
+        $this->assertSame(0, TestModel::query()->hasFlag('superpowers', SuperPowers::Invisibility())->count());
     }
 
     public function test_ensure_a_flag_is_missing(): void
     {
-        $this->assertEquals(0, TestModel::query()->notHasFlag('superpowers', SuperPowers::Immortality)->count());
-        $this->assertEquals(1, TestModel::query()->notHasFlag('superpowers', SuperPowers::Flight)->count());
-        $this->assertEquals(2, TestModel::query()->notHasFlag('superpowers', SuperPowers::Invisibility)->count());
+        $this->assertSame(0, TestModel::query()->notHasFlag('superpowers', SuperPowers::Immortality)->count());
+        $this->assertSame(0, TestModel::query()->notHasFlag('superpowers', SuperPowers::Immortality())->count());
+        $this->assertSame(1, TestModel::query()->notHasFlag('superpowers', SuperPowers::Flight)->count());
+        $this->assertSame(1, TestModel::query()->notHasFlag('superpowers', SuperPowers::Flight())->count());
+        $this->assertSame(2, TestModel::query()->notHasFlag('superpowers', SuperPowers::Invisibility)->count());
+        $this->assertSame(2, TestModel::query()->notHasFlag('superpowers', SuperPowers::Invisibility())->count());
     }
 
     public function test_ensure_all_flags_are_present(): void
     {
-        $this->assertEquals(0, TestModel::query()->hasAllFlags('superpowers', [SuperPowers::Strength, SuperPowers::Flight])->count());
-        $this->assertEquals(1, TestModel::query()->hasAllFlags('superpowers', [SuperPowers::Immortality, SuperPowers::Flight])->count());
-        $this->assertEquals(2, TestModel::query()->hasAllFlags('superpowers', [SuperPowers::Immortality])->count());
+        $this->assertSame(0, TestModel::query()->hasAllFlags('superpowers', [SuperPowers::Strength, SuperPowers::Flight])->count());
+        $this->assertSame(0, TestModel::query()->hasAllFlags('superpowers', [SuperPowers::Strength(), SuperPowers::Flight()])->count());
+        $this->assertSame(1, TestModel::query()->hasAllFlags('superpowers', [SuperPowers::Immortality, SuperPowers::Flight])->count());
+        $this->assertSame(1, TestModel::query()->hasAllFlags('superpowers', [SuperPowers::Immortality(), SuperPowers::Flight()])->count());
+        $this->assertSame(2, TestModel::query()->hasAllFlags('superpowers', [SuperPowers::Immortality])->count());
+        $this->assertSame(2, TestModel::query()->hasAllFlags('superpowers', [SuperPowers::Immortality()])->count());
     }
 
     public function test_ensure_any_flag_is_present(): void
     {
-        $this->assertEquals(2, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Strength, SuperPowers::Flight])->count());
-        $this->assertEquals(1, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Invisibility, SuperPowers::Flight])->count());
-        $this->assertEquals(2, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Immortality])->count());
+        $this->assertSame(2, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Strength, SuperPowers::Flight])->count());
+        $this->assertSame(2, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Strength(), SuperPowers::Flight()])->count());
+        $this->assertSame(1, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Invisibility, SuperPowers::Flight])->count());
+        $this->assertSame(1, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Invisibility(), SuperPowers::Flight()])->count());
+        $this->assertSame(2, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Immortality])->count());
+        $this->assertSame(2, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Immortality()])->count());
     }
 }

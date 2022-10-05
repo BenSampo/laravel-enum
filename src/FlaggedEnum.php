@@ -77,9 +77,14 @@ abstract class FlaggedEnum extends Enum
      */
     public function setFlags(array $flags): static
     {
-        $this->value = array_reduce($flags, function (int $carry, int|Enum $flag): int {
-            return $carry | (static::fromValue($flag)->value);
-        }, 0);
+        $this->value = array_reduce(
+            $flags,
+            static fn (int $carry, int|self $flag): int => $carry
+                | ($flag instanceof self
+                    ? $flag->value
+                    : $flag),
+            0
+        );
 
         return $this;
     }
@@ -89,9 +94,11 @@ abstract class FlaggedEnum extends Enum
      *
      * @param  int|static $flag
      */
-    public function addFlag(int|Enum $flag): static
+    public function addFlag(int|self $flag): static
     {
-        $this->value |= static::fromValue($flag)->value;
+        $this->value |= ($flag instanceof self
+            ? $flag->value
+            : $flag);
 
         return $this;
     }
@@ -123,9 +130,11 @@ abstract class FlaggedEnum extends Enum
      *
      * @param  int|static $flag
      */
-    public function removeFlag(int|Enum $flag): static
+    public function removeFlag(int|self $flag): static
     {
-        $this->value &= ~static::fromValue($flag)->value;
+        $this->value &= ~($flag instanceof self
+            ? $flag->value
+            : $flag);
 
         return $this;
     }
@@ -157,9 +166,11 @@ abstract class FlaggedEnum extends Enum
      *
      * @param  int|static $flag
      */
-    public function hasFlag(int|Enum $flag): bool
+    public function hasFlag(int|self $flag): bool
     {
-        $flagValue = static::fromValue($flag)->value;
+        $flagValue = ($flag instanceof self
+            ? $flag->value
+            : $flag);
 
         if ($flagValue === 0) {
             return false;
