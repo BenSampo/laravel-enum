@@ -82,7 +82,7 @@ class EnumAnnotateCommand extends Command
     }
 
     /**
-     * @param \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
+     * @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
      */
     protected function annotate(ReflectionClass $reflectionClass): void
     {
@@ -99,7 +99,7 @@ class EnumAnnotateCommand extends Command
     }
 
     /**
-     * @param \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
+     * @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
      */
     protected function updateClassDocblock(ReflectionClass $reflectionClass, DocBlockGenerator $docBlock): void
     {
@@ -136,7 +136,7 @@ class EnumAnnotateCommand extends Command
     }
 
     /**
-     * @param \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
+     * @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
      */
     protected function getDocBlock(ReflectionClass $reflectionClass): DocBlockGenerator
     {
@@ -168,7 +168,7 @@ class EnumAnnotateCommand extends Command
     }
 
     /**
-     * @param \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
+     * @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
      * @return array<\Laminas\Code\Generator\DocBlock\Tag\TagInterface>
      */
     protected function getDocblockTags(DocBlockGenerator|null $originalDocblock, ReflectionClass $reflectionClass): array

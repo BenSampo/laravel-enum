@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 trait QueriesFlaggedEnums
 {
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
      * @return \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>
      */
     public function scopeHasFlag(Builder $query, string $column, int $flag): Builder
@@ -16,7 +16,7 @@ trait QueriesFlaggedEnums
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
      * @return \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>
      */
     public function scopeNotHasFlag(Builder $query, string $column, int $flag): Builder
@@ -25,8 +25,8 @@ trait QueriesFlaggedEnums
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
-     * @param array<int> $flags
+     * @param  \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
+     * @param  array<int> $flags
      * @return \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>
      */
     public function scopeHasAllFlags(Builder $query, string $column, array $flags): Builder
@@ -37,8 +37,8 @@ trait QueriesFlaggedEnums
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
-     * @param array<int> $flags
+     * @param  \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
+     * @param  array<int> $flags
      * @return \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>
      */
     public function scopeHasAnyFlags(Builder $query, string $column, array $flags): Builder

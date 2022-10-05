@@ -41,7 +41,7 @@ abstract class FlaggedEnum extends Enum
     }
 
     /**
-     * @param int|static|array<int|static> $enumValue
+     * @param  int|static|array<int|static> $enumValue
      */
     public static function fromValue(mixed $enumValue): static
     {
@@ -87,7 +87,7 @@ abstract class FlaggedEnum extends Enum
     /**
      * Add the given flag to the enum.
      *
-     * @param int|static $flag
+     * @param  int|static $flag
      */
     public function addFlag(int|Enum $flag): static
     {
@@ -121,7 +121,7 @@ abstract class FlaggedEnum extends Enum
     /**
      * Remove the given flag from the enum.
      *
-     * @param int|static $flag
+     * @param  int|static $flag
      */
     public function removeFlag(int|Enum $flag): static
     {
@@ -155,7 +155,7 @@ abstract class FlaggedEnum extends Enum
     /**
      * Check if the enum has the specified flag.
      *
-     * @param int|static $flag
+     * @param  int|static $flag
      */
     public function hasFlag(int|Enum $flag): bool
     {
@@ -187,7 +187,7 @@ abstract class FlaggedEnum extends Enum
     /**
      * Check if the enum does not have the specified flag.
      *
-     * @param int|static $flag
+     * @param  int|static $flag
      */
     public function notHasFlag(int|Enum $flag): bool
     {

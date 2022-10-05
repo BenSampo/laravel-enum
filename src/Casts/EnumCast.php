@@ -24,7 +24,7 @@ class EnumCast implements CastsAttributes
     }
 
     /**
-     * @param array<string, mixed> $attributes
+     * @param  array<string, mixed> $attributes
      * @return array<string, mixed>
      */
     public function set($model, string $key, $value, array $attributes): array
@@ -36,7 +36,7 @@ class EnumCast implements CastsAttributes
 
     /**
      * @template TValue
-     * @param TValue $value
+     * @param  TValue $value
      * @return Enum<TValue>|null
      */
     protected function castEnum(mixed $value): ?Enum
