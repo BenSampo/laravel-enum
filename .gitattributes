@@ -10,4 +10,3 @@ tests export-ignore
 CONTRIBUTING.md export-ignore
 enum-library.md export-ignore
 phpunit.xml export-ignore
-testbench.yaml export-ignore
