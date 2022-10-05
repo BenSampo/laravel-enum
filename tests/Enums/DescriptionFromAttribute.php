@@ -5,10 +5,10 @@ namespace BenSampo\Enum\Tests\Enums;
 use BenSampo\Enum\Enum;
 use BenSampo\Enum\Attributes\Description;
 
-#[Description('Enum description')]
 /**
  * @extends Enum<int>
  */
+#[Description('Enum description')]
 final class DescriptionFromAttribute extends Enum
 {
     #[Description('Admin')]

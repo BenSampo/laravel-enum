@@ -8,16 +8,16 @@ use BenSampo\Enum\Tests\Enums\StringValues;
 use BenSampo\Enum\Tests\Enums\UserType;
 use PHPUnit\Framework\TestCase;
 
-class EnumComparisonTest extends TestCase
+final class EnumComparisonTest extends TestCase
 {
-    public function test_comparison_against_plain_value_matching()
+    public function test_comparison_against_plain_value_matching(): void
     {
         $admin = UserType::fromValue(UserType::Administrator);
 
         $this->assertTrue($admin->is(UserType::Administrator));
     }
 
-    public function test_comparison_against_plain_value_not_matching()
+    public function test_comparison_against_plain_value_not_matching(): void
     {
         $admin = UserType::fromValue(UserType::Administrator);
 
@@ -27,14 +27,14 @@ class EnumComparisonTest extends TestCase
         $this->assertTrue($admin->isNot('some-random-value'));
     }
 
-    public function test_comparison_against_itself_matches()
+    public function test_comparison_against_itself_matches(): void
     {
         $admin = UserType::fromValue(UserType::Administrator);
 
         $this->assertTrue($admin->is($admin));
     }
 
-    public function test_comparison_against_other_instances_matches()
+    public function test_comparison_against_other_instances_matches(): void
     {
         $admin = UserType::fromValue(UserType::Administrator);
         $anotherAdmin = UserType::fromValue(UserType::Administrator);
@@ -42,7 +42,7 @@ class EnumComparisonTest extends TestCase
         $this->assertTrue($admin->is($anotherAdmin));
     }
 
-    public function test_comparison_against_other_instances_not_matching()
+    public function test_comparison_against_other_instances_not_matching(): void
     {
         $admin = UserType::fromValue(UserType::Administrator);
         $superAdmin = UserType::fromValue(UserType::SuperAdministrator);
@@ -50,7 +50,7 @@ class EnumComparisonTest extends TestCase
         $this->assertFalse($admin->is($superAdmin));
     }
 
-    public function test_enum_instance_in_array()
+    public function test_enum_instance_in_array(): void
     {
         $administrator = new StringValues(StringValues::Administrator);
 
@@ -66,7 +66,7 @@ class EnumComparisonTest extends TestCase
         $this->assertFalse($administrator->in([StringValues::Moderator]));
     }
 
-    public function test_enum_instance_in_iterator()
+    public function test_enum_instance_in_iterator(): void
     {
         $administrator = new StringValues(StringValues::Administrator);
 
@@ -82,7 +82,7 @@ class EnumComparisonTest extends TestCase
         $this->assertFalse($administrator->in(new ArrayIterator([StringValues::Moderator])));
     }
 
-    public function test_enum_instance_not_in_array()
+    public function test_enum_instance_not_in_array(): void
     {
         $administrator = new StringValues(StringValues::Administrator);
 
@@ -98,7 +98,7 @@ class EnumComparisonTest extends TestCase
         $this->assertTrue($administrator->notIn([StringValues::Moderator]));
     }
 
-    public function test_enum_instance_not_in_iterator()
+    public function test_enum_instance_not_in_iterator(): void
     {
         $administrator = new StringValues(StringValues::Administrator);
 
@@ -115,14 +115,12 @@ class EnumComparisonTest extends TestCase
     }
 
     /**
-     * @test
-     * Verify that relational comparision of Enum object uses attribute `$value`
+     * Verify that relational comparison of Enum object uses attribute `$value`.
      *
      * "comparison operation stops and returns at the first unequal property found."
      * as stated in https://www.php.net/manual/en/language.oop5.object-comparison.php#98725
-     * @return void
      */
-    public function test_object_relational_comparison()
+    public function test_object_relational_comparison(): void
     {
         $b = IntegerValues::B();
         $a = IntegerValues::A();

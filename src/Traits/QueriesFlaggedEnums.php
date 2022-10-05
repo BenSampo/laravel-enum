@@ -37,7 +37,7 @@ trait QueriesFlaggedEnums
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>
+     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
      * @param array<int> $flags
      * @return \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>
      */

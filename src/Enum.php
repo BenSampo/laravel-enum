@@ -19,7 +19,7 @@ use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 
 /**
  * @template TValue
- * @extends Arrayable<mixed, mixed>
+ * @implements Arrayable<array-key, mixed>
  */
 abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializable
 {

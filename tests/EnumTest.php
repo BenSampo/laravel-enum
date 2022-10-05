@@ -10,15 +10,15 @@ use BenSampo\Enum\Tests\Enums\SuperPowers;
 use BenSampo\Enum\Tests\Enums\StringValues;
 use BenSampo\Enum\Tests\Enums\MixedKeyFormats;
 
-class EnumTest extends TestCase
+final class EnumTest extends TestCase
 {
-    public function test_enum_values()
+    public function test_enum_values(): void
     {
         $this->assertSame(0, UserType::Administrator);
         $this->assertSame(3, UserType::SuperAdministrator);
     }
 
-    public function test_enum_get_keys()
+    public function test_enum_get_keys(): void
     {
         $keys = UserType::getKeys();
         $expectedKeys = ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator'];
@@ -37,7 +37,7 @@ class EnumTest extends TestCase
         $this->assertEquals($expectedKeys, $keys);
     }
 
-    public function test_enum_coerce()
+    public function test_enum_coerce(): void
     {
         $enum = UserType::coerce(UserType::Administrator()->value);
         $this->assertInstanceOf(UserType::class, $enum);
@@ -72,7 +72,7 @@ class EnumTest extends TestCase
         $this->assertNull($enum);
     }
 
-    public function test_enum_get_values()
+    public function test_enum_get_values(): void
     {
         $values = UserType::getValues();
         $expectedValues = [0, 1, 2, 3];
@@ -91,29 +91,29 @@ class EnumTest extends TestCase
         $this->assertEquals($expectedValues, $values);
     }
 
-    public function test_enum_get_key()
+    public function test_enum_get_key(): void
     {
         $this->assertSame('Moderator', UserType::getKey(1));
         $this->assertSame('SuperAdministrator', UserType::getKey(3));
     }
 
-    public function test_enum_get_key_using_string_value()
+    public function test_enum_get_key_using_string_value(): void
     {
         $this->assertSame('Administrator', StringValues::getKey('administrator'));
     }
 
-    public function test_enum_get_value()
+    public function test_enum_get_value(): void
     {
         $this->assertSame(1, UserType::getValue('Moderator'));
         $this->assertSame(3, UserType::getValue('SuperAdministrator'));
     }
 
-    public function test_enum_get_value_using_string_key()
+    public function test_enum_get_value_using_string_key(): void
     {
         $this->assertSame('administrator', StringValues::getValue('Administrator'));
     }
 
-    public function test_enum_get_description()
+    public function test_enum_get_description(): void
     {
         $this->assertSame('Normal', MixedKeyFormats::getDescription(MixedKeyFormats::Normal));
         $this->assertSame('Multi word key name', MixedKeyFormats::getDescription(MixedKeyFormats::MultiWordKeyName));
@@ -124,22 +124,22 @@ class EnumTest extends TestCase
         $this->assertSame('Lowercase snake case numeric suffix 2', MixedKeyFormats::getDescription(MixedKeyFormats::lowercase_snake_case_numeric_suffix_2));
     }
 
-    public function test_enum_get_class_description()
+    public function test_enum_get_class_description(): void
     {
         $this->assertSame('Mixed key formats', MixedKeyFormats::getClassDescription());
     }
 
-    public function test_enum_get_random_key()
+    public function test_enum_get_random_key(): void
     {
         $this->assertContains(UserType::getRandomKey(), UserType::getKeys());
     }
 
-    public function test_enum_get_random_value()
+    public function test_enum_get_random_value(): void
     {
         $this->assertContains(UserType::getRandomValue(), UserType::getValues());
     }
 
-    public function test_enum_to_array()
+    public function test_enum_to_array(): void
     {
         $array = UserType::asArray();
         $expectedArray = [
@@ -152,7 +152,7 @@ class EnumTest extends TestCase
         $this->assertEquals($expectedArray, $array);
     }
 
-    public function test_enum_as_select_array()
+    public function test_enum_as_select_array(): void
     {
         $array = UserType::asSelectArray();
         $expectedArray = [
@@ -165,7 +165,7 @@ class EnumTest extends TestCase
         $this->assertEquals($expectedArray, $array);
     }
 
-    public function test_enum_as_select_array_with_string_values()
+    public function test_enum_as_select_array_with_string_values(): void
     {
         $array = StringValues::asSelectArray();
         $expectedArray = [
@@ -176,7 +176,7 @@ class EnumTest extends TestCase
         $this->assertEquals($expectedArray, $array);
     }
 
-    public function test_enum_is_macroable_with_static_methods()
+    public function test_enum_is_macroable_with_static_methods(): void
     {
         $name = 'asFlippedArray';
 
@@ -193,7 +193,7 @@ class EnumTest extends TestCase
         $this->assertEquals($reimplementedResult, $macroResult);
     }
 
-    public function test_enum_is_macroable_with_instance_methods()
+    public function test_enum_is_macroable_with_instance_methods(): void
     {
         $name = 'macroGetValue';
         Enum::macro($name, function () {
@@ -210,7 +210,7 @@ class EnumTest extends TestCase
         $this->assertSame($value, $valueFromMacro);
     }
 
-    public function test_enum_get_instances()
+    public function test_enum_get_instances(): void
     {
         /** @var StringValues $administrator */
         /** @var StringValues $moderator */
@@ -228,7 +228,7 @@ class EnumTest extends TestCase
         );
     }
 
-    public function test_enum_can_be_cast_to_string()
+    public function test_enum_can_be_cast_to_string(): void
     {
         $enumWithZeroIntegerValue = new UserType(UserType::Administrator);
         $enumWithPositiveIntegerValue = new UserType(UserType::SuperAdministrator);
@@ -242,12 +242,12 @@ class EnumTest extends TestCase
         $this->assertSame(StringValues::Moderator, (string) $enumWithStringValue);
     }
 
-    public function test_enum_can_be_json_encoded()
+    public function test_enum_can_be_json_encoded(): void
     {
         $this->assertSame('1', json_encode(UserType::Moderator()));
     }
 
-    public function test_enum_shows_just_value_when_laravel_recursively_converts_arrayable()
+    public function test_enum_shows_just_value_when_laravel_recursively_converts_arrayable(): void
     {
         $enums = new Collection([UserType::Moderator()]);
         $this->assertSame([UserType::Moderator], $enums->toArray());

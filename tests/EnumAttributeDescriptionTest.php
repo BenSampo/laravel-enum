@@ -44,7 +44,7 @@ final class EnumAttributeDescriptionTest extends TestCase
     public function test_an_exception_is_thrown_when_accessing_a_description_for_an_invalid_value(): void
     {
         $this->expectException(InvalidEnumMemberException::class);
-
+        // @phpstan-ignore-next-line intentionally wrong
         DescriptionFromAttribute::getDescription('invalid');
     }
 }
