@@ -82,7 +82,7 @@ class EnumAnnotateCommand extends Command
     }
 
     /**
-     * @param ReflectionClass<Enum<mixed>> $reflectionClass
+     * @param \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
      */
     protected function annotate(ReflectionClass $reflectionClass): void
     {
@@ -99,7 +99,7 @@ class EnumAnnotateCommand extends Command
     }
 
     /**
-     * @param ReflectionClass<Enum<mixed>> $reflectionClass
+     * @param \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
      */
     protected function updateClassDocblock(ReflectionClass $reflectionClass, DocBlockGenerator $docBlock): void
     {
@@ -136,7 +136,7 @@ class EnumAnnotateCommand extends Command
     }
 
     /**
-     * @param ReflectionClass<Enum<mixed>> $reflectionClass
+     * @param \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
      */
     protected function getDocBlock(ReflectionClass $reflectionClass): DocBlockGenerator
     {
@@ -168,8 +168,8 @@ class EnumAnnotateCommand extends Command
     }
 
     /**
-     * @param ReflectionClass<Enum<mixed>> $reflectionClass
-     * @return array<MethodTag>
+     * @param \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
+     * @return array<\Laminas\Code\Generator\DocBlock\Tag\TagInterface>
      */
     protected function getDocblockTags(DocBlockGenerator|null $originalDocblock, ReflectionClass $reflectionClass): array
     {
@@ -183,12 +183,12 @@ class EnumAnnotateCommand extends Command
         );
 
         if ($originalDocblock) {
-            $tags = [
-                ...$tags,
+            $tags = array_merge(
+                $tags,
                 array_filter($originalDocblock->getTags(), fn (TagInterface $tag): bool =>
                     ! $tag instanceof MethodTag
                     || ! in_array($tag->getMethodName(), $constantKeys, true))
-            ];
+            );
         }
 
         return $tags;
