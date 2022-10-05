@@ -5,11 +5,10 @@ namespace BenSampo\Enum\Tests;
 use PHPUnit\Framework\TestCase;
 use BenSampo\Enum\Tests\Enums\SuperPowers;
 
-class FlaggedEnumTest extends TestCase
+final class FlaggedEnumTest extends TestCase
 {
-    public function test_can_construct_flagged_enum_using_static_properties()
+    public function test_can_construct_flagged_enum_using_static_properties(): void
     {
-        /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::LaserVision]);
         $this->assertInstanceOf(SuperPowers::class, $powers);
 
@@ -20,9 +19,8 @@ class FlaggedEnumTest extends TestCase
         $this->assertInstanceOf(SuperPowers::class, $powers);
     }
 
-    public function test_can_construct_flagged_enum_using_instances()
+    public function test_can_construct_flagged_enum_using_instances(): void
     {
-        /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength(), SuperPowers::Flight(), SuperPowers::LaserVision()]);
         $this->assertInstanceOf(SuperPowers::class, $powers);
 
@@ -33,9 +31,8 @@ class FlaggedEnumTest extends TestCase
         $this->assertInstanceOf(SuperPowers::class, $powers);
     }
 
-    public function test_can_check_if_instance_has_flag()
+    public function test_can_check_if_instance_has_flag(): void
     {
-        /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight]);
 
         $this->assertTrue($powers->hasFlag(SuperPowers::Strength()));
@@ -44,18 +41,16 @@ class FlaggedEnumTest extends TestCase
         $this->assertFalse($powers->hasFlag(SuperPowers::LaserVision));
     }
 
-    public function test_can_check_if_instance_has_flags()
+    public function test_can_check_if_instance_has_flags(): void
     {
-        /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight]);
 
         $this->assertTrue($powers->hasFlags([SuperPowers::Strength, SuperPowers::Flight]));
         $this->assertFalse($powers->hasFlags([SuperPowers::Strength, SuperPowers::Invisibility]));
     }
 
-    public function test_can_check_if_instance_does_not_have_flag()
+    public function test_can_check_if_instance_does_not_have_flag(): void
     {
-        /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight]);
 
         $this->assertTrue($powers->notHasFlag(SuperPowers::LaserVision()));
@@ -64,9 +59,8 @@ class FlaggedEnumTest extends TestCase
         $this->assertFalse($powers->notHasFlag(SuperPowers::Strength));
     }
 
-    public function test_can_check_if_instance_does_not_have_flags()
+    public function test_can_check_if_instance_does_not_have_flags(): void
     {
-        /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight]);
 
         $this->assertTrue($powers->notHasFlags([SuperPowers::Invisibility, SuperPowers::LaserVision]));
@@ -74,9 +68,8 @@ class FlaggedEnumTest extends TestCase
         $this->assertFalse($powers->notHasFlags([SuperPowers::Strength, SuperPowers::Flight]));
     }
 
-    public function test_can_set_flags()
+    public function test_can_set_flags(): void
     {
-        /** @var SuperPowers $powers */
         $powers = SuperPowers::None();
         $this->assertFalse($powers->hasFlag(SuperPowers::LaserVision));
 
@@ -85,9 +78,8 @@ class FlaggedEnumTest extends TestCase
         $this->assertTrue($powers->hasFlag(SuperPowers::Strength));
     }
 
-    public function test_can_add_flag()
+    public function test_can_add_flag(): void
     {
-        /** @var SuperPowers $powers */
         $powers = SuperPowers::None();
         $this->assertFalse($powers->hasFlag(SuperPowers::LaserVision));
 
@@ -98,9 +90,8 @@ class FlaggedEnumTest extends TestCase
         $this->assertTrue($powers->hasFlag(SuperPowers::Strength));
     }
 
-    public function test_can_add_flags()
+    public function test_can_add_flags(): void
     {
-        /** @var SuperPowers $powers */
         $powers = SuperPowers::None();
         $this->assertFalse($powers->hasFlag(SuperPowers::LaserVision));
 
@@ -108,9 +99,8 @@ class FlaggedEnumTest extends TestCase
         $this->assertTrue($powers->hasFlags([SuperPowers::LaserVision, SuperPowers::Strength]));
     }
 
-    public function test_can_remove_flag()
+    public function test_can_remove_flag(): void
     {
-        /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight]);
         $this->assertTrue($powers->hasFlags([SuperPowers::Strength, SuperPowers::Flight]));
 
@@ -123,9 +113,8 @@ class FlaggedEnumTest extends TestCase
         $this->assertTrue($powers->is(SuperPowers::None));
     }
 
-    public function test_can_remove_flags()
+    public function test_can_remove_flags(): void
     {
-        /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight]);
         $this->assertTrue($powers->hasFlags([SuperPowers::Strength, SuperPowers::Flight]));
 
@@ -135,9 +124,8 @@ class FlaggedEnumTest extends TestCase
         $this->assertTrue($powers->is(SuperPowers::None));
     }
 
-    public function test_can_get_flags()
+    public function test_can_get_flags(): void
     {
-        /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::Invisibility]);
         $flags = $powers->getFlags();
 
@@ -145,9 +133,8 @@ class FlaggedEnumTest extends TestCase
         $this->assertContainsOnlyInstancesOf(SuperPowers::class, $flags);
     }
 
-    public function test_can_set_shortcut_values()
+    public function test_can_set_shortcut_values(): void
     {
-        /** @var SuperPowers $powers */
         $powers = new SuperPowers(SuperPowers::Superman);
 
         $this->assertTrue($powers->hasFlag(SuperPowers::Strength));
@@ -155,9 +142,8 @@ class FlaggedEnumTest extends TestCase
         $this->assertFalse($powers->hasFlag(SuperPowers::Invisibility));
     }
 
-    public function test_shortcut_values_are_comparable_to_explicit_set()
+    public function test_shortcut_values_are_comparable_to_explicit_set(): void
     {
-        /** @var SuperPowers $powers */
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::LaserVision, SuperPowers::Flight]);
         $this->assertTrue($powers->hasFlag(SuperPowers::Superman));
 
@@ -165,14 +151,14 @@ class FlaggedEnumTest extends TestCase
         $this->assertFalse($powers->hasFlag(SuperPowers::Superman));
     }
 
-    public function test_can_check_if_instance_has_multiple_flags_set()
+    public function test_can_check_if_instance_has_multiple_flags_set(): void
     {
         $this->assertTrue(SuperPowers::Superman()->hasMultipleFlags());
         $this->assertFalse(SuperPowers::Strength()->hasMultipleFlags());
         $this->assertFalse(SuperPowers::None()->hasMultipleFlags());
     }
 
-    public function test_can_get_bitmask_for_an_instance()
+    public function test_can_get_bitmask_for_an_instance(): void
     {
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight]);
         $this->assertSame(1001, $powers->getBitmask());
@@ -180,14 +166,14 @@ class FlaggedEnumTest extends TestCase
         $this->assertSame(1101, SuperPowers::Superman()->getBitmask());
     }
 
-    public function test_can_instantiate_a_flagged_enum_from_a_value_which_has_multiple_flags_set()
+    public function test_can_instantiate_a_flagged_enum_from_a_value_which_has_multiple_flags_set(): void
     {
         $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight]);
 
         $this->assertEquals($powers, SuperPowers::fromValue($powers->value));
     }
 
-    public function test_can_add_all_flags_to_an_enum()
+    public function test_can_add_all_flags_to_an_enum(): void
     {
         $powers = new SuperPowers([
             SuperPowers::Flight,
@@ -202,7 +188,7 @@ class FlaggedEnumTest extends TestCase
         $this->assertEquals($powers, (new SuperPowers)->addAllFlags());
     }
 
-    public function test_can_remove_all_flags_from_an_enum()
+    public function test_can_remove_all_flags_from_an_enum(): void
     {
         $powers = new SuperPowers([
             SuperPowers::Flight,

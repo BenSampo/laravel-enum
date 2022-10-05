@@ -6,6 +6,9 @@ use BenSampo\Enum\Enum;
 use BenSampo\Enum\Attributes\Description;
 
 #[Description('Enum description')]
+/**
+ * @extends Enum<int>
+ */
 final class DescriptionFromAttribute extends Enum
 {
     #[Description('Admin')]

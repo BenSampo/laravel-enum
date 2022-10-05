@@ -19,6 +19,7 @@ use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 
 /**
  * @template TValue
+ * @extends Arrayable<mixed, mixed>
  */
 abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializable
 {
@@ -524,7 +525,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      * from a raw database query or a similar data source.
      *
      * @param  mixed  $value  A raw value that may have any native type
-     * @return TValue  The value cast into the type this enum expects
+     * @return TValue|null  The value cast into the type this enum expects or null
      */
     public static function parseDatabase(mixed $value): mixed
     {
@@ -537,8 +538,8 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
      * You may need to overwrite this when using a database that expects a different
      * type to that used internally in your enum.
      *
-     * @param  mixed  $value  A raw value that may have any native type
-     * @return TValue  The value cast into the type this database expects
+     * @param  TValue  $value  A value of the type this enum expects
+     * @return mixed  The value cast into the type the database expects
      */
     public static function serializeDatabase(mixed $value): mixed
     {

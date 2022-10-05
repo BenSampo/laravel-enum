@@ -11,11 +11,8 @@ class EnumKey implements Rule
      */
     protected string $rule = 'enum_key';
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     public function __construct(
-        /** @var class-string<\BenSampo\Enum\Enum> */
+        /** @var class-string<\BenSampo\Enum\Enum<mixed>> */
         protected string $enumClass
     ) {
         if (! class_exists($this->enumClass)) {

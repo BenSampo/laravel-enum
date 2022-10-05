@@ -5,6 +5,9 @@ namespace BenSampo\Enum\Tests\Enums;
 use BenSampo\Enum\Enum;
 use BenSampo\Enum\Contracts\LocalizedEnum;
 
+/**
+ * @extends Enum<int>
+ */
 final class UserTypeLocalized extends Enum implements LocalizedEnum
 {
     const Moderator = 0;

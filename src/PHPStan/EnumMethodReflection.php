@@ -4,6 +4,7 @@ namespace BenSampo\Enum\PHPStan;
 
 use PHPStan\Reflection\ClassMemberReflection;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ConstantReflection;
 use PHPStan\Reflection\FunctionVariant;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\TrinaryLogic;
@@ -26,8 +27,7 @@ class EnumMethodReflection implements MethodReflection
 
     public function getDeprecatedDescription(): ?string
     {
-        $constant = $this->classReflection->getConstant($this->name);
-        return $constant->getDeprecatedDescription();
+        return $this->constantReflection()->getDeprecatedDescription();
     }
 
     public function getDocComment(): ?string
@@ -70,8 +70,7 @@ class EnumMethodReflection implements MethodReflection
 
     public function isDeprecated(): TrinaryLogic
     {
-        $constant = $this->classReflection->getConstant($this->name);
-        return $constant->isDeprecated();
+        return $this->constantReflection()->isDeprecated();
     }
 
     public function isFinal(): TrinaryLogic
@@ -81,8 +80,7 @@ class EnumMethodReflection implements MethodReflection
 
     public function isInternal(): TrinaryLogic
     {
-        $constant = $this->classReflection->getConstant($this->name);
-        return $constant->isInternal();
+        return $this->constantReflection()->isInternal();
     }
 
     public function isPrivate(): bool
@@ -98,5 +96,10 @@ class EnumMethodReflection implements MethodReflection
     public function isStatic(): bool
     {
         return true;
+    }
+
+    protected function constantReflection(): ConstantReflection
+    {
+        return $this->classReflection->getConstant($this->name);
     }
 }

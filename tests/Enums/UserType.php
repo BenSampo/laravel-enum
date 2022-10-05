@@ -4,6 +4,9 @@ namespace BenSampo\Enum\Tests\Enums;
 
 use BenSampo\Enum\Enum;
 
+/**
+ * @extends Enum<int>
+ */
 final class UserType extends Enum
 {
     const Administrator = 0;

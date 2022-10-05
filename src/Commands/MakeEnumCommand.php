@@ -7,30 +7,12 @@ use Symfony\Component\Console\Input\InputOption;
 
 class MakeEnumCommand extends GeneratorCommand
 {
-    /**
-     * The console command name.
-     *
-     * @var string
-     */
     protected $name = 'make:enum';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Create a new enum class';
 
-    /**
-     * The type of class being generated.
-     *
-     * @var string
-     */
     protected $type = 'Enum';
 
-    /**
-     * Get the stub file for the generator.
-     */
     protected function getStub(): string
     {
         return $this->option('flagged')
@@ -38,9 +20,6 @@ class MakeEnumCommand extends GeneratorCommand
             : $this->resolveStubPath('/stubs/enum.stub');
     }
 
-    /**
-     * Resolve the fully-qualified path to the stub.
-     */
     protected function resolveStubPath(string $stub): string
     {
         return file_exists($customPath = $this->laravel->basePath(trim($stub, '/')))
@@ -48,16 +27,13 @@ class MakeEnumCommand extends GeneratorCommand
             : __DIR__ . $stub;
     }
 
-    /**
-     * Get the default namespace for the class.
-     */
     protected function getDefaultNamespace($rootNamespace): string
     {
         return "{$rootNamespace}\Enums";
     }
 
     /**
-     * Get the console command options.
+     * @return array<int, array<int, mixed>>
      */
     protected function getOptions(): array
     {

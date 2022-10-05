@@ -2,34 +2,87 @@
 
 namespace BenSampo\Enum\Commands;
 
-use ReflectionClass;
 use BenSampo\Enum\Enum;
-use Laminas\Code\Generator\DocBlockGenerator;
-use Laminas\Code\Reflection\DocBlockReflection;
 use Laminas\Code\Generator\DocBlock\Tag\MethodTag;
 use Laminas\Code\Generator\DocBlock\Tag\TagInterface;
+use ReflectionClass;
+use InvalidArgumentException;
+use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
+use Composer\ClassMapGenerator\ClassMapGenerator;
+use Laminas\Code\Generator\DocBlockGenerator;
+use Laminas\Code\Reflection\DocBlockReflection;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 
-class EnumAnnotateCommand extends AbstractAnnotationCommand
+class EnumAnnotateCommand extends Command
 {
-    const DEFAULT_SCAN_FOLDER = 'Enums';
-    const PARENT_CLASS = Enum::class;
-
-    /**
-     * The console command name.
-     *
-     * @var string
-     */
     protected $name = 'enum:annotate';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Generate DocBlock annotations for enum classes';
 
+    protected Filesystem $filesystem;
+
     /**
-     * Apply annotations to a reflected class.
+     * @return array<int, array<int, mixed>>
+     */
+    protected function getArguments(): array
+    {
+        return [
+            ['class', InputArgument::OPTIONAL, 'The class name to generate annotations for'],
+        ];
+    }
+
+    /**
+     * @return array<int, array<int, mixed>>
+     */
+    protected function getOptions(): array
+    {
+        return [
+            ['folder', null, InputOption::VALUE_OPTIONAL, 'The folder to scan for classes to annotate'],
+        ];
+    }
+
+    public function handle(Filesystem $filesystem): int
+    {
+        $this->filesystem = $filesystem;
+
+        $class = $this->argument('class');
+        if ($class) {
+            $this->annotateClass($class);
+
+            return 0;
+        }
+
+        $this->annotateFolder();
+
+        return 0;
+    }
+
+    protected function annotateFolder(): void
+    {
+        foreach (ClassMapGenerator::createMap($this->searchDirectory()) as $class => $_) {
+            $reflection = new ReflectionClass($class);
+
+            if ($reflection->isSubclassOf(Enum::class)) {
+                $this->annotate($reflection);
+            }
+        }
+    }
+
+    protected function annotateClass(string $className): void
+    {
+        if (!is_subclass_of($className, Enum::class)) {
+            $parentClass = Enum::class;
+            throw new InvalidArgumentException("The given class {$className} must be an instance of {$parentClass}.");
+        }
+
+        $reflection = new ReflectionClass($className);
+        $this->annotate($reflection);
+    }
+
+    /**
+     * @param ReflectionClass<Enum<mixed>> $reflectionClass
      */
     protected function annotate(ReflectionClass $reflectionClass): void
     {
@@ -45,22 +98,105 @@ class EnumAnnotateCommand extends AbstractAnnotationCommand
         $this->updateClassDocblock($reflectionClass, $this->getDocBlock($reflectionClass));
     }
 
-    protected function getDocblockTags(array $originalTags, ReflectionClass $reflectionClass): array
+    /**
+     * @param ReflectionClass<Enum<mixed>> $reflectionClass
+     */
+    protected function updateClassDocblock(ReflectionClass $reflectionClass, DocBlockGenerator $docBlock): void
+    {
+        $shortName = $reflectionClass->getShortName();
+        $fileName = $reflectionClass->getFileName();
+        $contents = $this->filesystem->get($fileName);
+
+        $classDeclaration = "class {$shortName}";
+
+        if ($reflectionClass->isFinal()) {
+            $classDeclaration = "final {$classDeclaration}";
+        } elseif ($reflectionClass->isAbstract()) {
+            $classDeclaration = "abstract {$classDeclaration}";
+        }
+
+        // Remove existing docblock
+        $quotedClassDeclaration = preg_quote($classDeclaration);
+        $contents = preg_replace(
+            "#([\\n]?\\/\\*(?:[^*]|\\n|(?:\\*(?:[^\\/]|\\n)))*\\*\\/)?[\\n]?{$quotedClassDeclaration}#ms",
+            "\n{$classDeclaration}",
+            $contents
+        );
+
+        // Make sure we don't replace too much
+        $contents = substr_replace(
+            $contents,
+            "{$docBlock->generate()}{$classDeclaration}",
+            strpos($contents, $classDeclaration),
+            strlen($classDeclaration)
+        );
+
+        $this->filesystem->put($fileName, $contents);
+        $this->info("Wrote new phpDocBlock to {$fileName}.");
+    }
+
+    /**
+     * @param ReflectionClass<Enum<mixed>> $reflectionClass
+     */
+    protected function getDocBlock(ReflectionClass $reflectionClass): DocBlockGenerator
+    {
+        $docBlock = DocBlockGenerator::fromArray([])
+            ->setWordWrap(false);
+
+        $originalDocBlock = null;
+
+        if ($reflectionClass->getDocComment()) {
+            $originalDocBlock = DocBlockGenerator::fromReflection(
+                new DocBlockReflection(ltrim($reflectionClass->getDocComment()))
+            );
+
+            if ($originalDocBlock->getShortDescription()) {
+                $docBlock->setShortDescription($originalDocBlock->getShortDescription());
+            }
+
+            if ($originalDocBlock->getLongDescription()) {
+                $docBlock->setLongDescription($originalDocBlock->getLongDescription());
+            }
+        }
+
+        $docBlock->setTags($this->getDocblockTags(
+            $originalDocBlock,
+            $reflectionClass
+        ));
+
+        return $docBlock;
+    }
+
+    /**
+     * @param ReflectionClass<Enum<mixed>> $reflectionClass
+     * @return array<MethodTag>
+     */
+    protected function getDocblockTags(DocBlockGenerator|null $originalDocblock, ReflectionClass $reflectionClass): array
     {
         $constants = $reflectionClass->getConstants();
+        $constantKeys = array_keys($constants);
 
-        $existingTags = array_filter($originalTags, fn (TagInterface $tag): bool =>
-            ! $tag instanceof MethodTag
-            || ! in_array($tag->getMethodName(), array_keys($constants), true));
+        $tags = array_map(
+            static fn (mixed $value, string $constantName): MethodTag => new MethodTag($constantName, ['static'], null, true),
+            $constants,
+            $constantKeys,
+        );
 
-        return collect($constants)
-            ->map(fn (mixed $value, string $constantName): MethodTag => new MethodTag($constantName, ['static'], null, true))
-            ->merge($existingTags)
-            ->toArray();
+        if ($originalDocblock) {
+            $tags = [
+                ...$tags,
+                array_filter($originalDocblock->getTags(), fn (TagInterface $tag): bool =>
+                    ! $tag instanceof MethodTag
+                    || ! in_array($tag->getMethodName(), $constantKeys, true))
+            ];
+        }
+
+        return $tags;
     }
 
     protected function searchDirectory(): string
     {
-        return $this->option('folder') ?? app_path(self::DEFAULT_SCAN_FOLDER);
+        return $this->option('folder')
+            ?? app_path('Enums');
     }
 }

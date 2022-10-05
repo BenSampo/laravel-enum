@@ -5,9 +5,9 @@ namespace BenSampo\Enum\Tests;
 use PHPUnit\Framework\TestCase;
 use BenSampo\Enum\Tests\Enums\UserType;
 
-class VarExportTest extends TestCase
+final class VarExportTest extends TestCase
 {
-    public function test_var_export()
+    public function test_var_export(): void
     {
         $admin = UserType::Administrator();
 
