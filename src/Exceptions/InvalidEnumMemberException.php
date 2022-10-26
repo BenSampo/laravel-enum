@@ -7,7 +7,7 @@ use Exception;
 class InvalidEnumMemberException extends Exception
 {
     /**
-     * @param class-string<\BenSampo\Enum\Enum> $enum
+     * @param  class-string<\BenSampo\Enum\Enum<mixed>>  $enum
      */
     public function __construct(mixed $invalidValue, string $enum)
     {

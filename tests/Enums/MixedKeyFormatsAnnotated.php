@@ -10,6 +10,7 @@ use BenSampo\Enum\Enum;
  * @method static static UPPERCASE()
  * @method static static UPPERCASE_SNAKE_CASE()
  * @method static static lowercase_snake_case()
+ * @extends Enum<int>
  */
 final class MixedKeyFormatsAnnotated extends Enum
 {

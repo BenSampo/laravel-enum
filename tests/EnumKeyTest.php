@@ -7,9 +7,9 @@ use BenSampo\Enum\Rules\EnumKey;
 use BenSampo\Enum\Tests\Enums\UserType;
 use BenSampo\Enum\Tests\Enums\StringValues;
 
-class EnumKeyTest extends TestCase
+final class EnumKeyTest extends TestCase
 {
-    public function test_validation_passes()
+    public function test_validation_passes(): void
     {
         $passes1 = (new EnumKey(UserType::class))->passes('', 'Administrator');
         $passes2 = (new EnumKey(StringValues::class))->passes('', 'Administrator');
@@ -20,7 +20,7 @@ class EnumKeyTest extends TestCase
         $this->assertFalse($passes3);
     }
 
-    public function test_validation_fails()
+    public function test_validation_fails(): void
     {
         $fails1 = (new EnumKey(UserType::class))->passes('', 'Anything else');
         $fails2 = (new EnumKey(UserType::class))->passes('', 2);
@@ -31,14 +31,14 @@ class EnumKeyTest extends TestCase
         $this->assertFalse($fails3);
     }
 
-    public function test_an_exception_is_thrown_if_an_non_existing_class_is_passed()
+    public function test_an_exception_is_thrown_if_an_non_existing_class_is_passed(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         // @phpstan-ignore-next-line intentionally wrong
         new EnumKey('PathToAClassThatDoesntExist');
     }
 
-    public function test_can_serialize_to_string()
+    public function test_can_serialize_to_string(): void
     {
         $rule = new EnumKey(UserType::class);
 

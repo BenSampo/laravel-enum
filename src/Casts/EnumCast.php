@@ -12,11 +12,21 @@ class EnumCast implements CastsAttributes
     ) {
     }
 
+    /**
+     * @template TValue
+     * @param  TValue $value
+     * @param  array<string, mixed> $attributes
+     * @return Enum<TValue>|null
+     */
     public function get($model, string $key, $value, array $attributes): ?Enum
     {
         return $this->castEnum($value);
     }
 
+    /**
+     * @param  array<string, mixed> $attributes
+     * @return array<string, mixed>
+     */
     public function set($model, string $key, $value, array $attributes): array
     {
         $value = $this->castEnum($value);
@@ -24,6 +34,11 @@ class EnumCast implements CastsAttributes
         return [$key => $this->enumClass::serializeDatabase($value)];
     }
 
+    /**
+     * @template TValue
+     * @param  TValue $value
+     * @return Enum<TValue>|null
+     */
     protected function castEnum(mixed $value): ?Enum
     {
         if ($value === null || $value instanceof $this->enumClass) {
@@ -39,9 +54,6 @@ class EnumCast implements CastsAttributes
         return $this->enumClass::fromValue($value);
     }
 
-    /**
-     * Retrieve the value that can be cast into Enum
-     */
     protected function getCastableValue(mixed $value): mixed
     {
         // If the enum has overridden the `parseDatabase` method, use it to get the cast value

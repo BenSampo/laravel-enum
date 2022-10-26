@@ -6,16 +6,16 @@ use BenSampo\Enum\Rules\Enum;
 use PHPUnit\Framework\TestCase;
 use BenSampo\Enum\Tests\Enums\UserType;
 
-class EnumValidationTest extends TestCase
+final class EnumValidationTest extends TestCase
 {
-    public function test_validation_passes()
+    public function test_validation_passes(): void
     {
         $passes1 = (new Enum(UserType::class))->passes('', UserType::Administrator());
 
         $this->assertTrue($passes1);
     }
 
-    public function test_validation_fails()
+    public function test_validation_fails(): void
     {
         $fails1 = (new Enum(UserType::class))->passes('', 'Some string');
         $fails2 = (new Enum(UserType::class))->passes('', 1);
@@ -28,14 +28,14 @@ class EnumValidationTest extends TestCase
         $this->assertFalse($fails4);
     }
 
-    public function test_an_exception_is_thrown_if_an_non_existing_class_is_passed()
+    public function test_an_exception_is_thrown_if_an_non_existing_class_is_passed(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         // @phpstan-ignore-next-line intentionally wrong
         new Enum('PathToAClassThatDoesntExist');
     }
 
-    public function test_can_serialize_to_string()
+    public function test_can_serialize_to_string(): void
     {
         $rule = new Enum(UserType::class);
 

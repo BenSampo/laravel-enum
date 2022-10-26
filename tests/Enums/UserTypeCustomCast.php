@@ -4,6 +4,9 @@ namespace BenSampo\Enum\Tests\Enums;
 
 use BenSampo\Enum\Enum;
 
+/**
+ * @extends Enum<int>
+ */
 final class UserTypeCustomCast extends Enum
 {
     const Administrator = 0;
@@ -13,19 +16,15 @@ final class UserTypeCustomCast extends Enum
 
     public static function parseDatabase(mixed $value): mixed
     {
-        if (! $value) {
-            return null;
-        }
+        $databaseValue = explode('-', $value)[1] ?? null;
 
-        return explode('-', $value)[1] ?? null;
+        return $databaseValue
+            ? (int) $databaseValue
+            : null;
     }
 
     public static function serializeDatabase(mixed $value): mixed
     {
-        if (! $value) {
-            return null;
-        }
-
-        return 'type-' . $value;
+        return "type-{$value}";
     }
 }

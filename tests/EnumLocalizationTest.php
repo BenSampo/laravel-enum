@@ -7,9 +7,9 @@ use BenSampo\Enum\Rules\EnumKey;
 use BenSampo\Enum\Tests\Enums\UserType;
 use BenSampo\Enum\Tests\Enums\UserTypeLocalized;
 
-class EnumLocalizationTest extends ApplicationTestCase
+final class EnumLocalizationTest extends ApplicationTestCase
 {
-    public function test_enum_get_description_with_localization()
+    public function test_enum_get_description_with_localization(): void
     {
         $this->app->setLocale('en');
         $this->assertSame('Super administrator', UserTypeLocalized::getDescription(UserTypeLocalized::SuperAdministrator));
@@ -18,7 +18,7 @@ class EnumLocalizationTest extends ApplicationTestCase
         $this->assertSame('Súper administrador', UserTypeLocalized::getDescription(UserTypeLocalized::SuperAdministrator));
     }
 
-    public function test_enum_get_description_for_missing_localization_key()
+    public function test_enum_get_description_for_missing_localization_key(): void
     {
         $this->app->setLocale('en');
         $this->assertSame('Moderator', UserTypeLocalized::getDescription(UserTypeLocalized::Moderator));
@@ -27,7 +27,7 @@ class EnumLocalizationTest extends ApplicationTestCase
         $this->assertSame('Moderator', UserTypeLocalized::getDescription(UserTypeLocalized::Moderator));
     }
 
-    public function test_can_localize_validation_error_message_using_class_rule()
+    public function test_can_localize_validation_error_message_using_class_rule(): void
     {
         $validator = $this->app['validator'];
 
@@ -52,7 +52,7 @@ class EnumLocalizationTest extends ApplicationTestCase
         );
     }
 
-    public function test_can_localize_validation_error_message_using_string_rule()
+    public function test_can_localize_validation_error_message_using_string_rule(): void
     {
         $validator = $this->app['validator'];
 

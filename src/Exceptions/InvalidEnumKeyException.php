@@ -7,7 +7,7 @@ use Exception;
 class InvalidEnumKeyException extends Exception
 {
     /**
-     * @param  class-string<\BenSampo\Enum\Enum>  $enumClass
+     * @param  class-string<\BenSampo\Enum\Enum<mixed>>  $enumClass
      */
     public function __construct(mixed $invalidKey, string $enumClass)
     {

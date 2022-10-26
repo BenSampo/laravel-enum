@@ -5,16 +5,15 @@ namespace BenSampo\Enum;
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 
 /**
- * @extends Enum<int|\BenSampo\Enum\Enum|array<int|\BenSampo\Enum\Enum>>
- *
  * @method static static None()
+ * @extends Enum<int>
  */
 abstract class FlaggedEnum extends Enum
 {
     /**
      * The value of one of the enum members.
      *
-     * @var int|\BenSampo\Enum\Enum|array<int|\BenSampo\Enum\Enum>
+     * @var int
      */
     public $value;
 
@@ -23,7 +22,7 @@ abstract class FlaggedEnum extends Enum
     /**
      * Construct a FlaggedEnum instance.
      *
-     * @param  int|\BenSampo\Enum\Enum|array<int|\BenSampo\Enum\Enum>  $flags
+     * @param  int|self|array<int|self>  $flags
      */
     public function __construct(mixed $flags = [])
     {
@@ -42,6 +41,14 @@ abstract class FlaggedEnum extends Enum
     }
 
     /**
+     * @param  int|static|array<int|static> $enumValue
+     */
+    public static function fromValue(mixed $enumValue): static
+    {
+        return parent::fromValue($enumValue);
+    }
+
+    /**
      * Attempt to instantiate a new Enum using the given key or value.
      */
     public static function coerce(mixed $enumKeyOrValue): ?static
@@ -56,7 +63,7 @@ abstract class FlaggedEnum extends Enum
     /**
      * Return a FlaggedEnum instance with defined flags.
      *
-     * @param  array<int|\BenSampo\Enum\Enum>  $flags
+     * @param  array<int|static>  $flags
      */
     public static function flags(array $flags): static
     {
@@ -66,23 +73,32 @@ abstract class FlaggedEnum extends Enum
     /**
      * Set the flags for the enum to the given array of flags.
      *
-     * @param  array<int|\BenSampo\Enum\Enum>  $flags
+     * @param  array<int|static>  $flags
      */
     public function setFlags(array $flags): static
     {
-        $this->value = array_reduce($flags, function ($carry, int|Enum $flag): int {
-            return $carry | static::fromValue($flag)->value;
-        }, 0);
+        $this->value = array_reduce(
+            $flags,
+            static fn (int $carry, int|self $flag): int => $carry
+                | ($flag instanceof self
+                    ? $flag->value
+                    : $flag),
+            0
+        );
 
         return $this;
     }
 
     /**
      * Add the given flag to the enum.
+     *
+     * @param  int|static $flag
      */
-    public function addFlag(int|Enum $flag): static
+    public function addFlag(int|self $flag): static
     {
-        $this->value |= static::fromValue($flag)->value;
+        $this->value |= ($flag instanceof self
+            ? $flag->value
+            : $flag);
 
         return $this;
     }
@@ -90,7 +106,7 @@ abstract class FlaggedEnum extends Enum
     /**
      * Add the given flags to the enum.
      *
-     * @param  array<int|\BenSampo\Enum\Enum>  $flags
+     * @param  array<int|static>  $flags
      */
     public function addFlags(array $flags): static
     {
@@ -111,11 +127,14 @@ abstract class FlaggedEnum extends Enum
 
     /**
      * Remove the given flag from the enum.
+     *
+     * @param  int|static $flag
      */
-    public function removeFlag(int|Enum $flag): static
+    public function removeFlag(int|self $flag): static
     {
-        // @phpstan-ignore-next-line not sure how to fix this
-        $this->value &= ~static::fromValue($flag)->value;
+        $this->value &= ~($flag instanceof self
+            ? $flag->value
+            : $flag);
 
         return $this;
     }
@@ -123,7 +142,7 @@ abstract class FlaggedEnum extends Enum
     /**
      * Remove the given flags from the enum.
      *
-     * @param  array<int|\BenSampo\Enum\Enum>  $flags
+     * @param  array<int|static>  $flags
      */
     public function removeFlags(array $flags): static
     {
@@ -144,10 +163,14 @@ abstract class FlaggedEnum extends Enum
 
     /**
      * Check if the enum has the specified flag.
+     *
+     * @param  int|static $flag
      */
-    public function hasFlag(int|Enum $flag): bool
+    public function hasFlag(int|self $flag): bool
     {
-        $flagValue = static::fromValue($flag)->value;
+        $flagValue = ($flag instanceof self
+            ? $flag->value
+            : $flag);
 
         if ($flagValue === 0) {
             return false;
@@ -159,7 +182,7 @@ abstract class FlaggedEnum extends Enum
     /**
      * Check if the enum has all specified flags.
      *
-     * @param  array<int|\BenSampo\Enum\Enum>  $flags
+     * @param  array<int|static>  $flags
      */
     public function hasFlags(array $flags): bool
     {
@@ -174,6 +197,8 @@ abstract class FlaggedEnum extends Enum
 
     /**
      * Check if the enum does not have the specified flag.
+     *
+     * @param  int|static $flag
      */
     public function notHasFlag(int|Enum $flag): bool
     {
@@ -183,7 +208,7 @@ abstract class FlaggedEnum extends Enum
     /**
      * Check if the enum doesn't have any of the specified flags.
      *
-     * @param  array<int|\BenSampo\Enum\Enum>  $flags
+     * @param  array<int|static>  $flags
      */
     public function notHasFlags(array $flags): bool
     {

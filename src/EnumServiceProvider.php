@@ -23,9 +23,6 @@ class EnumServiceProvider extends ServiceProvider
         $this->bootDoctrineType();
     }
 
-    /**
-     * Boot the custom commands.
-     */
     private function bootCommands(): void
     {
         $this->publishes([
@@ -40,9 +37,6 @@ class EnumServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * Boot the custom validators.
-     */
     private function bootValidators(): void
     {
         $this->app['validator']->extend('enum_key', function ($attribute, $value, $parameters, $validator) {
@@ -72,9 +66,6 @@ class EnumServiceProvider extends ServiceProvider
         }, __('laravelEnum::messages.enum'));
     }
 
-    /**
-     * Boot the Doctrine type.
-     */
     private function bootDoctrineType(): void
     {
         // Not included by default in Laravel

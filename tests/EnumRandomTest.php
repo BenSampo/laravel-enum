@@ -5,9 +5,9 @@ namespace BenSampo\Enum\Tests;
 use BenSampo\Enum\Tests\Enums\SingleValue;
 use PHPUnit\Framework\TestCase;
 
-class EnumRandomTest extends TestCase
+final class EnumRandomTest extends TestCase
 {
-    public function test_can_get_random_key()
+    public function test_can_get_random_key(): void
     {
         $key = SingleValue::getRandomKey();
 
@@ -17,14 +17,14 @@ class EnumRandomTest extends TestCase
         );
     }
 
-    public function test_can_get_random_value()
+    public function test_can_get_random_value(): void
     {
         $value = SingleValue::getRandomValue();
 
         $this->assertSame(SingleValue::KEY, $value);
     }
 
-    public function test_can_get_random_instance()
+    public function test_can_get_random_instance(): void
     {
         $instance = SingleValue::getRandomInstance();
 
