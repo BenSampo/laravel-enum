@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v6.0.0...master)
 
+## [6.1.0](https://github.com/BenSampo/laravel-enum/compare/v6.0.0...v6.1.0) - 2022-10-26
+
 ### Changed
 
 - Eliminate unnecessary abstract class `AbstractAnnotationCommand` [283](https://github.com/BenSampo/laravel-enum/pull/283)
