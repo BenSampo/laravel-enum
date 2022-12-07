@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v6.2.0...master)
 
-## [6.2.0](https://github.com/BenSampo/laravel-enum/compare/v6.1.0...v6.2.0) - 2022-?
+## [6.2.0](https://github.com/BenSampo/laravel-enum/compare/v6.1.0...v6.2.0) - 2022-12-07
 
 ### Changed
 
