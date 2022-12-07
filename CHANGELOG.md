@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Open `EnumServiceProvider` for customization
+- Open `EnumServiceProvider` for customization [292](https://github.com/BenSampo/laravel-enum/pull/292)
 
 ## [6.1.0](https://github.com/BenSampo/laravel-enum/compare/v6.0.0...v6.1.0) - 2022-10-26
 
