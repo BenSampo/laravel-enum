@@ -118,8 +118,8 @@ class EnumAnnotateCommand extends Command
         // Remove existing docblock
         $quotedClassDeclaration = preg_quote($classDeclaration);
         $contents = preg_replace(
-            "#([\\n]?\\/\\*(?:[^*]*|\\n|(?:\\*(?:[^\\/]|\\n)))*\\*\\/)?[\\n]?{$quotedClassDeclaration}#ms",
-            "\n{$classDeclaration}",
+            "#\\r?\\n?\/\*[\s\S]*?\*\/(\\r?\\n)?{$quotedClassDeclaration}#ms",
+            "\$1{$classDeclaration}",
             $contents
         );
 
