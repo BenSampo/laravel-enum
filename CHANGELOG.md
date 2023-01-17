@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v6.2.1...master)
 
+- Fix backtrack regexp error and add Windows EOL support to the annotate command [296](https://github.com/BenSampo/laravel-enum/pull/296)
+
 ## [6.2.1](https://github.com/BenSampo/laravel-enum/compare/v6.2.0...v6.2.1) - 2023-01-12
 
 ### Fixed
