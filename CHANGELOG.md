@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v6.2.2...master)
+## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v6.3.0...master)
+
+## [6.3.0](https://github.com/BenSampo/laravel-enum/compare/v6.2.2...v6.3.0) - 2023-01-31
+
+### Added
+
+- Support Laravel 10 [298](https://github.com/BenSampo/laravel-enum/pull/298)
 
 ## [6.2.2](https://github.com/BenSampo/laravel-enum/compare/v6.2.1...v6.2.2) - 2023-01-17
 
