@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/BenSampo/laravel-enum/compare/v6.2.2...master)
 
+### Added
+
+- Support Laravel 10
+
 ## [6.2.2](https://github.com/BenSampo/laravel-enum/compare/v6.2.1...v6.2.2) - 2023-01-17
 
 ### Fixed
