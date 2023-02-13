@@ -5,6 +5,10 @@ namespace BenSampo\Enum\Casts;
 use BenSampo\Enum\Enum;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
+/**
+ * @implements CastsAttributes<Enum|null, mixed>
+ */
+// @phpstan-ignore-next-line CastsAttributes is only sometimes generic
 class EnumCast implements CastsAttributes
 {
     public function __construct(
