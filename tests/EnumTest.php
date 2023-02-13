@@ -22,19 +22,19 @@ final class EnumTest extends TestCase
     {
         $keys = UserType::getKeys();
         $expectedKeys = ['Administrator', 'Moderator', 'Subscriber', 'SuperAdministrator'];
-        $this->assertEquals($expectedKeys, $keys);
+        $this->assertSame($expectedKeys, $keys);
 
         $keys = UserType::getKeys(UserType::Administrator);
         $expectedKeys = ['Administrator'];
-        $this->assertEquals($expectedKeys, $keys);
+        $this->assertSame($expectedKeys, $keys);
 
         $keys = UserType::getKeys(UserType::Administrator, UserType::Moderator);
         $expectedKeys = ['Administrator', 'Moderator'];
-        $this->assertEquals($expectedKeys, $keys);
+        $this->assertSame($expectedKeys, $keys);
 
         $keys = UserType::getKeys([UserType::Administrator, UserType::Moderator]);
         $expectedKeys = ['Administrator', 'Moderator'];
-        $this->assertEquals($expectedKeys, $keys);
+        $this->assertSame($expectedKeys, $keys);
     }
 
     public function test_enum_coerce(): void
@@ -76,19 +76,19 @@ final class EnumTest extends TestCase
     {
         $values = UserType::getValues();
         $expectedValues = [0, 1, 2, 3];
-        $this->assertEquals($expectedValues, $values);
+        $this->assertSame($expectedValues, $values);
 
         $values = UserType::getValues('Administrator');
         $expectedValues = [0];
-        $this->assertEquals($expectedValues, $values);
+        $this->assertSame($expectedValues, $values);
 
         $values = UserType::getValues('Administrator', 'Moderator');
         $expectedValues = [0, 1];
-        $this->assertEquals($expectedValues, $values);
+        $this->assertSame($expectedValues, $values);
 
         $values = UserType::getValues(['Administrator', 'Moderator']);
         $expectedValues = [0, 1];
-        $this->assertEquals($expectedValues, $values);
+        $this->assertSame($expectedValues, $values);
     }
 
     public function test_enum_get_key(): void
@@ -149,7 +149,7 @@ final class EnumTest extends TestCase
             'SuperAdministrator' => 3,
         ];
 
-        $this->assertEquals($expectedArray, $array);
+        $this->assertSame($expectedArray, $array);
     }
 
     public function test_enum_as_select_array(): void
@@ -162,7 +162,7 @@ final class EnumTest extends TestCase
             3 => 'Super administrator',
         ];
 
-        $this->assertEquals($expectedArray, $array);
+        $this->assertSame($expectedArray, $array);
     }
 
     public function test_enum_as_select_array_with_string_values(): void
@@ -173,7 +173,7 @@ final class EnumTest extends TestCase
             'moderator' => 'Moderator',
         ];
 
-        $this->assertEquals($expectedArray, $array);
+        $this->assertSame($expectedArray, $array);
     }
 
     public function test_enum_is_macroable_with_static_methods(): void
@@ -190,7 +190,7 @@ final class EnumTest extends TestCase
         $reimplementedResult = array_flip(UserType::asArray());
         // @phpstan-ignore-next-line TODO make extension recognize macro
         $macroResult = UserType::asFlippedArray();
-        $this->assertEquals($reimplementedResult, $macroResult);
+        $this->assertSame($reimplementedResult, $macroResult);
     }
 
     public function test_enum_is_macroable_with_instance_methods(): void

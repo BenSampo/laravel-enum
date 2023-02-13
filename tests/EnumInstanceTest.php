@@ -44,21 +44,21 @@ final class EnumInstanceTest extends TestCase
     {
         $userType = UserType::fromValue(UserType::Administrator);
 
-        $this->assertEquals($userType->value, UserType::Administrator);
+        $this->assertSame($userType->value, UserType::Administrator);
     }
 
     public function test_can_get_the_key_for_an_enum_instance(): void
     {
         $userType = UserType::fromValue(UserType::Administrator);
 
-        $this->assertEquals($userType->key, UserType::getKey(UserType::Administrator));
+        $this->assertSame($userType->key, UserType::getKey(UserType::Administrator));
     }
 
     public function test_can_get_the_description_for_an_enum_instance(): void
     {
         $userType = UserType::fromValue(UserType::Administrator);
 
-        $this->assertEquals($userType->description, UserType::getDescription(UserType::Administrator));
+        $this->assertSame($userType->description, UserType::getDescription(UserType::Administrator));
     }
 
     public function test_can_get_enum_instance_by_calling_an_enum_key_as_a_static_method(): void
