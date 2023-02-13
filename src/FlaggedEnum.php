@@ -17,6 +17,16 @@ abstract class FlaggedEnum extends Enum
      */
     public $value;
 
+    /**
+     * Unset, do not access.
+     */
+    public string $key;
+
+    /**
+     * Unset, do not access.
+     */
+    public string $description;
+
     const None = 0;
 
     /**
@@ -26,8 +36,8 @@ abstract class FlaggedEnum extends Enum
      */
     public function __construct(mixed $flags = [])
     {
-        $this->key = null;
-        $this->description = null;
+        unset($this->key);
+        unset($this->description);
 
         if (is_array($flags)) {
             $this->setFlags($flags);
