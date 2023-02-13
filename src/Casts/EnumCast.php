@@ -5,6 +5,9 @@ namespace BenSampo\Enum\Casts;
 use BenSampo\Enum\Enum;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
+/**
+ * @implements CastsAttributes<Enum|null, mixed>
+ */
 class EnumCast implements CastsAttributes
 {
     public function __construct(
