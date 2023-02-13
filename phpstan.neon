@@ -12,6 +12,8 @@ parameters:
   - src
   - tests
   checkOctaneCompatibility: true
+  # As long as we support multiple Laravel versions at once, there will be some dead spots
+  reportUnmatchedIgnoredErrors: false
   ignoreErrors:
   # This is a library, so it should be extendable
   - '#Unsafe usage of new static.*#'
