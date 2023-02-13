@@ -38,12 +38,12 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * The key of one of the enum members.
      */
-    public ?string $key;
+    public string $key;
 
     /**
      * The description of one of the enum members.
      */
-    public ?string $description;
+    public string $description;
 
     /**
      * Caches reflections of enum subclasses.
