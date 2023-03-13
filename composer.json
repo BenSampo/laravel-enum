@@ -21,8 +21,8 @@
     "require": {
         "php": "^8.0",
         "composer/composer": "^2.2",
-        "illuminate/contracts": "^9.0",
-        "illuminate/support": "^9.0",
+        "illuminate/contracts": "^9.0|^10.0",
+        "illuminate/support": "^9.0|^10.0",
         "laminas/laminas-code": "^3.4 || ^4.0",
         "nikic/php-parser": "^4.13"
     },
