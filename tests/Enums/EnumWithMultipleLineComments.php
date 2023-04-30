@@ -5,9 +5,13 @@ namespace BenSampo\Enum\Tests\Enums;
 use BenSampo\Enum\Enum;
 
 /**
- * Comment1,
- * Comment2,
- * and Comment3.
+ * This is a test enum with multiple line comments.
+ *
+ * Test enum with multiple line comments. Test enum
+ * with multiple line comments. Test enum with multiple line comments.
+ *
+ * Test enum with multiple line comments.
+ *
  * @method static static A()
  * @method static static B()
  * @method static static C()
