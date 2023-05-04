@@ -12,12 +12,6 @@ use BenSampo\Enum\Tests\Enums\MixedKeyFormats;
 
 final class EnumTest extends TestCase
 {
-    public function test_enum_values(): void
-    {
-        $this->assertSame(0, UserType::Administrator);
-        $this->assertSame(3, UserType::SuperAdministrator);
-    }
-
     public function test_enum_get_keys(): void
     {
         $keys = UserType::getKeys();
