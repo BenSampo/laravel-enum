@@ -32,7 +32,7 @@ final class EnumLocalizationTest extends ApplicationTestCase
         $validator = $this->app['validator'];
 
         $this->assertSame(
-            'The selected input is invalid.',
+            'The value you have provided is not a valid enum instance.',
             $validator->make(['input' => 'test'], ['input' => new Enum(UserType::class)])->errors()->first()
         );
         $this->assertSame(
@@ -57,7 +57,7 @@ final class EnumLocalizationTest extends ApplicationTestCase
         $validator = $this->app['validator'];
 
         $this->assertSame(
-            'The selected input is invalid.',
+            'The value you have provided is not a valid enum instance.',
             $validator->make(['input' => 'test'], ['input' => 'enum:BenSampo\Enum\Tests\Enums\UserType'])->errors()->first()
         );
         $this->assertSame(
