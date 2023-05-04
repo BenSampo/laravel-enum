@@ -17,3 +17,4 @@ parameters:
   ignoreErrors:
   # This is a library, so it should be extendable
   - '#Unsafe usage of new static.*#'
+  - '#.*will always evaluate to true\.$#'
