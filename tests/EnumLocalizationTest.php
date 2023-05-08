@@ -4,6 +4,7 @@ namespace BenSampo\Enum\Tests;
 
 use BenSampo\Enum\Rules\Enum;
 use BenSampo\Enum\Rules\EnumKey;
+use BenSampo\Enum\Rules\EnumValue;
 use BenSampo\Enum\Tests\Enums\UserType;
 use BenSampo\Enum\Tests\Enums\UserTypeLocalized;
 
@@ -32,8 +33,8 @@ final class EnumLocalizationTest extends ApplicationTestCase
         $validator = $this->app['validator'];
 
         $this->assertSame(
-            'The value you have provided is not a valid enum instance.',
-            $validator->make(['input' => 'test'], ['input' => new Enum(UserType::class)])->errors()->first()
+            'The value you have entered is invalid.',
+            $validator->make(['input' => 'test'], ['input' => new EnumValue(UserType::class)])->errors()->first()
         );
         $this->assertSame(
             'Wrong key.',
@@ -43,8 +44,8 @@ final class EnumLocalizationTest extends ApplicationTestCase
         $this->app->setLocale('es');
 
         $this->assertSame(
-            'The value you have provided is not a valid enum instance.', // No Spanish translations out of the box
-            $validator->make(['input' => 'test'], ['input' => new Enum(UserType::class)])->errors()->first()
+            'The value you have entered is invalid.', // No Spanish translations out of the box
+            $validator->make(['input' => 'test'], ['input' => new EnumValue(UserType::class)])->errors()->first()
         );
         $this->assertSame(
             'Llave incorrecta.',
@@ -57,8 +58,8 @@ final class EnumLocalizationTest extends ApplicationTestCase
         $validator = $this->app['validator'];
 
         $this->assertSame(
-            'The value you have provided is not a valid enum instance.',
-            $validator->make(['input' => 'test'], ['input' => 'enum:BenSampo\Enum\Tests\Enums\UserType'])->errors()->first()
+            'The value you have entered is invalid.',
+            $validator->make(['input' => 'test'], ['input' => 'enum_value:BenSampo\Enum\Tests\Enums\UserType'])->errors()->first()
         );
         $this->assertSame(
             'Wrong key.',
@@ -68,8 +69,8 @@ final class EnumLocalizationTest extends ApplicationTestCase
         $this->app->setLocale('es');
 
         $this->assertSame(
-            'The value you have provided is not a valid enum instance.', // No Spanish translations out of the box
-            $validator->make(['input' => 'test'], ['input' => 'enum:BenSampo\Enum\Tests\Enums\UserType'])->errors()->first()
+            'The value you have entered is invalid.', // No Spanish translations out of the box
+            $validator->make(['input' => 'test'], ['input' => 'enum_value:BenSampo\Enum\Tests\Enums\UserType'])->errors()->first()
         );
         $this->assertSame(
             'Llave incorrecta.',
