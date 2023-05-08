@@ -4,6 +4,8 @@ namespace BenSampo\Enum\Tests;
 
 use BenSampo\Enum\Tests\Enums\EnumWithMultipleLineCommentsWithBlankLines;
 use BenSampo\Enum\Tests\Enums\EnumWithMultipleLineCommentsWithoutBlankLines;
+use BenSampo\Enum\Tests\Enums\EnumWithSingleLineCommentWithBlankLine;
+use BenSampo\Enum\Tests\Enums\EnumWithSingleLineCommentWithoutBlankLine;
 use BenSampo\Enum\Tests\Enums\ManyLongConstantNames;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
@@ -119,6 +121,30 @@ final class ArtisanCommandsTest extends ApplicationTestCase
         $this->artisan('enum:annotate', ['class' => EnumWithMultipleLineCommentsWithoutBlankLines::class])->assertExitCode(0);
 
         $newClass = $filesystem->get(__DIR__ . '/Enums/EnumWithMultipleLineCommentsWithoutBlankLines.php');
+        $this->assertSame($original, $newClass);
+    }
+
+    public function test_annotate_enum_with_single_line_comment_with_blank_line(): void
+    {
+        $filesystem = $this->app->make(Filesystem::class);
+        assert($filesystem instanceof Filesystem);
+
+        $original = $filesystem->get(__DIR__ . '/Enums/EnumWithSingleLineCommentWithBlankLine.php');
+        $this->artisan('enum:annotate', ['class' => EnumWithSingleLineCommentWithBlankLine::class])->assertExitCode(0);
+
+        $newClass = $filesystem->get(__DIR__ . '/Enums/EnumWithSingleLineCommentWithBlankLine.php');
+        $this->assertSame($original, $newClass);
+    }
+
+    public function test_annotate_enum_with_single_line_comment_without_blank_line(): void
+    {
+        $filesystem = $this->app->make(Filesystem::class);
+        assert($filesystem instanceof Filesystem);
+
+        $original = $filesystem->get(__DIR__ . '/Enums/EnumWithSingleLineCommentWithoutBlankLine.php');
+        $this->artisan('enum:annotate', ['class' => EnumWithSingleLineCommentWithoutBlankLine::class])->assertExitCode(0);
+
+        $newClass = $filesystem->get(__DIR__ . '/Enums/EnumWithSingleLineCommentWithoutBlankLine.php');
         $this->assertSame($original, $newClass);
     }
 }
