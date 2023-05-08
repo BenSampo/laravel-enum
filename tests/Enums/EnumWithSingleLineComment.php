@@ -12,7 +12,7 @@ use BenSampo\Enum\Enum;
  * @method static static C()
  * @extends Enum<int>
  */
-final class EnumWithSingleLineCommentWithBlankLine extends Enum
+final class EnumWithSingleLineComment extends Enum
 {
     const A = 1;
     const B = 2;

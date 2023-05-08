@@ -17,7 +17,7 @@ use BenSampo\Enum\Enum;
  * @method static static C()
  * @extends Enum<int>
  */
-final class EnumWithMultipleLineCommentsWithBlankLines extends Enum
+final class EnumWithMultipleLineComments extends Enum
 {
     const A = 1;
     const B = 2;

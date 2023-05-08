@@ -2,9 +2,9 @@
 
 namespace BenSampo\Enum\Tests;
 
-use BenSampo\Enum\Tests\Enums\EnumWithMultipleLineCommentsWithBlankLines;
+use BenSampo\Enum\Tests\Enums\EnumWithMultipleLineComments;
 use BenSampo\Enum\Tests\Enums\EnumWithMultipleLineCommentsWithoutBlankLines;
-use BenSampo\Enum\Tests\Enums\EnumWithSingleLineCommentWithBlankLine;
+use BenSampo\Enum\Tests\Enums\EnumWithSingleLineComment;
 use BenSampo\Enum\Tests\Enums\EnumWithSingleLineCommentWithoutBlankLine;
 use BenSampo\Enum\Tests\Enums\ManyLongConstantNames;
 use Illuminate\Filesystem\Filesystem;
@@ -105,10 +105,10 @@ final class ArtisanCommandsTest extends ApplicationTestCase
         $filesystem = $this->app->make(Filesystem::class);
         assert($filesystem instanceof Filesystem);
 
-        $original = $filesystem->get(__DIR__ . '/Enums/EnumWithMultipleLineCommentsWithBlankLines.php');
-        $this->artisan('enum:annotate', ['class' => EnumWithMultipleLineCommentsWithBlankLines::class])->assertExitCode(0);
+        $original = $filesystem->get(__DIR__ . '/Enums/EnumWithMultipleLineComments.php');
+        $this->artisan('enum:annotate', ['class' => EnumWithMultipleLineComments::class])->assertExitCode(0);
 
-        $newClass = $filesystem->get(__DIR__ . '/Enums/EnumWithMultipleLineCommentsWithBlankLines.php');
+        $newClass = $filesystem->get(__DIR__ . '/Enums/EnumWithMultipleLineComments.php');
         $this->assertSame($original, $newClass);
     }
 
@@ -117,10 +117,10 @@ final class ArtisanCommandsTest extends ApplicationTestCase
         $filesystem = $this->app->make(Filesystem::class);
         assert($filesystem instanceof Filesystem);
 
-        $original = $filesystem->get(__DIR__ . '/Enums/EnumWithSingleLineCommentWithBlankLine.php');
-        $this->artisan('enum:annotate', ['class' => EnumWithSingleLineCommentWithBlankLine::class])->assertExitCode(0);
+        $original = $filesystem->get(__DIR__ . '/Enums/EnumWithSingleLineComment.php');
+        $this->artisan('enum:annotate', ['class' => EnumWithSingleLineComment::class])->assertExitCode(0);
 
-        $newClass = $filesystem->get(__DIR__ . '/Enums/EnumWithSingleLineCommentWithBlankLine.php');
+        $newClass = $filesystem->get(__DIR__ . '/Enums/EnumWithSingleLineComment.php');
         $this->assertSame($original, $newClass);
     }
 }
