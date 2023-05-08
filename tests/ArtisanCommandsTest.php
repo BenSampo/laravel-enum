@@ -102,10 +102,17 @@ final class ArtisanCommandsTest extends ApplicationTestCase
         $filesystem = $this->app->make(Filesystem::class);
         assert($filesystem instanceof Filesystem);
 
-        $original = $filesystem->get(__DIR__ . '/Enums/EnumWithMultipleLineComments1.php');
-        $this->artisan('enum:annotate', ['class' => EnumWithMultipleLineComments1::class])->assertExitCode(0);
+        $enumPaths = [
+            __DIR__ . '/Enums/EnumWithMultipleLineComments1.php',
+            __DIR__ . '/Enums/EnumWithMultipleLineComments2.php',
+        ];
 
-        $newClass = $filesystem->get(__DIR__ . '/Enums/EnumWithMultipleLineComments1.php');
-        $this->assertSame($original, $newClass);
+        foreach ($enumPaths as $enumPath) {
+            $original = $filesystem->get($enumPath);
+            $this->artisan('enum:annotate', ['class' => EnumWithMultipleLineComments1::class])->assertExitCode(0);
+
+            $newClass = $filesystem->get($enumPath);
+            $this->assertSame($original, $newClass);
+        }
     }
 }
