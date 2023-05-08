@@ -6,18 +6,15 @@ use BenSampo\Enum\Enum;
 
 /**
  * This is a test enum with multiple line comments.
- *
  * Test enum with multiple line comments. Test enum
  * with multiple line comments. Test enum with multiple line comments.
- *
  * Test enum with multiple line comments.
- *
  * @method static static A()
  * @method static static B()
  * @method static static C()
  * @extends Enum<int>
  */
-final class EnumWithMultipleLineComments1 extends Enum
+final class EnumWithMultipleLineCommentsWithoutBlankLines extends Enum
 {
     const A = 1;
     const B = 2;
