@@ -693,20 +693,6 @@ public function store(Request $request)
 }
 ```
 
-### Pipe Validation
-
-You can also use the 'pipe' syntax for rules.
-
-**enum_value**_:enum_class,[strict]_  
-**enum_key**_:enum_class_  
-**enum**_:enum_class_
-
-```php
-'user_type' => 'required|enum_value:' . UserType::class,
-'user_type' => 'required|enum_key:' . UserType::class,
-'user_type' => 'required|enum:' . UserType::class,
-```
-
 ## Localization
 
 ### Validation messages

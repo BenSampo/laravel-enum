@@ -52,29 +52,4 @@ final class EnumLocalizationTest extends ApplicationTestCase
             $validator->make(['input' => 'test'], ['input' => new EnumKey(UserType::class)])->errors()->first()
         );
     }
-
-    public function test_can_localize_validation_error_message_using_string_rule(): void
-    {
-        $validator = $this->app['validator'];
-
-        $this->assertSame(
-            'The value you have entered is invalid.',
-            $validator->make(['input' => 'test'], ['input' => 'enum_value:BenSampo\Enum\Tests\Enums\UserType'])->errors()->first()
-        );
-        $this->assertSame(
-            'Wrong key.',
-            $validator->make(['input' => 'test'], ['input' => 'enum_key:BenSampo\Enum\Tests\Enums\UserType'])->errors()->first()
-        );
-
-        $this->app->setLocale('es');
-
-        $this->assertSame(
-            'The value you have entered is invalid.', // No Spanish translations out of the box
-            $validator->make(['input' => 'test'], ['input' => 'enum_value:BenSampo\Enum\Tests\Enums\UserType'])->errors()->first()
-        );
-        $this->assertSame(
-            'Llave incorrecta.',
-            $validator->make(['input' => 'test'], ['input' => 'enum_key:BenSampo\Enum\Tests\Enums\UserType'])->errors()->first()
-        );
-    }
 }
