@@ -2,7 +2,7 @@
 
 namespace BenSampo\Enum\Tests;
 
-use BenSampo\Enum\Tests\Enums\EnumWithMultipleLineComments;
+use BenSampo\Enum\Tests\Enums\EnumWithMultipleLineComments1;
 use BenSampo\Enum\Tests\Enums\ManyLongConstantNames;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
@@ -102,10 +102,10 @@ final class ArtisanCommandsTest extends ApplicationTestCase
         $filesystem = $this->app->make(Filesystem::class);
         assert($filesystem instanceof Filesystem);
 
-        $original = $filesystem->get(__DIR__ . '/Enums/EnumWithMultipleLineComments.php');
-        $this->artisan('enum:annotate', ['class' => EnumWithMultipleLineComments::class])->assertExitCode(0);
+        $original = $filesystem->get(__DIR__ . '/Enums/EnumWithMultipleLineComments1.php');
+        $this->artisan('enum:annotate', ['class' => EnumWithMultipleLineComments1::class])->assertExitCode(0);
 
-        $newClass = $filesystem->get(__DIR__ . '/Enums/EnumWithMultipleLineComments.php');
+        $newClass = $filesystem->get(__DIR__ . '/Enums/EnumWithMultipleLineComments1.php');
         $this->assertSame($original, $newClass);
     }
 }
