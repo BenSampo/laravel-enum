@@ -34,14 +34,6 @@ final class PHPStanTest extends PHPStanTestCase
         );
     }
 
-    public function test_get_enum_method_reflection(): void
-    {
-        $this->assertInstanceOf(
-            MethodReflection::class,
-            $this->reflectionExtension->getMethod($this->enumReflection, 'Administrator')
-        );
-    }
-
     public function test_enum_method_reflection_hasSideEffects_returns_no(): void
     {
         $method = $this->getMethodReflection(UserType::class, 'Administrator');
@@ -98,22 +90,15 @@ final class PHPStanTest extends PHPStanTestCase
     {
         $method = $this->getMethodReflection(AnnotatedConstants::class, 'Unannotated');
 
-        $this->assertFalse($method->isInternal()->yes(), 'isInteral should return TrinaryLogic::No');
+        $this->assertFalse($method->isInternal()->yes(), 'isInternal should return TrinaryLogic::No');
         $this->assertFalse($method->isDeprecated()->yes(), 'isDeprecated should return TrinaryLogic::No');
     }
 
-    public function test_unnanotated_constant_static_method_deprecated_message_is_null(): void
+    public function test_unannotated_constant_static_method_deprecated_message_is_null(): void
     {
         $method = $this->getMethodReflection(AnnotatedConstants::class, 'Unannotated');
 
         $this->assertNull($method->getDeprecatedDescription());
-    }
-
-    public function test_getVariants_returns_array(): void
-    {
-        $method = $this->getMethodReflection(UserType::class, 'Administrator');
-
-        $this->assertIsArray($method->getVariants());
     }
 
     protected function getMethodReflection(string $class, string $name): MethodReflection

@@ -12,19 +12,19 @@ final class EnumInstanceTest extends TestCase
     public function test_can_instantiate_enum_class_with_new(): void
     {
         $userType = new UserType(UserType::Administrator);
-        $this->assertInstanceOf(UserType::class, $userType);
+        $this->assertSame(UserType::Administrator, $userType->value);
     }
 
-    public function test_can_instantiate_enum_class_from_value(): void
+    public function test_can_instantiate_enum_class_from_value_raw(): void
     {
         $userType = UserType::fromValue(UserType::Administrator);
-        $this->assertInstanceOf(UserType::class, $userType);
+        $this->assertSame(UserType::Administrator, $userType->value);
     }
 
     public function test_can_instantiate_enum_class_from_key(): void
     {
         $userType = UserType::fromKey('Administrator');
-        $this->assertInstanceOf(UserType::class, $userType);
+        $this->assertSame(UserType::Administrator, $userType->value);
     }
 
     public function test_an_exception_is_thrown_when_trying_to_instantiate_enum_class_with_an_invalid_enum_value(): void
@@ -69,7 +69,7 @@ final class EnumInstanceTest extends TestCase
     public function test_magic_instantiation_from_instance_method(): void
     {
         $userType = new UserType(UserType::Administrator);
-        $this->assertInstanceOf(UserType::class, $userType->magicInstantiationFromInstanceMethod());
+        $this->assertSame(UserType::Administrator, $userType->magicInstantiationFromInstanceMethod()->value);
     }
 
     public function test_an_exception_is_thrown_when_trying_to_get_enum_instance_by_calling_an_enum_key_as_a_static_method_which_does_not_exist(): void
@@ -78,10 +78,5 @@ final class EnumInstanceTest extends TestCase
 
         // @phpstan-ignore-next-line intentionally wrong
         UserType::KeyWhichDoesNotExist();
-    }
-
-    public function test_getting_an_instance_using_an_instance_returns_an_instance(): void
-    {
-        $this->assertInstanceOf(UserType::class, UserType::fromValue(UserType::Administrator));
     }
 }

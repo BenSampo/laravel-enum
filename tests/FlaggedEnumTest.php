@@ -9,26 +9,20 @@ final class FlaggedEnumTest extends TestCase
 {
     public function test_can_construct_flagged_enum_using_static_properties(): void
     {
-        $powers = new SuperPowers([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::LaserVision]);
-        $this->assertInstanceOf(SuperPowers::class, $powers);
+        new SuperPowers([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::LaserVision]);
+        SuperPowers::fromValue([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::LaserVision]);
+        SuperPowers::flags([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::LaserVision]);
 
-        $powers = SuperPowers::fromValue([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::LaserVision]);
-        $this->assertInstanceOf(SuperPowers::class, $powers);
-
-        $powers = SuperPowers::flags([SuperPowers::Strength, SuperPowers::Flight, SuperPowers::LaserVision]);
-        $this->assertInstanceOf(SuperPowers::class, $powers);
+        $this->expectNotToPerformAssertions();
     }
 
     public function test_can_construct_flagged_enum_using_instances(): void
     {
-        $powers = new SuperPowers([SuperPowers::Strength(), SuperPowers::Flight(), SuperPowers::LaserVision()]);
-        $this->assertInstanceOf(SuperPowers::class, $powers);
+        new SuperPowers([SuperPowers::Strength(), SuperPowers::Flight(), SuperPowers::LaserVision()]);
+        SuperPowers::fromValue([SuperPowers::Strength(), SuperPowers::Flight(), SuperPowers::LaserVision()]);
+        SuperPowers::flags([SuperPowers::Strength(), SuperPowers::Flight(), SuperPowers::LaserVision()]);
 
-        $powers = SuperPowers::fromValue([SuperPowers::Strength(), SuperPowers::Flight(), SuperPowers::LaserVision()]);
-        $this->assertInstanceOf(SuperPowers::class, $powers);
-
-        $powers = SuperPowers::flags([SuperPowers::Strength(), SuperPowers::Flight(), SuperPowers::LaserVision()]);
-        $this->assertInstanceOf(SuperPowers::class, $powers);
+        $this->expectNotToPerformAssertions();
     }
 
     public function test_can_check_if_instance_has_flag(): void
