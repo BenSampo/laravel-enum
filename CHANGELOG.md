@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 6.3.2
+
+### Fixed
+
+- Preserve whitespace in PHPDocs when running `enum:annotate` command
+
 ## 6.3.1
 
 ### Fixed
