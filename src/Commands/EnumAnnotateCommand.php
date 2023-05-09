@@ -165,8 +165,10 @@ class EnumAnnotateCommand extends Command
      */
     protected function getDocblockWithoutTags(ReflectionClass $reflectionClass): string
     {
+        // Get full docblock contents as string
         $docBlockContents = (new DocBlockReflection($reflectionClass))->getContents();
 
+        // Remove all tags from the above
         return trim(preg_replace('/@.*$/m', '', $docBlockContents));
     }
 
