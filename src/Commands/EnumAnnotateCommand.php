@@ -149,14 +149,7 @@ class EnumAnnotateCommand extends Command
             $originalDocBlock = DocBlockGenerator::fromReflection(
                 new DocBlockReflection(ltrim($reflectionClass->getDocComment()))
             );
-
-            if ($originalDocBlock->getShortDescription()) {
-                $docBlock->setShortDescription($originalDocBlock->getShortDescription());
-            }
-
-            if ($originalDocBlock->getLongDescription()) {
-                $docBlock->setLongDescription($originalDocBlock->getLongDescription());
-            }
+            $docBlock->setLongDescription($this->getDocblockWithoutTags($reflectionClass));
         }
 
         $docBlock->setTags($this->getDocblockTags(
@@ -165,6 +158,18 @@ class EnumAnnotateCommand extends Command
         ));
 
         return $docBlock;
+    }
+
+    /**
+     * @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
+     */
+    protected function getDocblockWithoutTags(ReflectionClass $reflectionClass): string
+    {
+        // Get full docblock contents as string
+        $docBlockContents = (new DocBlockReflection($reflectionClass))->getContents();
+
+        // Remove all tags from the above
+        return trim(preg_replace('/@.*$/m', '', $docBlockContents));
     }
 
     /**
