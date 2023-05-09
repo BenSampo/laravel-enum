@@ -145,11 +145,12 @@ class EnumAnnotateCommand extends Command
 
         $originalDocBlock = null;
 
-        if ($reflectionClass->getDocComment()) {
-            $originalDocBlock = DocBlockGenerator::fromReflection(
-                new DocBlockReflection(ltrim($reflectionClass->getDocComment()))
-            );
-            $docBlock->setLongDescription($this->getDocblockWithoutTags($reflectionClass));
+        $docComment = $reflectionClass->getDocComment();
+        if ($docComment) {
+            $docBlockReflection = new DocBlockReflection(ltrim($docComment));
+            $originalDocBlock = DocBlockGenerator::fromReflection($docBlockReflection);
+
+            $docBlock->setLongDescription($this->getDocblockWithoutTags($docBlockReflection));
         }
 
         $docBlock->setTags($this->getDocblockTags(
@@ -160,16 +161,13 @@ class EnumAnnotateCommand extends Command
         return $docBlock;
     }
 
-    /**
-     * @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
-     */
-    protected function getDocblockWithoutTags(ReflectionClass $reflectionClass): string
+    protected function getDocblockWithoutTags(DocBlockReflection $docBlockReflection): string
     {
-        // Get full docblock contents as string
-        $docBlockContents = (new DocBlockReflection($reflectionClass))->getContents();
+        $docBlockContents = $docBlockReflection->getContents();
+        // We can remove all tags here, as we add them back in with getDocblockTags
+        $withoutTags = preg_replace('/@.*$/m', '', $docBlockContents);
 
-        // Remove all tags from the above
-        return trim(preg_replace('/@.*$/m', '', $docBlockContents));
+        return trim($withoutTags);
     }
 
     /**
