@@ -477,7 +477,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, JsonSerializab
     /**
      * Check that the enum contains a specific value.
      *
-     * @param  TValue  $value
+     * @param  TValue|non-empty-string  $value
      */
     public static function hasValue(mixed $value, bool $strict = true): bool
     {
