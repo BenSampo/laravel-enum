@@ -6,7 +6,7 @@ use BenSampo\Enum\Enum;
 use BenSampo\Enum\Contracts\LocalizedEnum;
 
 /**
- * @extends Enum<int>
+ * @extends Enum<self::*>
  */
 final class UserTypeLocalized extends Enum implements LocalizedEnum
 {

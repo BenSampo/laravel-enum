@@ -6,7 +6,7 @@ use BenSampo\Enum\Enum;
 use BenSampo\Enum\Attributes\Description;
 
 /**
- * @extends Enum<int>
+ * @extends Enum<self::*>
  */
 #[Description('First Enum description')]
 // @phpstan-ignore-next-line intentionally wrong

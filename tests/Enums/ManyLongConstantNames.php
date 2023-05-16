@@ -186,7 +186,7 @@ use BenSampo\Enum\Contracts\LocalizedEnum;
  * @method static static FOO_BAR_BAZ_ETC_LONG_NAME_FOR_TESTING_SAKE_178()
  * @method static static FOO_BAR_BAZ_ETC_LONG_NAME_FOR_TESTING_SAKE_179()
  * @method static static FOO_BAR_BAZ_ETC_LONG_NAME_FOR_TESTING_SAKE_180()
- * @extends Enum<string>
+ * @extends Enum<self::*>
  */
 class ManyLongConstantNames extends Enum implements LocalizedEnum
 {

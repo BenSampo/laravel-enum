@@ -5,7 +5,7 @@ namespace BenSampo\Enum\Tests\Enums;
 use BenSampo\Enum\Enum;
 
 /**
- * @extends Enum<string>
+ * @extends Enum<self::*>
  */
 class ParentEnum extends Enum
 {
