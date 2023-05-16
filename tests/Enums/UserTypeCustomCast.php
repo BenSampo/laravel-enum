@@ -5,7 +5,7 @@ namespace BenSampo\Enum\Tests\Enums;
 use BenSampo\Enum\Enum;
 
 /**
- * @extends Enum<self::*>
+ * @extends Enum<int>
  */
 final class UserTypeCustomCast extends Enum
 {
@@ -16,7 +16,8 @@ final class UserTypeCustomCast extends Enum
 
     public static function parseDatabase(mixed $value): mixed
     {
-        $databaseValue = explode('-', $value)[1] ?? null;
+        $parts = explode('-', $value);
+        $databaseValue = $parts[1] ?? null;
 
         return $databaseValue
             ? (int) $databaseValue
