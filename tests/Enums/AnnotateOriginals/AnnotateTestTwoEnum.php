@@ -5,7 +5,7 @@ namespace BenSampo\Enum\Tests\Enums\Annotate;
 use BenSampo\Enum\Enum;
 
 /**
- * @extends Enum<string>
+ * @extends Enum<self::*>
  */
 final class AnnotateTestTwoEnum extends Enum
 {

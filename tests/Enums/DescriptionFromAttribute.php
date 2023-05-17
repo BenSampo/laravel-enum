@@ -6,7 +6,7 @@ use BenSampo\Enum\Enum;
 use BenSampo\Enum\Attributes\Description;
 
 /**
- * @extends Enum<int>
+ * @extends Enum<self::*>
  */
 #[Description('Enum description')]
 final class DescriptionFromAttribute extends Enum

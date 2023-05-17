@@ -7,7 +7,7 @@ use BenSampo\Enum\Enum;
 /**
  * @method static static TEST()
  * @method static static XYZ()
- * @extends Enum<string>
+ * @extends Enum<self::*>
  */
 final class AnnotateTestTwoEnum extends Enum
 {

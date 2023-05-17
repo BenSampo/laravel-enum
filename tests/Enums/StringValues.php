@@ -5,7 +5,7 @@ namespace BenSampo\Enum\Tests\Enums;
 use BenSampo\Enum\Enum;
 
 /**
- * @extends Enum<string>
+ * @extends Enum<self::*>
  */
 final class StringValues extends Enum
 {

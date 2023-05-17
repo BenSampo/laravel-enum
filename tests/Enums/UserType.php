@@ -5,7 +5,7 @@ namespace BenSampo\Enum\Tests\Enums;
 use BenSampo\Enum\Enum;
 
 /**
- * @extends Enum<int>
+ * @extends Enum<self::*>
  */
 final class UserType extends Enum
 {
