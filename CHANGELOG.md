@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 6.3.3
+
+### Fixed
+
+- Allow `mixed` in `Enum::hasValue()`
+
 ## 6.3.2
 
 ### Fixed
