@@ -710,7 +710,7 @@ You can also use the 'pipe' syntax for rules.
 
 ### Validation messages
 
-Run the following command to publish the language files to your `resources/lang` folder.
+Run the following command to publish the language files to your `lang` folder.
 
 ```
 php artisan vendor:publish --provider="BenSampo\Enum\EnumServiceProvider" --tag="translations"
@@ -723,7 +723,7 @@ You can translate the strings returned by the `getDescription` method using Lara
 Add a new `enums.php` keys file for each of your supported languages. In this example there is one for English and one for Spanish.
 
 ```php
-// resources/lang/en/enums.php
+// lang/en/enums.php
 <?php declare(strict_types=1);
 
 use App\Enums\UserType;
@@ -739,7 +739,7 @@ return [
 ```
 
 ```php
-// resources/lang/es/enums.php
+// lang/es/enums.php
 <?php declare(strict_types=1);
 
 use App\Enums\UserType;
