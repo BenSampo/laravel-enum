@@ -33,6 +33,7 @@ class EnumServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 EnumAnnotateCommand::class,
+                EnumToNativeCommand::class,
                 MakeEnumCommand::class,
             ]);
         }
