@@ -59,17 +59,6 @@ class EnumAnnotateCommand extends Command
         return 0;
     }
 
-    protected function annotateFolder(): void
-    {
-        foreach (ClassMapGenerator::createMap($this->searchDirectory()) as $class => $_) {
-            $reflection = new ReflectionClass($class);
-
-            if ($reflection->isSubclassOf(Enum::class)) {
-                $this->annotate($reflection);
-            }
-        }
-    }
-
     protected function annotateClass(string $className): void
     {
         if (!is_subclass_of($className, Enum::class)) {
@@ -79,6 +68,17 @@ class EnumAnnotateCommand extends Command
 
         $reflection = new ReflectionClass($className);
         $this->annotate($reflection);
+    }
+
+    protected function annotateFolder(): void
+    {
+        foreach (ClassMapGenerator::createMap($this->searchDirectory()) as $class => $_) {
+            $reflection = new ReflectionClass($class);
+
+            if ($reflection->isSubclassOf(Enum::class)) {
+                $this->annotate($reflection);
+            }
+        }
     }
 
     /**
