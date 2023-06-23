@@ -14,6 +14,11 @@ use Laminas\Code\Generator\DocBlockGenerator;
 use Laminas\Code\Reflection\DocBlockReflection;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use function preg_quote;
+use function preg_replace;
+use function strlen;
+use function strpos;
+use function substr_replace;
 
 class EnumToNativeCommand extends Command
 {
@@ -85,23 +90,7 @@ class EnumToNativeCommand extends Command
      */
     protected function convert(ReflectionClass $reflectionClass): void
     {
-        $docBlock = DocBlockGenerator::fromArray([]);
-
-        if ($reflectionClass->getDocComment()) {
-            $docBlock->setShortDescription(
-                DocBlockGenerator::fromReflection(new DocBlockReflection($reflectionClass))
-                    ->getShortDescription()
-            );
-        }
-
-        $this->updateClassDocblock($reflectionClass, $this->getDocBlock($reflectionClass));
-    }
-
-    /**
-     * @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
-     */
-    protected function updateClassDocblock(ReflectionClass $reflectionClass, DocBlockGenerator $docBlock): void
-    {
+        $docBlock1 = $this->getDocBlock($reflectionClass);
         $shortName = $reflectionClass->getShortName();
         $fileName = $reflectionClass->getFileName();
         $contents = $this->filesystem->get($fileName);
@@ -119,15 +108,15 @@ class EnumToNativeCommand extends Command
         $contents = preg_replace(
             "#\\r?\\n?\/\*[\s\S]*?\*\/(\\r?\\n)?{$quotedClassDeclaration}#ms",
             "\$1{$classDeclaration}",
-            $contents
+            $contents,
         );
 
         // Make sure we don't replace too much
         $contents = substr_replace(
             $contents,
-            "{$docBlock->generate()}{$classDeclaration}",
+            "{$docBlock1->generate()}{$classDeclaration}",
             strpos($contents, $classDeclaration),
-            strlen($classDeclaration)
+            strlen($classDeclaration),
         );
 
         $this->filesystem->put($fileName, $contents);
