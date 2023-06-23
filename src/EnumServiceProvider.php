@@ -9,6 +9,7 @@ use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Support\ServiceProvider;
 use BenSampo\Enum\Commands\MakeEnumCommand;
+use BenSampo\Enum\Commands\EnumToNativeCommand;
 use BenSampo\Enum\Commands\EnumAnnotateCommand;
 
 class EnumServiceProvider extends ServiceProvider
