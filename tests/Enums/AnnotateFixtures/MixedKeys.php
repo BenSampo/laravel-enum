@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace BenSampo\Enum\Tests\Enums;
+namespace BenSampo\Enum\Tests\Enums\Annotate;
 
 use BenSampo\Enum\Enum;
 
@@ -14,7 +14,7 @@ use BenSampo\Enum\Enum;
  * @method static static lowercase_snake_case_numeric_suffix_2()
  * @extends Enum<self::*>
  */
-final class MixedKeyFormatsAnnotated extends Enum
+final class MixedKeys extends Enum
 {
     const Normal = 1;
     const MultiWordKeyName = 2;
