@@ -10,7 +10,6 @@ use BenSampo\Enum\Enum;
  * @method static static A()
  * @method static static B()
  * @method static static C()
- *
  * @extends Enum<self::*>
  */
 final class EnumWithSingleLineComment extends Enum

@@ -12,7 +12,6 @@ use BenSampo\Enum\Enum;
  * @method static static lowercase_snake_case()
  * @method static static UPPERCASE_SNAKE_CASE_NUMERIC_SUFFIX_2()
  * @method static static lowercase_snake_case_numeric_suffix_2()
- *
  * @extends Enum<self::*>
  */
 final class MixedKeys extends Enum
