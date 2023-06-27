@@ -2,7 +2,6 @@
 
 namespace BenSampo\Enum\Tests;
 
-use ArrayIterator;
 use BenSampo\Enum\Tests\Enums\IntegerValues;
 use BenSampo\Enum\Tests\Enums\StringValues;
 use BenSampo\Enum\Tests\Enums\UserType;
@@ -10,14 +9,14 @@ use PHPUnit\Framework\TestCase;
 
 final class EnumComparisonTest extends TestCase
 {
-    public function test_comparison_against_plain_value_matching(): void
+    public function testComparisonAgainstPlainValueMatching(): void
     {
         $admin = UserType::fromValue(UserType::Administrator);
 
         $this->assertTrue($admin->is(UserType::Administrator));
     }
 
-    public function test_comparison_against_plain_value_not_matching(): void
+    public function testComparisonAgainstPlainValueNotMatching(): void
     {
         $admin = UserType::fromValue(UserType::Administrator);
 
@@ -27,14 +26,14 @@ final class EnumComparisonTest extends TestCase
         $this->assertTrue($admin->isNot('some-random-value'));
     }
 
-    public function test_comparison_against_itself_matches(): void
+    public function testComparisonAgainstItselfMatches(): void
     {
         $admin = UserType::fromValue(UserType::Administrator);
 
         $this->assertTrue($admin->is($admin));
     }
 
-    public function test_comparison_against_other_instances_matches(): void
+    public function testComparisonAgainstOtherInstancesMatches(): void
     {
         $admin = UserType::fromValue(UserType::Administrator);
         $anotherAdmin = UserType::fromValue(UserType::Administrator);
@@ -42,7 +41,7 @@ final class EnumComparisonTest extends TestCase
         $this->assertTrue($admin->is($anotherAdmin));
     }
 
-    public function test_comparison_against_other_instances_not_matching(): void
+    public function testComparisonAgainstOtherInstancesNotMatching(): void
     {
         $admin = UserType::fromValue(UserType::Administrator);
         $superAdmin = UserType::fromValue(UserType::SuperAdministrator);
@@ -50,68 +49,68 @@ final class EnumComparisonTest extends TestCase
         $this->assertFalse($admin->is($superAdmin));
     }
 
-    public function test_enum_instance_in_array(): void
+    public function testEnumInstanceInArray(): void
     {
         $administrator = new StringValues(StringValues::Administrator);
 
         $this->assertTrue($administrator->in([
             StringValues::Moderator,
-            StringValues::Administrator
+            StringValues::Administrator,
         ]));
         $this->assertTrue($administrator->in([
             new StringValues(StringValues::Moderator),
-            new StringValues(StringValues::Administrator)
+            new StringValues(StringValues::Administrator),
         ]));
         $this->assertTrue($administrator->in([StringValues::Administrator]));
         $this->assertFalse($administrator->in([StringValues::Moderator]));
     }
 
-    public function test_enum_instance_in_iterator(): void
+    public function testEnumInstanceInIterator(): void
     {
         $administrator = new StringValues(StringValues::Administrator);
 
-        $this->assertTrue($administrator->in(new ArrayIterator([
+        $this->assertTrue($administrator->in(new \ArrayIterator([
             StringValues::Moderator,
-            StringValues::Administrator
+            StringValues::Administrator,
         ])));
-        $this->assertTrue($administrator->in(new ArrayIterator([
+        $this->assertTrue($administrator->in(new \ArrayIterator([
             new StringValues(StringValues::Moderator),
-            new StringValues(StringValues::Administrator)
+            new StringValues(StringValues::Administrator),
         ])));
-        $this->assertTrue($administrator->in(new ArrayIterator([StringValues::Administrator])));
-        $this->assertFalse($administrator->in(new ArrayIterator([StringValues::Moderator])));
+        $this->assertTrue($administrator->in(new \ArrayIterator([StringValues::Administrator])));
+        $this->assertFalse($administrator->in(new \ArrayIterator([StringValues::Moderator])));
     }
 
-    public function test_enum_instance_not_in_array(): void
+    public function testEnumInstanceNotInArray(): void
     {
         $administrator = new StringValues(StringValues::Administrator);
 
         $this->assertFalse($administrator->notIn([
             StringValues::Moderator,
-            StringValues::Administrator
+            StringValues::Administrator,
         ]));
         $this->assertFalse($administrator->notIn([
             new StringValues(StringValues::Moderator),
-            new StringValues(StringValues::Administrator)
+            new StringValues(StringValues::Administrator),
         ]));
         $this->assertFalse($administrator->notIn([StringValues::Administrator]));
         $this->assertTrue($administrator->notIn([StringValues::Moderator]));
     }
 
-    public function test_enum_instance_not_in_iterator(): void
+    public function testEnumInstanceNotInIterator(): void
     {
         $administrator = new StringValues(StringValues::Administrator);
 
-        $this->assertFalse($administrator->notIn(new ArrayIterator([
+        $this->assertFalse($administrator->notIn(new \ArrayIterator([
             StringValues::Moderator,
-            StringValues::Administrator
+            StringValues::Administrator,
         ])));
-        $this->assertFalse($administrator->notIn(new ArrayIterator([
+        $this->assertFalse($administrator->notIn(new \ArrayIterator([
             new StringValues(StringValues::Moderator),
-            new StringValues(StringValues::Administrator)
+            new StringValues(StringValues::Administrator),
         ])));
-        $this->assertFalse($administrator->notIn(new ArrayIterator([StringValues::Administrator])));
-        $this->assertTrue($administrator->notIn(new ArrayIterator([StringValues::Moderator])));
+        $this->assertFalse($administrator->notIn(new \ArrayIterator([StringValues::Administrator])));
+        $this->assertTrue($administrator->notIn(new \ArrayIterator([StringValues::Moderator])));
     }
 
     /**
@@ -120,7 +119,7 @@ final class EnumComparisonTest extends TestCase
      * "comparison operation stops and returns at the first unequal property found."
      * as stated in https://www.php.net/manual/en/language.oop5.object-comparison.php#98725
      */
-    public function test_object_relational_comparison(): void
+    public function testObjectRelationalComparison(): void
     {
         $b = IntegerValues::B();
         $a = IntegerValues::A();

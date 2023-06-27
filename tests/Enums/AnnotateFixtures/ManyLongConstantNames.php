@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace BenSampo\Enum\Tests\Enums\Annotate;
 
-use BenSampo\Enum\Enum;
 use BenSampo\Enum\Contracts\LocalizedEnum;
+use BenSampo\Enum\Enum;
 
 /**
  * @method static static FOO_BAR_BAZ_ETC_LONG_NAME_FOR_TESTING_SAKE_1()

@@ -6,6 +6,7 @@ use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 
 /**
  * @method static static None()
+ *
  * @extends Enum<int>
  */
 abstract class FlaggedEnum extends Enum
@@ -17,17 +18,13 @@ abstract class FlaggedEnum extends Enum
      */
     public $value;
 
-    /**
-     * Unset, do not access.
-     */
+    /** Unset, do not access. */
     public string $key;
 
-    /**
-     * Unset, do not access.
-     */
+    /** Unset, do not access. */
     public string $description;
 
-    const None = 0;
+    public const None = 0;
 
     /**
      * Construct a FlaggedEnum instance.
@@ -36,8 +33,7 @@ abstract class FlaggedEnum extends Enum
      */
     public function __construct(mixed $flags = [])
     {
-        unset($this->key);
-        unset($this->description);
+        unset($this->key, $this->description);
 
         if (is_array($flags)) {
             $this->setFlags($flags);
@@ -50,17 +46,13 @@ abstract class FlaggedEnum extends Enum
         }
     }
 
-    /**
-     * @param  int|static|array<int|static> $enumValue
-     */
+    /** @param  int|static|array<int|static> $enumValue */
     public static function fromValue(mixed $enumValue): static
     {
         return parent::fromValue($enumValue);
     }
 
-    /**
-     * Attempt to instantiate a new Enum using the given key or value.
-     */
+    /** Attempt to instantiate a new Enum using the given key or value. */
     public static function coerce(mixed $enumKeyOrValue): ?static
     {
         if (is_integer($enumKeyOrValue)) {
@@ -127,12 +119,10 @@ abstract class FlaggedEnum extends Enum
         return $this;
     }
 
-    /**
-     * Add all flags to the enum.
-     */
+    /** Add all flags to the enum. */
     public function addAllFlags(): static
     {
-        return (new static)->addFlags(self::getValues());
+        return (new static())->addFlags(self::getValues());
     }
 
     /**
@@ -163,9 +153,7 @@ abstract class FlaggedEnum extends Enum
         return $this;
     }
 
-    /**
-     * Remove all flags from the enum.
-     */
+    /** Remove all flags from the enum. */
     public function removeAllFlags(): static
     {
         return static::None();
@@ -250,17 +238,13 @@ abstract class FlaggedEnum extends Enum
         return $flags;
     }
 
-    /**
-     * Check if there are multiple flags set on the enum.
-     */
+    /** Check if there are multiple flags set on the enum. */
     public function hasMultipleFlags(): bool
     {
         return ($this->value & ($this->value - 1)) !== 0;
     }
 
-    /**
-     * Get the bitmask for the enum.
-     */
+    /** Get the bitmask for the enum. */
     public function getBitmask(): int
     {
         return (int) decbin($this->value);

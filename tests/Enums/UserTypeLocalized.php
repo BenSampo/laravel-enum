@@ -2,15 +2,15 @@
 
 namespace BenSampo\Enum\Tests\Enums;
 
-use BenSampo\Enum\Enum;
 use BenSampo\Enum\Contracts\LocalizedEnum;
+use BenSampo\Enum\Enum;
 
 /**
  * @extends Enum<self::*>
  */
 final class UserTypeLocalized extends Enum implements LocalizedEnum
 {
-    const Moderator = 0;
-    const Administrator = 1;
-    const SuperAdministrator = 2;
+    public const Moderator = 0;
+    public const Administrator = 1;
+    public const SuperAdministrator = 2;
 }

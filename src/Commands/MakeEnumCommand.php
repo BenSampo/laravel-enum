@@ -32,9 +32,7 @@ class MakeEnumCommand extends GeneratorCommand
         return "{$rootNamespace}\Enums";
     }
 
-    /**
-     * @return array<int, array<int, mixed>>
-     */
+    /** @return array<int, array<int, mixed>> */
     protected function getOptions(): array
     {
         return [

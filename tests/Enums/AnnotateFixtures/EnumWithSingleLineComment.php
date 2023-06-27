@@ -14,7 +14,7 @@ use BenSampo\Enum\Enum;
  */
 final class EnumWithSingleLineComment extends Enum
 {
-    const A = 1;
-    const B = 2;
-    const C = 3;
+    public const A = 1;
+    public const B = 2;
+    public const C = 3;
 }

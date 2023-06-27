@@ -2,12 +2,12 @@
 
 namespace BenSampo\Enum\Tests;
 
-use PHPUnit\Framework\TestCase;
 use BenSampo\Enum\Tests\Enums\UserType;
+use PHPUnit\Framework\TestCase;
 
 final class EnumTypeHintTest extends TestCase
 {
-    public function test_can_pass_an_enum_instance_to_a_type_hinted_method(): void
+    public function testCanPassAnEnumInstanceToATypeHintedMethod(): void
     {
         $userType1 = UserType::fromValue(UserType::SuperAdministrator);
         $userType2 = UserType::fromValue(UserType::Moderator);

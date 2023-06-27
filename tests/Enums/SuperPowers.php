@@ -6,13 +6,13 @@ use BenSampo\Enum\FlaggedEnum;
 
 final class SuperPowers extends FlaggedEnum
 {
-    const Flight = 1 << 0;
-    const Invisibility = 1 << 1;
-    const LaserVision = 1 << 2;
-    const Strength = 1 << 3;
-    const Teleportation = 1 << 4;
-    const Immortality = 1 << 5;
-    const TimeTravel = 1 << 6;
+    public const Flight = 1 << 0;
+    public const Invisibility = 1 << 1;
+    public const LaserVision = 1 << 2;
+    public const Strength = 1 << 3;
+    public const Teleportation = 1 << 4;
+    public const Immortality = 1 << 5;
+    public const TimeTravel = 1 << 6;
 
-    const Superman = self::Flight | self::Strength | self::LaserVision;
+    public const Superman = self::Flight | self::Strength | self::LaserVision;
 }

@@ -6,9 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 
 class EnumKey implements Rule
 {
-    /**
-     * The name of the rule.
-     */
+    /** The name of the rule. */
     protected string $rule = 'enum_key';
 
     public function __construct(
@@ -24,7 +22,6 @@ class EnumKey implements Rule
      * Determine if the validation rule passes.
      *
      * @param  string  $attribute
-     * @param  mixed  $value
      */
     public function passes($attribute, $value): bool
     {

@@ -2,8 +2,8 @@
 
 namespace BenSampo\Enum\Tests;
 
-use Orchestra\Testbench\TestCase;
 use BenSampo\Enum\EnumServiceProvider;
+use Orchestra\Testbench\TestCase;
 
 class ApplicationTestCase extends TestCase
 {

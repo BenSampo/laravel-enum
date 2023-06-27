@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 final class EnumRandomTest extends TestCase
 {
-    public function test_can_get_random_key(): void
+    public function testCanGetRandomKey(): void
     {
         $key = SingleValue::getRandomKey();
 
@@ -17,14 +17,14 @@ final class EnumRandomTest extends TestCase
         );
     }
 
-    public function test_can_get_random_value(): void
+    public function testCanGetRandomValue(): void
     {
         $value = SingleValue::getRandomValue();
 
         $this->assertSame(SingleValue::KEY, $value);
     }
 
-    public function test_can_get_random_instance(): void
+    public function testCanGetRandomInstance(): void
     {
         $instance = SingleValue::getRandomInstance();
 

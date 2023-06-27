@@ -4,5 +4,5 @@ namespace BenSampo\Enum\Tests\Enums;
 
 final class Child extends ParentEnum
 {
-    const CHILD = 'child';
+    public const CHILD = 'child';
 }

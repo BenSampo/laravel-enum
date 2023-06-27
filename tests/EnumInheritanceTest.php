@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class EnumInheritanceTest extends TestCase
 {
-    public function test_magic_method_instantiates_correct_class(): void
+    public function testMagicMethodInstantiatesCorrectClass(): void
     {
         $parent = ParentEnum::PARENT();
         $this->assertSame(ParentEnum::class, $parent::class);

@@ -9,6 +9,6 @@ use BenSampo\Enum\Enum;
  */
 final class IntegerValues extends Enum
 {
-    const B = 1;
-    const A = 2;
+    public const B = 1;
+    public const A = 2;
 }

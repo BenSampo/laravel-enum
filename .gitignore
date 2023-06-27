@@ -4,7 +4,8 @@ composer.lock
 # Dependencies
 vendor
 
-# PHPUnit
+# Cache
+.php-cs-fixer.cache
 .phpunit.result.cache
 
 # IDE stuff

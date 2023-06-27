@@ -2,15 +2,15 @@
 
 namespace BenSampo\Enum\Tests;
 
-use PHPUnit\Framework\TestCase;
 use BenSampo\Enum\Rules\EnumValue;
-use BenSampo\Enum\Tests\Enums\UserType;
-use BenSampo\Enum\Tests\Enums\SuperPowers;
 use BenSampo\Enum\Tests\Enums\StringValues;
+use BenSampo\Enum\Tests\Enums\SuperPowers;
+use BenSampo\Enum\Tests\Enums\UserType;
+use PHPUnit\Framework\TestCase;
 
 final class EnumValueTest extends TestCase
 {
-    public function test_validation_passes(): void
+    public function testValidationPasses(): void
     {
         $passes1 = (new EnumValue(UserType::class))->passes('', 3);
         $passes2 = (new EnumValue(StringValues::class))->passes('', 'administrator');
@@ -19,7 +19,7 @@ final class EnumValueTest extends TestCase
         $this->assertTrue($passes2);
     }
 
-    public function test_validation_fails(): void
+    public function testValidationFails(): void
     {
         $fails1 = (new EnumValue(UserType::class))->passes('', 7);
         $fails2 = (new EnumValue(UserType::class))->passes('', 'OtherString');
@@ -30,28 +30,28 @@ final class EnumValueTest extends TestCase
         $this->assertFalse($fails3);
     }
 
-    public function test_flagged_enum_passes_with_no_flags_set(): void
+    public function testFlaggedEnumPassesWithNoFlagsSet(): void
     {
         $passed = (new EnumValue(SuperPowers::class))->passes('', 0);
 
         $this->assertTrue($passed);
     }
 
-    public function test_flagged_enum_passes_with_single_flag_set(): void
+    public function testFlaggedEnumPassesWithSingleFlagSet(): void
     {
         $passed = (new EnumValue(SuperPowers::class))->passes('', SuperPowers::Flight);
 
         $this->assertTrue($passed);
     }
 
-    public function test_flagged_enum_passes_with_multiple_flags_set(): void
+    public function testFlaggedEnumPassesWithMultipleFlagsSet(): void
     {
         $passed = (new EnumValue(SuperPowers::class))->passes('', SuperPowers::Superman);
 
         $this->assertTrue($passed);
     }
 
-    public function test_flagged_enum_passes_with_all_flags_set(): void
+    public function testFlaggedEnumPassesWithAllFlagsSet(): void
     {
         $allFlags = array_reduce(SuperPowers::getValues(), function (int $carry, int $powerValue) {
             return $carry | $powerValue;
@@ -61,7 +61,7 @@ final class EnumValueTest extends TestCase
         $this->assertTrue($passed);
     }
 
-    public function test_flagged_enum_fails_with_invalid_flag_set(): void
+    public function testFlaggedEnumFailsWithInvalidFlagSet(): void
     {
         $allFlagsSet = array_reduce(SuperPowers::getValues(), function ($carry, $value) {
             return $carry | $value;
@@ -71,7 +71,7 @@ final class EnumValueTest extends TestCase
         $this->assertFalse($passed);
     }
 
-    public function test_can_turn_off_strict_type_checking(): void
+    public function testCanTurnOffStrictTypeChecking(): void
     {
         $passes = (new EnumValue(UserType::class, false))->passes('', '3');
 
@@ -84,21 +84,21 @@ final class EnumValueTest extends TestCase
         $this->assertFalse($fails2);
     }
 
-    public function test_an_exception_is_thrown_if_an_non_existing_class_is_passed(): void
+    public function testAnExceptionIsThrownIfAnNonExistingClassIsPassed(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
         (new EnumValue('PathToAClassThatDoesntExist'))->passes('', 'Test');
     }
 
-    public function test_can_serialize_to_string_without_strict_type_checking(): void
+    public function testCanSerializeToStringWithoutStrictTypeChecking(): void
     {
         $rule = new EnumValue(UserType::class, false);
 
         $this->assertSame('enum_value:' . UserType::class . ',false', (string) $rule);
     }
 
-    public function test_can_serialize_to_string_with_strict_type_checking(): void
+    public function testCanSerializeToStringWithStrictTypeChecking(): void
     {
         $rule = new EnumValue(UserType::class, true);
 

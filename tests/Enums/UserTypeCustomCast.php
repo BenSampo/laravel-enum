@@ -9,10 +9,10 @@ use BenSampo\Enum\Enum;
  */
 final class UserTypeCustomCast extends Enum
 {
-    const Administrator = 0;
-    const Moderator = 1;
-    const Subscriber = 2;
-    const SuperAdministrator = 3;
+    public const Administrator = 0;
+    public const Moderator = 1;
+    public const Subscriber = 2;
+    public const SuperAdministrator = 3;
 
     public static function parseDatabase(mixed $value): mixed
     {

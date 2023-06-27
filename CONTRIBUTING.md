@@ -25,18 +25,29 @@ back is to write a failing test for it and then make it pass. If you can
 not figure out how to fix it yourself, feel free to submit a PR with a
 failing test.
 
-Run the testsuite
+Run the testsuite:
 
-```bash
+```sh
 composer test
 ```
+
+## Codestyle
+
+Formatting is automated through [php-cs-fixer](https://github.com/friendsofphp/php-cs-fixer).
+
+Apply automated fixes:
+
+```bash
+composer fix
+```
+
 
 ## Static Analysis
 
 We use [PHPStan](https://phpstan.org) for static analysis.
 
-Run static analysis
+Run static analysis:
 
-```bash
+```sh
 composer stan
 ```

@@ -6,7 +6,7 @@ use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 
 final class ArtisanCommandsTest extends ApplicationTestCase
 {
-    public function test_artisan_commands_are_registered(): void
+    public function testArtisanCommandsAreRegistered(): void
     {
         $consoleKernel = $this->app->make(ConsoleKernel::class);
         assert($consoleKernel instanceof ConsoleKernel);

@@ -17,8 +17,7 @@ class EnumMethodReflection implements MethodReflection
     public function __construct(
         private ClassReflection $classReflection,
         private string $name
-    ) {
-    }
+    ) {}
 
     public function getDeclaringClass(): ClassReflection
     {
