@@ -843,13 +843,19 @@ includes:
 
 ## Artisan Command List
 
-`php artisan make:enum`  
+### `php artisan make:enum`
+
 Create a new enum class. Pass `--flagged` as an option to create a flagged enum.  
 [Find out more](#enum-definition)
 
-`php artisan enum:annotate`  
+### `php artisan enum:annotate`
+
 Generate DocBlock annotations for enum classes.  
 [Find out more](#instantiation)
+
+### `php artisan enum:to-native`
+
+Convert a class that extends `BenSampo\Enum\Enum` to a native PHP enum.
 
 ## Enum Class Reference
 
