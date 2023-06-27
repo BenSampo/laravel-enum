@@ -10,21 +10,9 @@ final class EnumToNativeCommandTest extends ApplicationTestCase
     public function test_class_to_native(string $class): void
     {
         $filesystem = $this->filesystem();
-        $this->prepareToNativeDirectory($filesystem, 'ToNativeOriginals');
+        $this->prepareToNativeDirectory($filesystem);
 
         $this->artisan('enum:to-native', ['class' => "BenSampo\\Enum\\Tests\\Enums\\ToNative\\{$class}"])
-            ->assertExitCode(0);
-
-        $this->assertNativeEnumMatchesFixture($filesystem, $class);
-    }
-
-    /** @dataProvider classes */
-    public function test_annotate_class_already_annotated(string $class): void
-    {
-        $filesystem = $this->filesystem();
-        $this->prepareToNativeDirectory($filesystem, 'AnnotateFixtures');
-
-        $this->artisan('enum:annotate', ['class' => "BenSampo\\Enum\\Tests\\Enums\\Annotate\\{$class}"])
             ->assertExitCode(0);
 
         $this->assertNativeEnumMatchesFixture($filesystem, $class);
@@ -36,18 +24,10 @@ final class EnumToNativeCommandTest extends ApplicationTestCase
         yield ['UserType'];
     }
 
-    /** @return iterable<array{string}> */
-    public static function sources(): iterable
-    {
-        yield ['ToNativeOriginals'];
-        yield ['ToNativeFixtures'];
-    }
-
-    /** @dataProvider sources */
-    public function test_annotate_folder(string $source): void
+    public function test_annotate_folder(): void
     {
         $filesystem = $this->filesystem();
-        $this->prepareToNativeDirectory($filesystem, $source);
+        $this->prepareToNativeDirectory($filesystem);
 
         $this->artisan('enum:to-native', ['--folder' => __DIR__ . '/Enums/ToNative'])->assertExitCode(0);
 
@@ -72,8 +52,8 @@ final class EnumToNativeCommandTest extends ApplicationTestCase
         );
     }
 
-    private function prepareToNativeDirectory(Filesystem $filesystem, string $source): void
+    private function prepareToNativeDirectory(Filesystem $filesystem): void
     {
-        $filesystem->copyDirectory(__DIR__ . "/Enums/{$source}", __DIR__ . '/Enums/ToNative');
+        $filesystem->copyDirectory(__DIR__ . "/Enums/ToNativeOriginals", __DIR__ . '/Enums/ToNative');
     }
 }

@@ -3,22 +3,14 @@
 namespace BenSampo\Enum\Commands;
 
 use BenSampo\Enum\Enum;
-use Laminas\Code\Generator\DocBlock\Tag\MethodTag;
-use Laminas\Code\Generator\DocBlock\Tag\TagInterface;
+use Laminas\Code\Generator\EnumGenerator\EnumGenerator;
 use ReflectionClass;
 use InvalidArgumentException;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Composer\ClassMapGenerator\ClassMapGenerator;
-use Laminas\Code\Generator\DocBlockGenerator;
-use Laminas\Code\Reflection\DocBlockReflection;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use function preg_quote;
-use function preg_replace;
-use function strlen;
-use function strpos;
-use function substr_replace;
 
 class EnumToNativeCommand extends Command
 {
@@ -90,99 +82,49 @@ class EnumToNativeCommand extends Command
      */
     protected function convert(ReflectionClass $reflectionClass): void
     {
-        $docBlock1 = $this->getDocBlock($reflectionClass);
-        $shortName = $reflectionClass->getShortName();
-        $fileName = $reflectionClass->getFileName();
-        $contents = $this->filesystem->get($fileName);
+        $type = null;
+        $constants = $reflectionClass->getConstants();
+        $className = $reflectionClass->name;
+        foreach ($constants as $name => $value) {
+            $valueType = gettype($value);
+            if ($valueType === 'integer') {
+                $valueType = 'int';
+            }
 
-        $classDeclaration = "class {$shortName}";
+            if ($type === null) {
+                $type = $valueType;
+                continue;
+            }
 
-        if ($reflectionClass->isFinal()) {
-            $classDeclaration = "final {$classDeclaration}";
-        } elseif ($reflectionClass->isAbstract()) {
-            $classDeclaration = "abstract {$classDeclaration}";
+            if ($type !== $valueType) {
+                throw new \Exception("Cannot convert class {$className} with mixed constant value types to native enum.");
+            }
         }
 
-        // Remove existing docblock
-        $quotedClassDeclaration = preg_quote($classDeclaration);
-        $contents = preg_replace(
-            "#\\r?\\n?\/\*[\s\S]*?\*\/(\\r?\\n)?{$quotedClassDeclaration}#ms",
-            "\$1{$classDeclaration}",
-            $contents,
-        );
+        if ($type === null) {
+            throw new \Exception("Cannot convert class {$className} with no constants to native enum.");
+        }
 
-        // Make sure we don't replace too much
-        $contents = substr_replace(
-            $contents,
-            "{$docBlock1->generate()}{$classDeclaration}",
-            strpos($contents, $classDeclaration),
-            strlen($classDeclaration),
-        );
+        if ($type !== 'int' && $type !== 'string') {
+            throw new \Exception("Cannot convert class {$className} with constant values of type {$type} to native enum, only 'int' or 'string' are allowed.");
+        }
+
+        $fileName = $reflectionClass->getFileName();
+        $enum = EnumGenerator::withConfig([
+            'name' => $className,
+            'backedCases' => [
+                'type' => $type,
+                'cases' => $constants,
+            ],
+        ])->generate();
+        $contents = <<<PHP
+        <?php declare(strict_types=1);
+
+        {$enum}
+        PHP;
 
         $this->filesystem->put($fileName, $contents);
-        $this->info("Wrote new phpDocBlock to {$fileName}.");
-    }
-
-    /**
-     * @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
-     */
-    protected function getDocBlock(ReflectionClass $reflectionClass): DocBlockGenerator
-    {
-        $docBlock = DocBlockGenerator::fromArray([])
-            ->setWordWrap(false);
-
-        $originalDocBlock = null;
-
-        $docComment = $reflectionClass->getDocComment();
-        if ($docComment) {
-            $docBlockReflection = new DocBlockReflection(ltrim($docComment));
-            $originalDocBlock = DocBlockGenerator::fromReflection($docBlockReflection);
-
-            $docBlock->setLongDescription($this->getDocblockWithoutTags($docBlockReflection));
-        }
-
-        $docBlock->setTags($this->getDocblockTags(
-            $originalDocBlock,
-            $reflectionClass
-        ));
-
-        return $docBlock;
-    }
-
-    protected function getDocblockWithoutTags(DocBlockReflection $docBlockReflection): string
-    {
-        $docBlockContents = $docBlockReflection->getContents();
-        // We can remove all tags here, as we add them back in with getDocblockTags
-        $withoutTags = preg_replace('/@.*$/m', '', $docBlockContents);
-
-        return trim($withoutTags);
-    }
-
-    /**
-     * @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
-     * @return array<\Laminas\Code\Generator\DocBlock\Tag\TagInterface>
-     */
-    protected function getDocblockTags(DocBlockGenerator|null $originalDocblock, ReflectionClass $reflectionClass): array
-    {
-        $constants = $reflectionClass->getConstants();
-        $constantKeys = array_keys($constants);
-
-        $tags = array_map(
-            static fn (mixed $value, string $constantName): MethodTag => new MethodTag($constantName, ['static'], null, true),
-            $constants,
-            $constantKeys,
-        );
-
-        if ($originalDocblock) {
-            $tags = array_merge(
-                $tags,
-                array_filter($originalDocblock->getTags(), fn (TagInterface $tag): bool =>
-                    ! $tag instanceof MethodTag
-                    || ! in_array($tag->getMethodName(), $constantKeys, true))
-            );
-        }
-
-        return $tags;
+        $this->info("Converted {$className} to native enum.");
     }
 
     protected function searchDirectory(): string
