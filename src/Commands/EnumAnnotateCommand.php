@@ -59,17 +59,6 @@ class EnumAnnotateCommand extends Command
         return 0;
     }
 
-    protected function annotateFolder(): void
-    {
-        foreach (ClassMapGenerator::createMap($this->searchDirectory()) as $class => $_) {
-            $reflection = new ReflectionClass($class);
-
-            if ($reflection->isSubclassOf(Enum::class)) {
-                $this->annotate($reflection);
-            }
-        }
-    }
-
     protected function annotateClass(string $className): void
     {
         if (!is_subclass_of($className, Enum::class)) {
@@ -81,28 +70,23 @@ class EnumAnnotateCommand extends Command
         $this->annotate($reflection);
     }
 
-    /**
-     * @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
-     */
-    protected function annotate(ReflectionClass $reflectionClass): void
+    protected function annotateFolder(): void
     {
-        $docBlock = DocBlockGenerator::fromArray([]);
+        foreach (ClassMapGenerator::createMap($this->searchDirectory()) as $class => $_) {
+            $reflection = new ReflectionClass($class);
 
-        if ($reflectionClass->getDocComment()) {
-            $docBlock->setShortDescription(
-                DocBlockGenerator::fromReflection(new DocBlockReflection($reflectionClass))
-                    ->getShortDescription()
-            );
+            if ($reflection->isSubclassOf(Enum::class)) {
+                $this->annotate($reflection);
+            }
         }
-
-        $this->updateClassDocblock($reflectionClass, $this->getDocBlock($reflectionClass));
     }
 
     /**
      * @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
      */
-    protected function updateClassDocblock(ReflectionClass $reflectionClass, DocBlockGenerator $docBlock): void
+    protected function annotate(ReflectionClass $reflectionClass): void
     {
+        $docBlock = $this->getDocBlock($reflectionClass);
         $shortName = $reflectionClass->getShortName();
         $fileName = $reflectionClass->getFileName();
         $contents = $this->filesystem->get($fileName);
@@ -120,7 +104,7 @@ class EnumAnnotateCommand extends Command
         $contents = preg_replace(
             "#\\r?\\n?\/\*[\s\S]*?\*\/(\\r?\\n)?{$quotedClassDeclaration}#ms",
             "\$1{$classDeclaration}",
-            $contents
+            $contents,
         );
 
         // Make sure we don't replace too much
@@ -128,7 +112,7 @@ class EnumAnnotateCommand extends Command
             $contents,
             "{$docBlock->generate()}{$classDeclaration}",
             strpos($contents, $classDeclaration),
-            strlen($classDeclaration)
+            strlen($classDeclaration),
         );
 
         $this->filesystem->put($fileName, $contents);

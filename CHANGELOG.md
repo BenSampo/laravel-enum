@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Add command `enum:to-native` to convert a class that extends `BenSampo\Enum\Enum` to a native PHP enum
+
 ## 6.3.3
 
 ### Fixed
