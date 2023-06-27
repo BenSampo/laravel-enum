@@ -31,16 +31,6 @@ Run the testsuite
 composer test
 ```
 
-## Codestyle
-
-Formatting is automated through [php_codesniffer](https://github.com/squizlabs/PHP_CodeSniffer).
-
-Apply automated fixes
-
-```bash
-composer fix
-```
-
 ## Static Analysis
 
 We use [PHPStan](https://phpstan.org) for static analysis.
