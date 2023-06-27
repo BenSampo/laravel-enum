@@ -14,11 +14,6 @@ use Laminas\Code\Generator\DocBlockGenerator;
 use Laminas\Code\Reflection\DocBlockReflection;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use function preg_quote;
-use function preg_replace;
-use function strlen;
-use function strpos;
-use function substr_replace;
 
 class EnumAnnotateCommand extends Command
 {
