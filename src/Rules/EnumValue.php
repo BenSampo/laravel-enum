@@ -7,14 +7,10 @@ use Illuminate\Contracts\Validation\Rule;
 
 class EnumValue implements Rule
 {
-    /**
-     * The name of the rule.
-     */
+    /** The name of the rule. */
     protected string $rule = 'enum_value';
 
-    /**
-     * @throws \InvalidArgumentException
-     */
+    /** @throws \InvalidArgumentException */
     public function __construct(
         protected string $enumClass,
         protected bool $strict = true
@@ -28,7 +24,6 @@ class EnumValue implements Rule
      * Determine if the validation rule passes.
      *
      * @param  string  $attribute
-     * @param  mixed  $value
      */
     public function passes($attribute, $value): bool
     {

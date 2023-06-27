@@ -2,7 +2,8 @@
 
 namespace BenSampo\Enum\Tests\Enums\ToNative;
 
-enum UserType: int {
+enum UserType: int
+{
     case Administrator = 0;
     case Moderator = 1;
 }

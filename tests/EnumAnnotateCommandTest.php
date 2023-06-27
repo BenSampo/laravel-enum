@@ -7,7 +7,7 @@ use Illuminate\Filesystem\Filesystem;
 final class EnumAnnotateCommandTest extends ApplicationTestCase
 {
     /** @dataProvider classes */
-    public function test_annotate_class(string $class): void
+    public function testAnnotateClass(string $class): void
     {
         $filesystem = $this->filesystem();
         $this->prepareAnnotateDirectory($filesystem, 'AnnotateOriginals');
@@ -19,7 +19,7 @@ final class EnumAnnotateCommandTest extends ApplicationTestCase
     }
 
     /** @dataProvider classes */
-    public function test_annotate_class_already_annotated(string $class): void
+    public function testAnnotateClassAlreadyAnnotated(string $class): void
     {
         $filesystem = $this->filesystem();
         $this->prepareAnnotateDirectory($filesystem, 'AnnotateFixtures');
@@ -48,7 +48,7 @@ final class EnumAnnotateCommandTest extends ApplicationTestCase
     }
 
     /** @dataProvider sources */
-    public function test_annotate_folder(string $source): void
+    public function testAnnotateFolder(string $source): void
     {
         $filesystem = $this->filesystem();
         $this->prepareAnnotateDirectory($filesystem, $source);

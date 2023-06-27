@@ -2,8 +2,8 @@
 
 namespace BenSampo\Enum\Tests\Enums;
 
-use BenSampo\Enum\Enum;
 use BenSampo\Enum\Attributes\Description;
+use BenSampo\Enum\Enum;
 
 /**
  * @extends Enum<self::*>
@@ -12,19 +12,19 @@ use BenSampo\Enum\Attributes\Description;
 final class DescriptionFromAttribute extends Enum
 {
     #[Description('Admin')]
-    const Administrator = 0;
+    public const Administrator = 0;
 
     #[Description('Mod (Level 1)')]
-    const Moderator = 1;
+    public const Moderator = 1;
 
-    const Subscriber = 2;
+    public const Subscriber = 2;
 
-    const SuperAdministrator = 3;
+    public const SuperAdministrator = 3;
 
     #[Description('First description')]
     // @phpstan-ignore-next-line intentionally wrong
     #[Description('Second description')]
-    const InvalidCaseWithMultipleDescriptions = 4;
+    public const InvalidCaseWithMultipleDescriptions = 4;
 
     public static function getDescription(mixed $value): string
     {

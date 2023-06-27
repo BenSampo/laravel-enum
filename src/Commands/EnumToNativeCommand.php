@@ -3,14 +3,12 @@
 namespace BenSampo\Enum\Commands;
 
 use BenSampo\Enum\Enum;
-use Laminas\Code\Generator\EnumGenerator\EnumGenerator;
-use ReflectionClass;
-use InvalidArgumentException;
+use Composer\ClassMapGenerator\ClassMapGenerator;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Composer\ClassMapGenerator\ClassMapGenerator;
-use Symfony\Component\Console\Input\InputOption;
+use Laminas\Code\Generator\EnumGenerator\EnumGenerator;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class EnumToNativeCommand extends Command
 {
@@ -20,9 +18,7 @@ class EnumToNativeCommand extends Command
 
     protected Filesystem $filesystem;
 
-    /**
-     * @return array<int, array<int, mixed>>
-     */
+    /** @return array<int, array<int, mixed>> */
     protected function getArguments(): array
     {
         return [
@@ -30,9 +26,7 @@ class EnumToNativeCommand extends Command
         ];
     }
 
-    /**
-     * @return array<int, array<int, mixed>>
-     */
+    /** @return array<int, array<int, mixed>> */
     protected function getOptions(): array
     {
         return [
@@ -58,18 +52,18 @@ class EnumToNativeCommand extends Command
 
     protected function annotateClass(string $className): void
     {
-        if (!is_subclass_of($className, Enum::class)) {
+        if (! is_subclass_of($className, Enum::class)) {
             $parentClass = Enum::class;
-            throw new InvalidArgumentException("The given class {$className} must be an instance of {$parentClass}.");
+            throw new \InvalidArgumentException("The given class {$className} must be an instance of {$parentClass}.");
         }
 
-        $this->convert(new ReflectionClass($className));
+        $this->convert(new \ReflectionClass($className));
     }
 
     protected function convertFolder(): void
     {
         foreach (ClassMapGenerator::createMap($this->searchDirectory()) as $class => $_) {
-            $reflection = new ReflectionClass($class);
+            $reflection = new \ReflectionClass($class);
 
             if ($reflection->isSubclassOf(Enum::class)) {
                 $this->convert($reflection);
@@ -77,10 +71,8 @@ class EnumToNativeCommand extends Command
         }
     }
 
-    /**
-     * @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
-     */
-    protected function convert(ReflectionClass $reflectionClass): void
+    /** @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass */
+    protected function convert(\ReflectionClass $reflectionClass): void
     {
         $type = null;
         $constants = $reflectionClass->getConstants();

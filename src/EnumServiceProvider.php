@@ -2,21 +2,19 @@
 
 namespace BenSampo\Enum;
 
-use Doctrine\DBAL\Types\Type;
+use BenSampo\Enum\Commands\EnumAnnotateCommand;
+use BenSampo\Enum\Commands\EnumToNativeCommand;
+use BenSampo\Enum\Commands\MakeEnumCommand;
 use BenSampo\Enum\Rules\Enum;
 use BenSampo\Enum\Rules\EnumKey;
 use BenSampo\Enum\Rules\EnumValue;
+use Doctrine\DBAL\Types\Type;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Support\ServiceProvider;
-use BenSampo\Enum\Commands\MakeEnumCommand;
-use BenSampo\Enum\Commands\EnumToNativeCommand;
-use BenSampo\Enum\Commands\EnumAnnotateCommand;
 
 class EnumServiceProvider extends ServiceProvider
 {
-    /**
-     * Perform post-registration booting of services.
-     */
+    /** Perform post-registration booting of services. */
     public function boot(): void
     {
         $this->bootCommands();
@@ -28,7 +26,7 @@ class EnumServiceProvider extends ServiceProvider
     protected function bootCommands(): void
     {
         $this->publishes([
-            __DIR__.'/Commands/stubs' => $this->app->basePath('stubs')
+            __DIR__ . '/Commands/stubs' => $this->app->basePath('stubs'),
         ], 'stubs');
 
         if ($this->app->runningInConsole()) {
@@ -60,7 +58,7 @@ class EnumServiceProvider extends ServiceProvider
                 return (new EnumValue($enum))->passes($attribute, $value);
             }
 
-            $strict = !! json_decode(strtolower($strict));
+            $strict = (bool) json_decode(strtolower($strict));
 
             return (new EnumValue($enum, $strict))->passes($attribute, $value);
         }, __('laravelEnum::messages.enum_value'));

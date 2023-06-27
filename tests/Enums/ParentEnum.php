@@ -9,5 +9,5 @@ use BenSampo\Enum\Enum;
  */
 class ParentEnum extends Enum
 {
-    const PARENT = 'parent';
+    public const PARENT = 'parent';
 }

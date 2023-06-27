@@ -29,6 +29,7 @@
     "require-dev": {
         "doctrine/dbal": "^3.4",
         "ergebnis/composer-normalize": "^2.28.3",
+        "mll-lab/php-cs-fixer-config": "^5.4",
         "mockery/mockery": "^1.5",
         "nunomaduro/larastan": "^2.1.12",
         "orchestra/testbench": "^7.6.1 || ^8",
@@ -73,9 +74,11 @@
         ],
         "all": [
             "composer normalize",
+            "@fix",
             "@test",
             "@stan"
         ],
+        "fix": "php-cs-fixer fix",
         "stan": "phpstan",
         "test": "phpunit"
     }

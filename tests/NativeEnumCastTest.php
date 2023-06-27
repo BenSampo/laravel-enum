@@ -10,35 +10,35 @@ use PHPUnit\Framework\TestCase;
 
 final class NativeEnumCastTest extends TestCase
 {
-    public function test_can_set_model_value_using_enum_instance(): void
+    public function testCanSetModelValueUsingEnumInstance(): void
     {
-        $model = new NativeCastModel;
+        $model = new NativeCastModel();
         $model->user_type = UserType::Moderator();
 
         $this->assertEquals(UserType::Moderator(), $model->user_type);
     }
 
-    public function test_can_set_model_value_using_enum_value(): void
+    public function testCanSetModelValueUsingEnumValue(): void
     {
-        $model = new NativeCastModel;
+        $model = new NativeCastModel();
         // @phpstan-ignore-next-line loose typing
         $model->user_type = UserType::Moderator;
 
         $this->assertEquals(UserType::Moderator(), $model->user_type);
     }
 
-    public function test_cannot_set_model_value_using_invalid_enum_value(): void
+    public function testCannotSetModelValueUsingInvalidEnumValue(): void
     {
-        $model = new NativeCastModel;
+        $model = new NativeCastModel();
 
         $this->expectException(InvalidEnumMemberException::class);
         // @phpstan-ignore-next-line intentionally wrong
         $model->user_type = 5;
     }
 
-    public function test_getting_model_value_returns_enum_instance(): void
+    public function testGettingModelValueReturnsEnumInstance(): void
     {
-        $model = new NativeCastModel;
+        $model = new NativeCastModel();
         // @phpstan-ignore-next-line loose typing
         $model->user_type = UserType::Moderator;
 
@@ -46,17 +46,17 @@ final class NativeEnumCastTest extends TestCase
         $this->assertInstanceOf(UserType::class, $model->user_type);
     }
 
-    public function test_can_get_and_set_null_on_enum_castable(): void
+    public function testCanGetAndSetNullOnEnumCastable(): void
     {
-        $model = new NativeCastModel;
+        $model = new NativeCastModel();
         $model->user_type = null;
 
         $this->assertNull($model->user_type);
     }
 
-    public function test_can_handle_string_int_from_database(): void
+    public function testCanHandleStringIntFromDatabase(): void
     {
-        $model = new NativeCastModel;
+        $model = new NativeCastModel();
 
         $reflection = new \ReflectionProperty(NativeCastModel::class, 'attributes');
         $reflection->setAccessible(true);
@@ -65,17 +65,17 @@ final class NativeEnumCastTest extends TestCase
         $this->assertInstanceOf(UserType::class, $model->user_type);
     }
 
-    public function test_that_model_with_enum_can_be_cast_to_array(): void
+    public function testThatModelWithEnumCanBeCastToArray(): void
     {
-        $model = new NativeCastModel;
+        $model = new NativeCastModel();
         $model->user_type = UserType::Moderator();
 
         $this->assertSame(['user_type' => 1], $model->toArray());
     }
 
-    public function test_can_use_custom_casting(): void
+    public function testCanUseCustomCasting(): void
     {
-        $model = new NativeCastModel;
+        $model = new NativeCastModel();
 
         $reflection = new \ReflectionProperty(NativeCastModel::class, 'attributes');
         $reflection->setAccessible(true);
@@ -89,9 +89,9 @@ final class NativeEnumCastTest extends TestCase
         $this->assertSame('type-0', $reflection->getValue($model)['user_type_custom']);
     }
 
-    public function test_can_bail_custom_casting(): void
+    public function testCanBailCustomCasting(): void
     {
-        $model = new NativeCastModel;
+        $model = new NativeCastModel();
 
         $reflection = new \ReflectionProperty(NativeCastModel::class, 'attributes');
         $reflection->setAccessible(true);

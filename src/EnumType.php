@@ -10,19 +10,19 @@ use Doctrine\DBAL\Types\Type;
  */
 class EnumType extends Type
 {
-    const ENUM = 'enum';
+    public const ENUM = 'enum';
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         $values = implode(
             ',',
             array_map(
-                fn(string $value): string => "'$value'",
+                fn (string $value): string => "'{$value}'",
                 $column['allowed']
             )
         );
 
-        return "ENUM($values)";
+        return "ENUM({$values})";
     }
 
     public function getName(): string

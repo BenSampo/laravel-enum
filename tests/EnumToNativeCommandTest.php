@@ -17,7 +17,7 @@ final class EnumToNativeCommandTest extends ApplicationTestCase
     }
 
     /** @dataProvider classes */
-    public function test_class_to_native(string $class): void
+    public function testClassToNative(string $class): void
     {
         $filesystem = $this->filesystem();
         $this->prepareToNativeDirectory($filesystem);
@@ -34,7 +34,7 @@ final class EnumToNativeCommandTest extends ApplicationTestCase
         yield ['UserType'];
     }
 
-    public function test_annotate_folder(): void
+    public function testAnnotateFolder(): void
     {
         $filesystem = $this->filesystem();
         $this->prepareToNativeDirectory($filesystem);
@@ -64,6 +64,6 @@ final class EnumToNativeCommandTest extends ApplicationTestCase
 
     private function prepareToNativeDirectory(Filesystem $filesystem): void
     {
-        $filesystem->copyDirectory(__DIR__ . "/Enums/ToNativeOriginals", __DIR__ . '/Enums/ToNative');
+        $filesystem->copyDirectory(__DIR__ . '/Enums/ToNativeOriginals', __DIR__ . '/Enums/ToNative');
     }
 }

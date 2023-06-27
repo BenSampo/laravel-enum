@@ -2,12 +2,12 @@
 
 namespace BenSampo\Enum\Tests;
 
-use Orchestra\Testbench\TestCase;
-use Illuminate\Foundation\Application;
-use Illuminate\Database\Schema\Blueprint;
 use BenSampo\Enum\Tests\Enums\SuperPowers;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use BenSampo\Enum\Tests\Models\WithQueriesFlaggedEnums as TestModel;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Orchestra\Testbench\TestCase;
 
 final class QueriesFlaggedEnumsTest extends TestCase
 {
@@ -20,11 +20,11 @@ final class QueriesFlaggedEnumsTest extends TestCase
         $this->setUpDatabase($this->app);
 
         TestModel::create([
-            'superpowers' =>  SuperPowers::flags([SuperPowers::Flight, SuperPowers::Immortality])
+            'superpowers' => SuperPowers::flags([SuperPowers::Flight, SuperPowers::Immortality]),
         ]);
 
         TestModel::create([
-            'superpowers' =>  SuperPowers::flags([SuperPowers::Strength, SuperPowers::Immortality])
+            'superpowers' => SuperPowers::flags([SuperPowers::Strength, SuperPowers::Immortality]),
         ]);
     }
 
@@ -37,7 +37,7 @@ final class QueriesFlaggedEnumsTest extends TestCase
         });
     }
 
-    public function test_ensure_a_flag_is_present(): void
+    public function testEnsureAFlagIsPresent(): void
     {
         $this->assertSame(2, TestModel::query()->hasFlag('superpowers', SuperPowers::Immortality)->count());
         $this->assertSame(2, TestModel::query()->hasFlag('superpowers', SuperPowers::Immortality())->count());
@@ -47,7 +47,7 @@ final class QueriesFlaggedEnumsTest extends TestCase
         $this->assertSame(0, TestModel::query()->hasFlag('superpowers', SuperPowers::Invisibility())->count());
     }
 
-    public function test_ensure_a_flag_is_missing(): void
+    public function testEnsureAFlagIsMissing(): void
     {
         $this->assertSame(0, TestModel::query()->notHasFlag('superpowers', SuperPowers::Immortality)->count());
         $this->assertSame(0, TestModel::query()->notHasFlag('superpowers', SuperPowers::Immortality())->count());
@@ -57,7 +57,7 @@ final class QueriesFlaggedEnumsTest extends TestCase
         $this->assertSame(2, TestModel::query()->notHasFlag('superpowers', SuperPowers::Invisibility())->count());
     }
 
-    public function test_ensure_all_flags_are_present(): void
+    public function testEnsureAllFlagsArePresent(): void
     {
         $this->assertSame(0, TestModel::query()->hasAllFlags('superpowers', [SuperPowers::Strength, SuperPowers::Flight])->count());
         $this->assertSame(0, TestModel::query()->hasAllFlags('superpowers', [SuperPowers::Strength(), SuperPowers::Flight()])->count());
@@ -67,7 +67,7 @@ final class QueriesFlaggedEnumsTest extends TestCase
         $this->assertSame(2, TestModel::query()->hasAllFlags('superpowers', [SuperPowers::Immortality()])->count());
     }
 
-    public function test_ensure_any_flag_is_present(): void
+    public function testEnsureAnyFlagIsPresent(): void
     {
         $this->assertSame(2, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Strength, SuperPowers::Flight])->count());
         $this->assertSame(2, TestModel::query()->hasAnyFlags('superpowers', [SuperPowers::Strength(), SuperPowers::Flight()])->count());

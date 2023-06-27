@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace BenSampo\Enum\Tests\Enums\Annotate;
 
-use BenSampo\Enum\Enum;
 use BenSampo\Enum\Contracts\LocalizedEnum;
+use BenSampo\Enum\Enum;
 
 /**
  * @extends Enum<self::*>

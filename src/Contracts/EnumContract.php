@@ -4,8 +4,6 @@ namespace BenSampo\Enum\Contracts;
 
 interface EnumContract
 {
-    /**
-     * Determine if this instance is equivalent to a given value.
-     */
+    /** Determine if this instance is equivalent to a given value. */
     public function is(mixed $enumValue): bool;
 }

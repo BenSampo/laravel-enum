@@ -2,41 +2,41 @@
 
 namespace BenSampo\Enum\Tests;
 
+use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 use BenSampo\Enum\Tests\Enums\UserType;
 use BenSampo\Enum\Tests\Models\Example;
-use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 
 final class EnumCastTest extends ApplicationTestCase
 {
-    public function test_can_set_model_value_using_enum_instance(): void
+    public function testCanSetModelValueUsingEnumInstance(): void
     {
-        $model = new Example;
+        $model = new Example();
         $model->user_type = UserType::Moderator();
 
         $this->assertEquals(UserType::Moderator(), $model->user_type);
     }
 
-    public function test_can_set_model_value_using_enum_value(): void
+    public function testCanSetModelValueUsingEnumValue(): void
     {
-        $model = new Example;
+        $model = new Example();
         // @phpstan-ignore-next-line loose typing
         $model->user_type = UserType::Moderator;
 
         $this->assertEquals(UserType::Moderator(), $model->user_type);
     }
 
-    public function test_cannot_set_model_value_using_invalid_enum_value(): void
+    public function testCannotSetModelValueUsingInvalidEnumValue(): void
     {
-        $model = new Example;
+        $model = new Example();
 
         $this->expectException(InvalidEnumMemberException::class);
         // @phpstan-ignore-next-line intentionally wrong
         $model->user_type = 5;
     }
 
-    public function test_getting_model_value_returns_enum_instance(): void
+    public function testGettingModelValueReturnsEnumInstance(): void
     {
-        $model = new Example;
+        $model = new Example();
         // @phpstan-ignore-next-line loose typing
         $model->user_type = UserType::Moderator;
 
@@ -44,23 +44,23 @@ final class EnumCastTest extends ApplicationTestCase
         $this->assertInstanceOf(UserType::class, $model->user_type);
     }
 
-    public function test_can_get_and_set_null_on_enum_castable(): void
+    public function testCanGetAndSetNullOnEnumCastable(): void
     {
-        $model = new Example;
+        $model = new Example();
         $model->user_type = null;
 
         $this->assertNull($model->user_type);
     }
 
-    public function test_that_model_with_enum_can_be_cast_to_array(): void
+    public function testThatModelWithEnumCanBeCastToArray(): void
     {
-        $model = new Example;
+        $model = new Example();
         $model->user_type = UserType::Moderator();
 
         $this->assertSame(['user_type' => 1], $model->toArray());
     }
 
-    public function test_get_changes_works_correctly(): void
+    public function testGetChangesWorksCorrectly(): void
     {
         $id = Example::create(['user_type' => 1])->id;
 

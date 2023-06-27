@@ -2,8 +2,8 @@
 
 namespace BenSampo\Enum\Tests\Enums;
 
-use BenSampo\Enum\Enum;
 use BenSampo\Enum\Attributes\Description;
+use BenSampo\Enum\Enum;
 
 /**
  * @extends Enum<self::*>
@@ -13,6 +13,6 @@ use BenSampo\Enum\Attributes\Description;
 #[Description('Second Enum description')]
 final class InvalidMultipleClassDescriptionFromAttribute extends Enum
 {
-    const Administrator = 0;
-    const Moderator = 1;
+    public const Administrator = 0;
+    public const Moderator = 1;
 }

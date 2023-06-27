@@ -2,14 +2,14 @@
 
 namespace BenSampo\Enum\Tests;
 
-use PHPUnit\Framework\TestCase;
 use BenSampo\Enum\Rules\EnumKey;
-use BenSampo\Enum\Tests\Enums\UserType;
 use BenSampo\Enum\Tests\Enums\StringValues;
+use BenSampo\Enum\Tests\Enums\UserType;
+use PHPUnit\Framework\TestCase;
 
 final class EnumKeyTest extends TestCase
 {
-    public function test_validation_passes(): void
+    public function testValidationPasses(): void
     {
         $passes1 = (new EnumKey(UserType::class))->passes('', 'Administrator');
         $passes2 = (new EnumKey(StringValues::class))->passes('', 'Administrator');
@@ -20,7 +20,7 @@ final class EnumKeyTest extends TestCase
         $this->assertFalse($passes3);
     }
 
-    public function test_validation_fails(): void
+    public function testValidationFails(): void
     {
         $fails1 = (new EnumKey(UserType::class))->passes('', 'Anything else');
         $fails2 = (new EnumKey(UserType::class))->passes('', 2);
@@ -31,14 +31,14 @@ final class EnumKeyTest extends TestCase
         $this->assertFalse($fails3);
     }
 
-    public function test_an_exception_is_thrown_if_an_non_existing_class_is_passed(): void
+    public function testAnExceptionIsThrownIfAnNonExistingClassIsPassed(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         // @phpstan-ignore-next-line intentionally wrong
         new EnumKey('PathToAClassThatDoesntExist');
     }
 
-    public function test_can_serialize_to_string(): void
+    public function testCanSerializeToString(): void
     {
         $rule = new EnumKey(UserType::class);
 

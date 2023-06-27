@@ -15,11 +15,12 @@ use BenSampo\Enum\Enum;
  * @method static static A()
  * @method static static B()
  * @method static static C()
+ *
  * @extends Enum<self::*>
  */
 final class EnumWithMultipleLineComments extends Enum
 {
-    const A = 1;
-    const B = 2;
-    const C = 3;
+    public const A = 1;
+    public const B = 2;
+    public const C = 3;
 }

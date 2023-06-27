@@ -2,13 +2,12 @@
 
 namespace BenSampo\Enum\Tests;
 
-use BenSampo\Enum\Rules\EnumKey;
 use BenSampo\Enum\Tests\Enums\UserType;
 use Illuminate\Support\Facades\Validator;
 
 final class EnumPipeValidationTest extends ApplicationTestCase
 {
-    public function test_can_validate_value_using_pipe_validation(): void
+    public function testCanValidateValueUsingPipeValidation(): void
     {
         $validator = Validator::make(['type' => UserType::Administrator], [
             'type' => 'enum_value:' . UserType::class,
@@ -23,7 +22,7 @@ final class EnumPipeValidationTest extends ApplicationTestCase
         $this->assertFalse($validator->passes());
     }
 
-    public function test_can_validate_value_using_pipe_validation_without_strict_type_checking(): void
+    public function testCanValidateValueUsingPipeValidationWithoutStrictTypeChecking(): void
     {
         $validator = Validator::make(['type' => (string) UserType::Administrator], [
             'type' => 'enum_value:' . UserType::class . ',false',
@@ -32,7 +31,7 @@ final class EnumPipeValidationTest extends ApplicationTestCase
         $this->assertTrue($validator->passes());
     }
 
-    public function test_can_validate_key_using_pipe_validation(): void
+    public function testCanValidateKeyUsingPipeValidation(): void
     {
         $validator = Validator::make(['type' => UserType::getKey(UserType::Administrator)], [
             'type' => 'enum_key:' . UserType::class,
@@ -47,7 +46,7 @@ final class EnumPipeValidationTest extends ApplicationTestCase
         $this->assertFalse($validator->passes());
     }
 
-    public function test_can_validate_enum_using_pipe_validation(): void
+    public function testCanValidateEnumUsingPipeValidation(): void
     {
         $validator = Validator::make(['type' => UserType::Administrator()], [
             'type' => 'enum:' . UserType::class,
