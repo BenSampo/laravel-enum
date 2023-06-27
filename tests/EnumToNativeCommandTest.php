@@ -3,9 +3,19 @@
 namespace BenSampo\Enum\Tests;
 
 use Illuminate\Filesystem\Filesystem;
+use Laminas\Code\Generator\EnumGenerator\EnumGenerator;
 
 final class EnumToNativeCommandTest extends ApplicationTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        if (! class_exists(EnumGenerator::class)) {
+            $this->markTestSkipped('Missing laminas/laminas-code 4.');
+        }
+    }
+
     /** @dataProvider classes */
     public function test_class_to_native(string $class): void
     {

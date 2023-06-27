@@ -110,6 +110,8 @@ class EnumToNativeCommand extends Command
         }
 
         $fileName = $reflectionClass->getFileName();
+
+        // @phpstan-ignore-next-line fails when missing laminas/laminas-code 4 and on lower PHPStan versions
         $enum = EnumGenerator::withConfig([
             'name' => $className,
             'backedCases' => [
