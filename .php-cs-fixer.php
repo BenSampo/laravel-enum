@@ -3,9 +3,10 @@
 use function MLL\PhpCsFixerConfig\risky;
 
 $finder = PhpCsFixer\Finder::create()
-    ->notPath('vendor')
     ->in(__DIR__)
     ->name('*.php')
+    ->notPath('vendor')
+    ->notPath('tests/Enums/ToNativeFixtures') // Matches laminas/laminas-code
     ->ignoreDotFiles(false)
     ->ignoreVCS(true);
 
