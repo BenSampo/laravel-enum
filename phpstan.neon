@@ -15,5 +15,5 @@ parameters:
   treatPhpDocTypesAsCertain: false
   ignoreErrors:
   - '#Unsafe usage of new static.*#' # This is a library, so it should be extendable
-  - message: '#.*#'
-    path: tests/Enums/ToNativeFixtures # Fails with PHP < 8.1
+  excludePaths:
+  - tests/Enums/ToNativeFixtures # Fails with PHP < 8.1
