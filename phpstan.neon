@@ -6,15 +6,14 @@ includes:
 - vendor/phpstan/phpstan-phpunit/extension.neon
 - vendor/phpstan/phpstan-phpunit/rules.neon
 parameters:
-  # TODO level up to max
-  level: 6
+  level: 6 # TODO level up to max
   paths:
   - src
   - tests
   checkOctaneCompatibility: true
-  # As long as we support multiple Laravel versions at once, there will be some dead spots
-  reportUnmatchedIgnoredErrors: false
+  reportUnmatchedIgnoredErrors: false # As long as we support multiple Laravel versions at once, there will be some dead spots
   treatPhpDocTypesAsCertain: false
   ignoreErrors:
-  # This is a library, so it should be extendable
-  - '#Unsafe usage of new static.*#'
+  - '#Unsafe usage of new static.*#' # This is a library, so it should be extendable
+  - message: '#.*#'
+    path: tests/Enums/ToNativeFixtures # Fails with PHP < 8.1
