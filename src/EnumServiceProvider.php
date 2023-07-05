@@ -14,7 +14,6 @@ use Illuminate\Support\ServiceProvider;
 
 class EnumServiceProvider extends ServiceProvider
 {
-    /** Perform post-registration booting of services. */
     public function boot(): void
     {
         $this->bootCommands();
@@ -40,30 +39,28 @@ class EnumServiceProvider extends ServiceProvider
 
     protected function bootValidators(): void
     {
-        $this->app->afterResolving(ValidationFactory::class, function (ValidationFactory $validationFactory) {
-            $validationFactory->extend('enum_key', function ($attribute, $value, $parameters, $validator) {
+        $this->app->afterResolving(ValidationFactory::class, function (ValidationFactory $validationFactory): void {
+            $validationFactory->extend('enum_key', function (string $attribute, $value, array $parameters, $validator): bool {
                 $enum = $parameters[0] ?? null;
-    
+
                 return (new EnumKey($enum))->passes($attribute, $value);
             }, __('laravelEnum::messages.enum_key'));
 
-            $validationFactory->extend('enum_value', function ($attribute, $value, $parameters, $validator) {
+            $validationFactory->extend('enum_value', function (string $attribute, $value, array $parameters, $validator): bool {
                 $enum = $parameters[0] ?? null;
-    
                 $strict = $parameters[1] ?? null;
-    
+
                 if (! $strict) {
                     return (new EnumValue($enum))->passes($attribute, $value);
                 }
-    
                 $strict = (bool) json_decode(strtolower($strict));
-    
+
                 return (new EnumValue($enum, $strict))->passes($attribute, $value);
             }, __('laravelEnum::messages.enum_value'));
 
-            $validationFactory->extend('enum', function ($attribute, $value, $parameters, $validator) {
+            $validationFactory->extend('enum', function (string $attribute, $value, array $parameters, $validator): bool {
                 $enum = $parameters[0] ?? null;
-    
+
                 return (new Enum($enum))->passes($attribute, $value);
             }, __('laravelEnum::messages.enum'));
         });

@@ -15,6 +15,11 @@
             "name": "Ben Sampson",
             "homepage": "https://sampo.co.uk",
             "role": "Developer"
+        },
+        {
+            "name": "Benedikt Franke",
+            "homepage": "https://franke.tech",
+            "role": "Developer"
         }
     ],
     "homepage": "https://github.com/bensampo/laravel-enum",
