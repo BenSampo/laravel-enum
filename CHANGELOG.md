@@ -7,13 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 6.4.0
+
 ### Added
 
 - Add command `enum:to-native` to convert a class that extends `BenSampo\Enum\Enum` to a native PHP enum
 
 ### Fixed
 
-- Prevent translations to be discarded [324](https://github.com/BenSampo/laravel-enum/pull/324)
+- Load pipe-string syntax validation translations lazily https://github.com/BenSampo/laravel-enum/pull/324
 
 ## 6.3.3
 
