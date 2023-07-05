@@ -40,34 +40,33 @@ class EnumServiceProvider extends ServiceProvider
 
     protected function bootValidators(): void
     {
-        $validationFactory = $this->app->make(ValidationFactory::class);
-        assert($validationFactory instanceof ValidationFactory);
+        $this->app->afterResolving(ValidationFactory::class, function (ValidationFactory $validationFactory) {
+            $validationFactory->extend('enum_key', function ($attribute, $value, $parameters, $validator) {
+                $enum = $parameters[0] ?? null;
+    
+                return (new EnumKey($enum))->passes($attribute, $value);
+            }, __('laravelEnum::messages.enum_key'));
 
-        $validationFactory->extend('enum_key', function ($attribute, $value, $parameters, $validator) {
-            $enum = $parameters[0] ?? null;
+            $validationFactory->extend('enum_value', function ($attribute, $value, $parameters, $validator) {
+                $enum = $parameters[0] ?? null;
+    
+                $strict = $parameters[1] ?? null;
+    
+                if (! $strict) {
+                    return (new EnumValue($enum))->passes($attribute, $value);
+                }
+    
+                $strict = (bool) json_decode(strtolower($strict));
+    
+                return (new EnumValue($enum, $strict))->passes($attribute, $value);
+            }, __('laravelEnum::messages.enum_value'));
 
-            return (new EnumKey($enum))->passes($attribute, $value);
-        }, __('laravelEnum::messages.enum_key'));
-
-        $validationFactory->extend('enum_value', function ($attribute, $value, $parameters, $validator) {
-            $enum = $parameters[0] ?? null;
-
-            $strict = $parameters[1] ?? null;
-
-            if (! $strict) {
-                return (new EnumValue($enum))->passes($attribute, $value);
-            }
-
-            $strict = (bool) json_decode(strtolower($strict));
-
-            return (new EnumValue($enum, $strict))->passes($attribute, $value);
-        }, __('laravelEnum::messages.enum_value'));
-
-        $validationFactory->extend('enum', function ($attribute, $value, $parameters, $validator) {
-            $enum = $parameters[0] ?? null;
-
-            return (new Enum($enum))->passes($attribute, $value);
-        }, __('laravelEnum::messages.enum'));
+            $validationFactory->extend('enum', function ($attribute, $value, $parameters, $validator) {
+                $enum = $parameters[0] ?? null;
+    
+                return (new Enum($enum))->passes($attribute, $value);
+            }, __('laravelEnum::messages.enum'));
+        });
     }
 
     protected function bootDoctrineType(): void
