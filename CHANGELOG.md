@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 6.4.1
+
+### Fixed
+
+- Ensure validation rules are always added https://github.com/BenSampo/laravel-enum/pull/327
+
 ## 6.4.0
 
 ### Added
