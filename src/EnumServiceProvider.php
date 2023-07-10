@@ -39,7 +39,7 @@ class EnumServiceProvider extends ServiceProvider
 
     protected function bootValidators(): void
     {
-        $this->app->afterResolving(ValidationFactory::class, function (ValidationFactory $validationFactory): void {
+        $this->app->extend(ValidationFactory::class, function (ValidationFactory $validationFactory): ValidationFactory {
             $validationFactory->extend('enum_key', function (string $attribute, $value, array $parameters, $validator): bool {
                 $enum = $parameters[0] ?? null;
 
@@ -63,6 +63,8 @@ class EnumServiceProvider extends ServiceProvider
 
                 return (new Enum($enum))->passes($attribute, $value);
             }, __('laravelEnum::messages.enum'));
+
+            return $validationFactory;
         });
     }
 
