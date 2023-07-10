@@ -39,7 +39,7 @@ class EnumServiceProvider extends ServiceProvider
 
     protected function bootValidators(): void
     {
-        $this->app->extend(ValidationFactory::class, function (ValidationFactory $validationFactory) {
+        $this->app->extend(ValidationFactory::class, function (ValidationFactory $validationFactory): ValidationFactory {
             $validationFactory->extend('enum_key', function (string $attribute, $value, array $parameters, $validator): bool {
                 $enum = $parameters[0] ?? null;
 
