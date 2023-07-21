@@ -42,7 +42,8 @@
         "phpstan/phpstan-mockery": "^1.1",
         "phpstan/phpstan-phpunit": "^1.1.1",
         "phpunit/phpunit": "^9.5.21 || ^10",
-        "rector/rector": "^0.17.6"
+        "rector/rector": "^0.17.6",
+        "symplify/rule-doc-generator": "^11"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

@@ -3,6 +3,7 @@
 namespace BenSampo\Enum\Rector;
 
 use BenSampo\Enum\Enum;
+use BenSampo\Enum\Tests\Enums\UserType;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -11,25 +12,34 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\NullsafeMethodCall;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-class ToNativeRector extends AbstractRector
+class ToNativeRector extends AbstractRector implements ConfigurableRuleInterface
 {
+    /** @var array<ObjectType> */
+    protected array $classes;
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Convert usages of BenSampo\Enum\Enum to native PHP enums', [
-            new CodeSample(
+            new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
-$user = User::ADMIN();
-$user->is(User::ADMIN);
+$user = UserType::ADMIN();
+$user->is(UserType::ADMIN);
 CODE_SAMPLE
 
                 ,
                 <<<'CODE_SAMPLE'
-$user = User::ADMIN;
-$user === User::ADMIN;
-CODE_SAMPLE
+$user = UserType::ADMIN;
+$user === UserType::ADMIN;
+CODE_SAMPLE,
+                [
+                    'classes' => [
+                        UserType::class,
+                    ],
+                ],
             ),
         ]);
     }
@@ -43,10 +53,19 @@ CODE_SAMPLE
     /** @param MethodCall|NullsafeMethodCall $node */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isObjectType($node->var, new ObjectType(Enum::class))) {
-            return null;
+        $this->classes ??= [new ObjectType(Enum::class)];
+
+        foreach ($this->classes as $class) {
+            if ($this->isObjectType($node->var, $class)) {
+                return $this->doRefactor($node);
+            }
         }
 
+        return null;
+    }
+
+    protected function doRefactor(MethodCall|NullsafeMethodCall $node): ?Node
+    {
         if ($this->isName($node->name, 'is')) {
             return $this->refactorIs($node);
         }
@@ -64,5 +83,14 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    /** @param array{classes: array<class-string>} $configuration */
+    public function configure(array $configuration): void
+    {
+        $this->classes = array_map(
+            static fn (string $class): ObjectType => new ObjectType($class),
+            $configuration['classes'],
+        );
     }
 }

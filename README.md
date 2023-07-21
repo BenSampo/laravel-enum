@@ -39,9 +39,12 @@ Created by [Ben Sampson](https://sampo.co.uk)
 - [Validation](#validation)
 - [Localization](#localization)
 - [Customizing descriptions](#customizing-descriptions)
+  - [Customizing class description](#customizing-class-description)
+  - [Customizing value descriptions](#customizing-value-descriptions)
 - [Extending the Enum Base Class](#extending-the-enum-base-class)
 - [Laravel Nova Integration](#laravel-nova-integration)
 - [PHPStan Integration](#phpstan-integration)
+- [Rector Integration](#rector-integration)
 - [Artisan Command List](#artisan-command-list)
 - [Enum Class Reference](#enum-class-reference)
 - [Stubs](#stubs)
@@ -768,7 +771,9 @@ final class UserType extends Enum implements LocalizedEnum
 
 The `getDescription` method will now look for the value in your localization files. If a value doesn't exist for a given key, the default description is returned instead.
 
-## Customizing enum class description
+## Customizing descriptions
+
+### Customizing class description
 
 If you'd like to return a custom description for your enum class, add a `Description` attribute to your Enum class:
 
@@ -787,7 +792,7 @@ Calling `UserType::getClassDescription()` now returns `List of available User ty
 
 You may also override the `getClassDescription` method on the base Enum class if you wish to have more control of the description.
 
-## Customizing value descriptions
+### Customizing value descriptions
 
 If you'd like to return a custom description for your enum values, add a `Description` attribute to your Enum constants:
 
@@ -828,7 +833,7 @@ It's best to register the macro inside a service providers' boot method.
 
 Use the [nova-enum-field](https://github.com/simplesquid/nova-enum-field) package by Simple Squid to easily create fields for your Enums in Nova. See their readme for usage.
 
-## PHPStan integration
+## PHPStan Integration
 
 If you are using [PHPStan](https://github.com/phpstan/phpstan) for static
 analysis, you can enable the extension for proper recognition of the
@@ -840,6 +845,11 @@ Add the following to your projects `phpstan.neon` includes:
 includes:
 - vendor/bensampo/laravel-enum/extension.neon
 ```
+
+## Rector Integration
+
+You can leverage [Rector](https://getrector.com) for automated refactorings,
+see [Rector rules](rector-rules.md).
 
 ## Artisan Command List
 
