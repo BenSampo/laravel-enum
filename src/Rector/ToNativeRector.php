@@ -9,7 +9,9 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Name;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
@@ -57,31 +59,53 @@ CODE_SAMPLE,
     /** @return array<class-string<Expr>> */
     public function getNodeTypes(): array
     {
-        return [MethodCall::class, NullsafeMethodCall::class];
+        return [
+            MethodCall::class,
+            NullsafeMethodCall::class,
+            New_::class,
+        ];
     }
 
-    /** @param MethodCall|NullsafeMethodCall $node */
     public function refactor(Node $node): ?Node
     {
         $this->classes ??= [new ObjectType(Enum::class)];
 
         foreach ($this->classes as $class) {
-            if ($this->isObjectType($node->var, $class)) {
-                return $this->doRefactor($node);
+            if ($this->isConfiguredClass($node, $class)) {
+                return $this->refactorNode($node);
             }
         }
 
         return null;
     }
 
-    protected function doRefactor(MethodCall|NullsafeMethodCall $node): ?Node
+    protected function isConfiguredClass(Node $node, ObjectType $class): bool
     {
-        if ($this->isName($node->name, 'is')) {
-            return $this->refactorIs($node);
+        if ($node instanceof MethodCall || $node instanceof NullsafeMethodCall) {
+            return $this->isObjectType($node->var, $class);
         }
 
-        if ($this->isName($node->name, 'in')) {
-            return $this->refactorIn($node);
+        if ($node instanceof New_) {
+            return $this->isObjectType($node->class, $class);
+        }
+
+        return false;
+    }
+
+    protected function refactorNode(Node $node): ?Node
+    {
+        if ($node instanceof MethodCall || $node instanceof NullsafeMethodCall) {
+            if ($this->isName($node->name, 'is')) {
+                return $this->refactorIs($node);
+            }
+
+            if ($this->isName($node->name, 'in')) {
+                return $this->refactorIn($node);
+            }
+        }
+
+        if ($node instanceof New_) {
+            return $this->refactorNew($node);
         }
 
         return null;
@@ -105,7 +129,22 @@ CODE_SAMPLE,
         if (isset($args[0]) && $args[0] instanceof Arg) {
             $arg = $args[0];
 
-            return $this->nodeFactory->createFuncCall('in_array', [$node->var, $arg->value]);
+            return $this->nodeFactory->createFuncCall('in_array', [$node->var, $arg]);
+        }
+
+        return null;
+    }
+
+    protected function refactorNew(New_ $node): ?Node
+    {
+        $class = $node->class;
+        if ($class instanceof Name) {
+            $args = $node->args;
+            if (isset($args[0]) && $args[0] instanceof Arg) {
+                $arg = $args[0];
+
+                return $this->nodeFactory->createStaticCall($class->toString(), 'from', [$arg]);
+            }
         }
 
         return null;
