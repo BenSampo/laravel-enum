@@ -16,6 +16,7 @@ use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/** @see \BenSampo\Enum\Tests\Rector\ToNativeRectorTest */
 class ToNativeRector extends AbstractRector implements ConfigurableRuleInterface
 {
     /** @var array<ObjectType> */
@@ -44,6 +45,15 @@ CODE_SAMPLE,
         ]);
     }
 
+    /** @param array{classes: array<class-string>} $configuration */
+    public function configure(array $configuration): void
+    {
+        $this->classes = array_map(
+            static fn (string $class): ObjectType => new ObjectType($class),
+            $configuration['classes'],
+        );
+    }
+
     /** @return array<class-string<Expr>> */
     public function getNodeTypes(): array
     {
@@ -70,6 +80,10 @@ CODE_SAMPLE,
             return $this->refactorIs($node);
         }
 
+        if ($this->isName($node->name, 'in')) {
+            return $this->refactorIn($node);
+        }
+
         return null;
     }
 
@@ -85,12 +99,15 @@ CODE_SAMPLE,
         return null;
     }
 
-    /** @param array{classes: array<class-string>} $configuration */
-    public function configure(array $configuration): void
+    protected function refactorIn(MethodCall|NullsafeMethodCall $node): ?Node
     {
-        $this->classes = array_map(
-            static fn (string $class): ObjectType => new ObjectType($class),
-            $configuration['classes'],
-        );
+        $args = $node->args;
+        if (isset($args[0]) && $args[0] instanceof Arg) {
+            $arg = $args[0];
+
+            return $this->nodeFactory->createFuncCall('in_array', [$node->var, $arg->value]);
+        }
+
+        return null;
     }
 }
