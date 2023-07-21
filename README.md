@@ -69,7 +69,7 @@ I wrote a blog post about using laravel-enum: https://sampo.co.uk/blog/using-enu
 
 Via Composer
 
-```bash
+```sh
 composer require bensampo/laravel-enum
 ```
 
@@ -144,15 +144,15 @@ $enumInstance = UserType::coerce($someValue);
 If you want your IDE to autocomplete the static instantiation helpers, you can
 generate PHPDoc annotations through an artisan command.
 
-By default all Enums in `app/Enums` will be annotated (you can change the folder by passing a path to `--folder`)
+By default, all Enums in `app/Enums` will be annotated (you can change the folder by passing a path to `--folder`).
 
-```bash
+```sh
 php artisan enum:annotate
 ```
 
-You can annotate a single class by specifying the class name
+You can annotate a single class by specifying the class name.
 
-```bash
+```sh
 php artisan enum:annotate "App\Enums\UserType"
 ```
 
