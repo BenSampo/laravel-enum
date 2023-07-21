@@ -36,7 +36,7 @@
         "ergebnis/composer-normalize": "^2.28.3",
         "mll-lab/php-cs-fixer-config": "^5.4",
         "mockery/mockery": "^1.5",
-        "nunomaduro/larastan": "^2.1.12",
+        "nunomaduro/larastan": "^2.6.3",
         "orchestra/testbench": "^7.6.1 || ^8",
         "phpstan/phpstan": "^1.8.2",
         "phpstan/phpstan-mockery": "^1.1",
