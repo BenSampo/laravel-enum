@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PHPStan\Type\ObjectType;
@@ -66,6 +67,7 @@ CODE_SAMPLE,
             MethodCall::class,
             NullsafeMethodCall::class,
             New_::class,
+            StaticCall::class,
         ];
     }
 
@@ -88,7 +90,7 @@ CODE_SAMPLE,
             return $this->isObjectType($node->var, $class);
         }
 
-        if ($node instanceof New_) {
+        if ($node instanceof New_ || $node instanceof StaticCall) {
             return $this->isObjectType($node->class, $class);
         }
 
@@ -107,8 +109,14 @@ CODE_SAMPLE,
             }
         }
 
+        if ($node instanceof StaticCall) {
+            if ($this->isName($node->name, 'fromValue')) {
+                return $this->refactorNewOrFromValue($node);
+            }
+        }
+
         if ($node instanceof New_) {
-            return $this->refactorNew($node);
+            return $this->refactorNewOrFromValue($node);
         }
 
         return null;
@@ -138,7 +146,7 @@ CODE_SAMPLE,
         return null;
     }
 
-    protected function refactorNew(New_ $node): ?Node
+    protected function refactorNewOrFromValue(New_|StaticCall $node): ?Node
     {
         $class = $node->class;
         if ($class instanceof Name) {
