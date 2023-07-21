@@ -8,9 +8,12 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractRector;
@@ -141,9 +144,22 @@ CODE_SAMPLE,
         if ($class instanceof Name) {
             $args = $node->args;
             if (isset($args[0]) && $args[0] instanceof Arg) {
-                $arg = $args[0];
+                $classString = $class->toString();
 
-                return $this->nodeFactory->createStaticCall($class->toString(), 'from', [$arg]);
+                $argValue = $args[0]->value;
+                if ($argValue instanceof ClassConstFetch) {
+                    $argValueClass = $argValue->class;
+                    $argValueName = $argValue->name;
+                    if (
+                        $argValueClass instanceof Name
+                        && $argValueClass->toString() === $classString
+                        && $argValueName instanceof Identifier
+                    ) {
+                        return $this->nodeFactory->createClassConstFetch($classString, $argValueName->name);
+                    }
+                }
+
+                return $this->nodeFactory->createStaticCall($classString, 'from', [$argValue]);
             }
         }
 
