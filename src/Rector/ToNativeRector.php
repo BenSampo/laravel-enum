@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
@@ -107,6 +108,10 @@ CODE_SAMPLE,
             if ($this->isName($node->name, 'in')) {
                 return $this->refactorIn($node);
             }
+
+            if ($this->isName($node->name, 'notIn')) {
+                return $this->refactorNotIn($node);
+            }
         }
 
         if ($node instanceof StaticCall) {
@@ -141,6 +146,20 @@ CODE_SAMPLE,
             $arg = $args[0];
 
             return $this->nodeFactory->createFuncCall('in_array', [$node->var, $arg]);
+        }
+
+        return null;
+    }
+
+    protected function refactorNotIn(MethodCall|NullsafeMethodCall $node): ?Node
+    {
+        $args = $node->args;
+        if (isset($args[0]) && $args[0] instanceof Arg) {
+            $arg = $args[0];
+
+            return new BooleanNot(
+                $this->nodeFactory->createFuncCall('in_array', [$node->var, $arg])
+            );
         }
 
         return null;
