@@ -4,9 +4,11 @@ namespace BenSampo\Enum\Rector;
 
 use BenSampo\Enum\Enum;
 use BenSampo\Enum\Tests\Enums\UserType;
+use PhpParser\Builder\Param as ParamBuilder;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
@@ -14,9 +16,12 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Param;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
@@ -129,6 +134,10 @@ CODE_SAMPLE,
                 return $this->refactorGetInstances($node);
             }
 
+            if ($this->isName($node->name, 'getKeys')) {
+                return $this->refactorGetKeys($node);
+            }
+
             return $this->refactorMagicStaticCall($node);
         }
 
@@ -222,6 +231,30 @@ CODE_SAMPLE,
         $class = $node->class;
         if ($class instanceof Name) {
             return $this->nodeFactory->createStaticCall($class->toString(), 'cases');
+        }
+
+        return null;
+    }
+
+    protected function refactorGetKeys(StaticCall $node): ?Node
+    {
+        $class = $node->class;
+        if ($class instanceof Name) {
+            $args = $node->args;
+            if ($args === []) {
+                $paramName = lcfirst($class->getLast());
+                $paramVariable = new Variable($paramName);
+
+                return $this->nodeFactory->createFuncCall('array_map', [
+                    new ArrowFunction([
+                        'static' => true,
+                        'params' => [new Param($paramVariable, null, $class)],
+                        'returnType' => 'string',
+                        'expr' => new PropertyFetch($paramVariable, 'name'),
+                    ]),
+                    $this->nodeFactory->createStaticCall($class->toString(), 'cases'),
+                ]);
+            }
         }
 
         return null;
