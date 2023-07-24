@@ -112,6 +112,8 @@ CODE_SAMPLE,
             if ($this->isName($node->name, 'notIn')) {
                 return $this->refactorNotIn($node);
             }
+
+            return $this->refactorMagicCall($node);
         }
 
         if ($node instanceof StaticCall) {
@@ -119,7 +121,7 @@ CODE_SAMPLE,
                 return $this->refactorNewOrFromValue($node);
             }
 
-            return $this->refactorMagicCallStatic($node);
+            return $this->refactorMagicCall($node);
         }
 
         if ($node instanceof New_) {
@@ -195,7 +197,7 @@ CODE_SAMPLE,
         return null;
     }
 
-    protected function refactorMagicCallStatic(StaticCall $node): ?Node
+    protected function refactorMagicCall(StaticCall|MethodCall|NullsafeMethodCall $node): ?Node
     {
         $class = $node->class;
         $name = $node->name;
