@@ -71,10 +71,11 @@ CODE_SAMPLE,
     public function getNodeTypes(): array
     {
         return [
-            MethodCall::class,
-            NullsafeMethodCall::class,
             New_::class,
             StaticCall::class,
+            MethodCall::class,
+            NullsafeMethodCall::class,
+            PropertyFetch::class,
         ];
     }
 
@@ -93,12 +94,12 @@ CODE_SAMPLE,
 
     protected function isConfiguredClass(Node $node, ObjectType $class): bool
     {
-        if ($node instanceof MethodCall || $node instanceof NullsafeMethodCall) {
-            return $this->isObjectType($node->var, $class);
-        }
-
         if ($node instanceof New_ || $node instanceof StaticCall) {
             return $this->isObjectType($node->class, $class);
+        }
+
+        if ($node instanceof MethodCall || $node instanceof NullsafeMethodCall || $node instanceof PropertyFetch) {
+            return $this->isObjectType($node->var, $class);
         }
 
         return false;
@@ -106,22 +107,8 @@ CODE_SAMPLE,
 
     protected function refactorNode(Node $node): ?Node
     {
-        if ($node instanceof MethodCall || $node instanceof NullsafeMethodCall) {
-            if ($this->isName($node->name, 'is')) {
-                return $this->refactorIs($node);
-            }
-
-            if ($this->isName($node->name, 'isNot')) {
-                return $this->refactorIsNot($node);
-            }
-
-            if ($this->isName($node->name, 'in')) {
-                return $this->refactorIn($node);
-            }
-
-            if ($this->isName($node->name, 'notIn')) {
-                return $this->refactorNotIn($node);
-            }
+        if ($node instanceof New_) {
+            return $this->refactorNewOrFromValue($node);
         }
 
         if ($node instanceof StaticCall) {
@@ -144,8 +131,28 @@ CODE_SAMPLE,
             return $this->refactorMagicStaticCall($node);
         }
 
-        if ($node instanceof New_) {
-            return $this->refactorNewOrFromValue($node);
+        if ($node instanceof MethodCall || $node instanceof NullsafeMethodCall) {
+            if ($this->isName($node->name, 'is')) {
+                return $this->refactorIs($node);
+            }
+
+            if ($this->isName($node->name, 'isNot')) {
+                return $this->refactorIsNot($node);
+            }
+
+            if ($this->isName($node->name, 'in')) {
+                return $this->refactorIn($node);
+            }
+
+            if ($this->isName($node->name, 'notIn')) {
+                return $this->refactorNotIn($node);
+            }
+        }
+
+        if ($node instanceof PropertyFetch) {
+            if ($this->isName($node->name, 'key')) {
+                return $this->refactorKey($node);
+            }
         }
 
         return null;
@@ -326,5 +333,11 @@ CODE_SAMPLE,
         }
 
         return null;
+    }
+
+    /** @see Enum::$key */
+    protected function refactorKey(PropertyFetch $node): ?Node
+    {
+        return $this->nodeFactory->createPropertyFetch($node->var, 'name');
     }
 }
