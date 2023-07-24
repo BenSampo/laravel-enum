@@ -125,6 +125,10 @@ CODE_SAMPLE,
                 return $this->refactorNewOrFromValue($node);
             }
 
+            if ($this->isName($node->name, 'getInstances')) {
+                return $this->refactorGetInstances($node);
+            }
+
             return $this->refactorMagicStaticCall($node);
         }
 
@@ -208,6 +212,16 @@ CODE_SAMPLE,
 
                 return $this->nodeFactory->createStaticCall($classString, 'from', [$argValue]);
             }
+        }
+
+        return null;
+    }
+
+    protected function refactorGetInstances(StaticCall $node): ?Node
+    {
+        $class = $node->class;
+        if ($class instanceof Name) {
+            return $this->nodeFactory->createStaticCall($class->toString(), 'cases');
         }
 
         return null;
