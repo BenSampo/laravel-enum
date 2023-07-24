@@ -118,6 +118,8 @@ CODE_SAMPLE,
             if ($this->isName($node->name, 'fromValue')) {
                 return $this->refactorNewOrFromValue($node);
             }
+
+            return $this->refactorMagicCallStatic($node);
         }
 
         if ($node instanceof New_) {
@@ -187,6 +189,21 @@ CODE_SAMPLE,
                 }
 
                 return $this->nodeFactory->createStaticCall($classString, 'from', [$argValue]);
+            }
+        }
+
+        return null;
+    }
+
+    protected function refactorMagicCallStatic(StaticCall $node): ?Node
+    {
+        $class = $node->class;
+        $name = $node->name;
+        if ($class instanceof Name && $name instanceof Identifier) {
+            $classString = $class->toString();
+            $constName = $name->toString();
+            if (defined("{$classString}::{$constName}")) {
+                return $this->nodeFactory->createClassConstFetch($classString, $constName);
             }
         }
 
