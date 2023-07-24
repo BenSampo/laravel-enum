@@ -81,9 +81,11 @@ You can migrate your usages of `BenSampo\Enum\Enum` to native PHP enums using th
 2. Run rector with `vendor/bin/rector process`
 3. Run [`php artisan enum:to-native`](#php-artisan-enumto-native) on the enum class 
 4. Review and validate the code changes for missed edge cases
+   - See [Unimplemented](tests/Rector/Unimplemented)
    - `Enum::fromKey()`: Either replace usages or implement the method in your native enum.
    - `Enum::coerce()`: If only values were passed, you can replace it with `tryFrom()`.
       If keys or instances could also be passed, you might need additional logic to cover this.
+   - `Enum::getDescription()`: Implement an alternative.
 
 TODO check if 2. and 3. can be done in a single run of rector or if that would leave the project partially converted
 

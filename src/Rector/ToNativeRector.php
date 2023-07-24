@@ -4,7 +4,6 @@ namespace BenSampo\Enum\Rector;
 
 use BenSampo\Enum\Enum;
 use BenSampo\Enum\Tests\Enums\UserType;
-use PhpParser\Builder\Param as ParamBuilder;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -138,6 +137,10 @@ CODE_SAMPLE,
                 return $this->refactorGetKeys($node);
             }
 
+            if ($this->isName($node->name, 'getValues')) {
+                return $this->refactorGetValues($node);
+            }
+
             return $this->refactorMagicStaticCall($node);
         }
 
@@ -148,6 +151,7 @@ CODE_SAMPLE,
         return null;
     }
 
+    /** @see Enum::is() */
     protected function refactorIs(MethodCall|NullsafeMethodCall $node): ?Node
     {
         $args = $node->args;
@@ -160,6 +164,7 @@ CODE_SAMPLE,
         return null;
     }
 
+    /** @see Enum::isNot() */
     protected function refactorIsNot(MethodCall|NullsafeMethodCall $node): ?Node
     {
         $args = $node->args;
@@ -172,6 +177,7 @@ CODE_SAMPLE,
         return null;
     }
 
+    /** @see Enum::in() */
     protected function refactorIn(MethodCall|NullsafeMethodCall $node): ?Node
     {
         $args = $node->args;
@@ -184,6 +190,7 @@ CODE_SAMPLE,
         return null;
     }
 
+    /** @see Enum::notIn() */
     protected function refactorNotIn(MethodCall|NullsafeMethodCall $node): ?Node
     {
         $args = $node->args;
@@ -198,6 +205,10 @@ CODE_SAMPLE,
         return null;
     }
 
+    /**
+     * @see Enum::__construct()
+     * @see Enum::fromValue()
+     */
     protected function refactorNewOrFromValue(New_|StaticCall $node): ?Node
     {
         $class = $node->class;
@@ -226,6 +237,7 @@ CODE_SAMPLE,
         return null;
     }
 
+    /** @see Enum::getInstances() */
     protected function refactorGetInstances(StaticCall $node): ?Node
     {
         $class = $node->class;
@@ -236,6 +248,7 @@ CODE_SAMPLE,
         return null;
     }
 
+    /** @see Enum::getKeys() */
     protected function refactorGetKeys(StaticCall $node): ?Node
     {
         $class = $node->class;
@@ -260,6 +273,34 @@ CODE_SAMPLE,
         return null;
     }
 
+    /** @see Enum::getValues() */
+    protected function refactorGetValues(StaticCall $node): ?Node
+    {
+        $class = $node->class;
+        if ($class instanceof Name) {
+            $args = $node->args;
+            if ($args === []) {
+                $paramName = lcfirst($class->getLast());
+                $paramVariable = new Variable($paramName);
+
+                return $this->nodeFactory->createFuncCall('array_map', [
+                    new ArrowFunction([
+                        'static' => true,
+                        'params' => [new Param($paramVariable, null, $class)],
+                        'expr' => new PropertyFetch($paramVariable, 'value'),
+                    ]),
+                    $this->nodeFactory->createStaticCall($class->toString(), 'cases'),
+                ]);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @see Enum::__callStatic()
+     * @see Enum::__call()
+     */
     protected function refactorMagicStaticCall(StaticCall $node): ?Node
     {
         $name = $node->name;
