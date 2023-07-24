@@ -77,10 +77,15 @@ composer require bensampo/laravel-enum
 PHP 8.1 supports enums natively.
 You can migrate your usages of `BenSampo\Enum\Enum` to native PHP enums using the following steps.
 
+For large projects, it is recommended to migrate one enum at a time. 
+
+1. Review direct uses of the enums constant.
+   If they are used in places where enum instances are also accepted, leave them.
+   If their internal value is needed, add `->value`.
 1. Configure the enum class you want to convert in [`ToNativeRector`](rector-rules.md#tonativerector)
-2. Run rector with `vendor/bin/rector process`
-3. Run [`php artisan enum:to-native`](#php-artisan-enumto-native) on the enum class 
-4. Review and validate the code changes for missed edge cases
+1. Run rector with `vendor/bin/rector process`
+1. Run [`php artisan enum:to-native`](#php-artisan-enumto-native) on the enum class 
+1. Review and validate the code changes for missed edge cases
    - See [Unimplemented](tests/Rector/Unimplemented)
    - `Enum::fromKey()`: Either replace usages or implement the method in your native enum.
    - `Enum::coerce()`: If only values were passed, you can replace it with `tryFrom()`.
