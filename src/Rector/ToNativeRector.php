@@ -22,6 +22,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PHPStan\Type\ObjectType;
+use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -30,7 +31,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /** @see \BenSampo\Enum\Tests\Rector\ToNativeRectorTest */
-class ToNativeRector extends AbstractRector implements ConfigurableRuleInterface, ConfigurableRectorInterface
+class ToNativeRector extends AbstractRector implements ConfigurableRuleInterface, ConfigurableRectorInterface, AllowEmptyConfigurableRectorInterface
 {
     /** @var array<ObjectType> */
     protected array $classes;
