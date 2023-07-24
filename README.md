@@ -26,9 +26,10 @@ Created by [Ben Sampson](https://sampo.co.uk)
 
 - [Guide](#guide)
 - [Installation](#installation)
+- [Migrate to Native PHP Enums](#migrate-to-native-PHP-enums)
 - [Enum Library](enum-library.md)
 - [Basic Usage](#basic-usage)
-  - [Enum definition](#enum-definition)
+  - [Enum Definition](#enum-definition)
   - [Instantiation](#instantiation)
   - [Instance Properties](#instance-properties)
   - [Instance Equality](#instance-equality)
@@ -38,9 +39,9 @@ Created by [Ben Sampson](https://sampo.co.uk)
 - [Migrations](#migrations)
 - [Validation](#validation)
 - [Localization](#localization)
-- [Customizing descriptions](#customizing-descriptions)
-  - [Customizing class description](#customizing-class-description)
-  - [Customizing value descriptions](#customizing-value-descriptions)
+- [Customizing Descriptions](#customizing-descriptions)
+  - [Customizing Class Description](#customizing-class-description)
+  - [Customizing Value Descriptions](#customizing-value-descriptions)
 - [Extending the Enum Base Class](#extending-the-enum-base-class)
 - [Laravel Nova Integration](#laravel-nova-integration)
 - [PHPStan Integration](#phpstan-integration)
@@ -57,7 +58,7 @@ You are reading the documentation for `6.x`.
 - If you're using **Laravel 7** please see the [docs for `2.x`](https://github.com/BenSampo/laravel-enum/blob/v2.2.0/README.md).
 - If you're using **Laravel 6** or below, please see the [docs for `1.x`](https://github.com/BenSampo/laravel-enum/blob/v1.38.0/README.md).
 
-Please see the [upgrade guide](./UPGRADE.md) for information on how to upgrade to the latest version.
+Please see the [upgrade guide](UPGRADE.md) for information on how to upgrade to the latest version.
 
 ## Guide
 
@@ -65,16 +66,23 @@ I wrote a blog post about using laravel-enum: https://sampo.co.uk/blog/using-enu
 
 ## Installation
 
-### Requirements
-
-- Laravel `9` or higher
-- PHP `8.0` or higher
-
-Via Composer
+Requires PHP 8, and Laravel 9 or 10.
 
 ```sh
 composer require bensampo/laravel-enum
 ```
+
+## Migrate to Native PHP Enums
+
+PHP 8.1 supports enums natively.
+You can migrate your usages of `BenSampo\Enum\Enum` to native PHP enums using the following steps.
+
+1. Configure the enum class you want to convert in [`ToNativeRector`](rector-rules.md#tonativerector)
+2. Run rector with `vendor/bin/rector process`
+3. Run [`php artisan enum:to-native`](#php-artisan-enumto-native) on the enum class 
+4. Review and validate the code changes for missed edge cases
+
+TODO check if 2. and 3. can be done in a single run of rector or if that would leave the project partially converted
 
 ## Enum Library
 
