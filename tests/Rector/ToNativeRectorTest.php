@@ -15,7 +15,7 @@ final class ToNativeRectorTest extends AbstractRectorTestCase
     /** @return iterable<string> */
     public static function provideData(): iterable
     {
-        return self::yieldFilesFromDirectory(__DIR__ . '/fixtures');
+        return self::yieldFilesFromDirectory(__DIR__ . '/Fixtures');
     }
 
     public function provideConfigFilePath(): string

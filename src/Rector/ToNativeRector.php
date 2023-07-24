@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
@@ -19,6 +20,7 @@ use PhpParser\Node\Name;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -105,6 +107,10 @@ CODE_SAMPLE,
                 return $this->refactorIs($node);
             }
 
+            if ($this->isName($node->name, 'isNot')) {
+                return $this->refactorIsNot($node);
+            }
+
             if ($this->isName($node->name, 'in')) {
                 return $this->refactorIn($node);
             }
@@ -112,8 +118,6 @@ CODE_SAMPLE,
             if ($this->isName($node->name, 'notIn')) {
                 return $this->refactorNotIn($node);
             }
-
-            return $this->refactorMagicCall($node);
         }
 
         if ($node instanceof StaticCall) {
@@ -121,7 +125,7 @@ CODE_SAMPLE,
                 return $this->refactorNewOrFromValue($node);
             }
 
-            return $this->refactorMagicCall($node);
+            return $this->refactorMagicStaticCall($node);
         }
 
         if ($node instanceof New_) {
@@ -138,6 +142,18 @@ CODE_SAMPLE,
             $arg = $args[0];
 
             return new Identical($node->var, $arg->value);
+        }
+
+        return null;
+    }
+
+    protected function refactorIsNot(MethodCall|NullsafeMethodCall $node): ?Node
+    {
+        $args = $node->args;
+        if (isset($args[0]) && $args[0] instanceof Arg) {
+            $arg = $args[0];
+
+            return new NotIdentical($node->var, $arg->value);
         }
 
         return null;
@@ -197,15 +213,27 @@ CODE_SAMPLE,
         return null;
     }
 
-    protected function refactorMagicCall(StaticCall|MethodCall|NullsafeMethodCall $node): ?Node
+    protected function refactorMagicStaticCall(StaticCall $node): ?Node
     {
-        $class = $node->class;
         $name = $node->name;
-        if ($class instanceof Name && $name instanceof Identifier) {
-            $classString = $class->toString();
+        if ($name instanceof Expr) {
+            return null;
+        }
+
+        $class = $node->class;
+        if ($class instanceof Name) {
+            if ($class->isSpecialClassName()) {
+                $type = $this->getType($class);
+                if (! $type instanceof FullyQualifiedObjectType) {
+                    return null;
+                }
+                $fullyQualifiedClassName = $type->getClassName();
+            } else {
+                $fullyQualifiedClassName = $class->toString();
+            }
             $constName = $name->toString();
-            if (defined("{$classString}::{$constName}")) {
-                return $this->nodeFactory->createClassConstFetch($classString, $constName);
+            if (defined("{$fullyQualifiedClassName}::{$constName}")) {
+                return $this->nodeFactory->createClassConstFetch($class->toString(), $constName);
             }
         }
 
