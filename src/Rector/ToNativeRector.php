@@ -27,21 +27,17 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
 use PHPStan\Analyser\Scope;
-use PHPStan\PhpDocParser\Ast\Node as PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
 use PHPStan\Type\ObjectType;
-use Rector\BetterPhpDocParser\PhpDoc\StringNode;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -50,7 +46,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /** @see \BenSampo\Enum\Tests\Rector\ToNativeRectorTest */
 class ToNativeRector extends AbstractScopeAwareRector implements ConfigurableRuleInterface, ConfigurableRectorInterface, AllowEmptyConfigurableRectorInterface
 {
-    const USAGES_MIGRATED = '@usages-migrated';
+    public const USAGES_MIGRATED = '@usages-migrated';
+
     /** @var array<ObjectType> */
     protected array $classes;
 
@@ -208,6 +205,7 @@ CODE_SAMPLE,
         if (! $phpDocInfo->hasByName(self::USAGES_MIGRATED)) {
             $phpDocInfo->addPhpDocTagNode($this->usagesMigratedMarkerTag());
             $class->setDocComment(new Doc($this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo)));
+
             return $class;
         }
 
@@ -272,6 +270,7 @@ CODE_SAMPLE,
     protected function usagesMigratedMarkerTag(): PhpDocTagNode
     {
         static $tag;
+
         return $tag ??= new PhpDocTagNode(
             self::USAGES_MIGRATED,
             new GenericTagValueNode('run rector once more to finally convert this')
