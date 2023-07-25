@@ -83,7 +83,7 @@ For large projects, it is recommended to migrate one enum at a time.
    If they are used in places where enum instances are also accepted, leave them.
    If their internal value is needed, add `->value`.
 1. Configure the enum class you want to convert in [`ToNativeRector`](rector-rules.md#tonativerector)
-1. Run rector with `vendor/bin/rector process`
+1. Run rector with `vendor/bin/rector process --clear-cache`
 1. Review and validate the code changes for missed edge cases
    - See [Unimplemented](tests/Rector/Unimplemented)
    - `Enum::fromKey()`: Either replace usages or implement the method in your native enum.
