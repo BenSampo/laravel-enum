@@ -4,18 +4,28 @@ namespace BenSampo\Enum\Tests\Rector\Fixtures;
 
 use BenSampo\Enum\Enum;
 
-class MagicCall extends Enum {
+/**
+ * Uses magic calls to instantiate itself.
+ *
+ * @method static static BAR()
+ * @method static static BAZ()
+ */
+class MagicCall extends Enum
+{
+    /** Meet you at the... */
     const BAR = 1;
     const BAZ = 2;
 
-    public function static(): self
+    /** Magic static. */
+    public function static(): static
     {
         return static::BAR();
     }
 
-    public function self(): self
+    /** @return array{self} */
+    public static function self(): array
     {
-        return self::BAR();
+        return [self::BAR()];
     }
 }
 -----
@@ -25,17 +35,22 @@ namespace BenSampo\Enum\Tests\Rector\Fixtures;
 
 use BenSampo\Enum\Enum;
 
-class MagicCall extends Enum {
-    const BAR = 1;
-    const BAZ = 2;
-
-    public function static(): self
+/**
+ * Uses magic calls to instantiate itself.
+ */
+enum MagicCall : int
+{
+    /** Meet you at the... */
+    case BAR = 1;
+    case BAZ = 2;
+    /** Magic static. */
+    public function static(): static
     {
         return static::BAR;
     }
-
-    public function self(): self
+    /** @return array{self} */
+    public static function self(): array
     {
-        return self::BAR;
+        return [self::BAR];
     }
 }

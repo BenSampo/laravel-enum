@@ -4,6 +4,7 @@ namespace BenSampo\Enum\Rector;
 
 use BenSampo\Enum\Enum;
 use BenSampo\Enum\Tests\Enums\UserType;
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -21,10 +22,19 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\Enum_;
+use PhpParser\Node\Stmt\EnumCase;
+use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
 use PHPStan\Type\ObjectType;
+use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php81\NodeFactory\EnumFactory;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -35,6 +45,11 @@ class ToNativeRector extends AbstractRector implements ConfigurableRuleInterface
 {
     /** @var array<ObjectType> */
     protected array $classes;
+
+    public function __construct(
+        protected PhpDocInfoPrinter $phpDocInfoPrinter,
+        protected DocBlockUpdater $docBlockUpdater,
+    ) {}
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -72,6 +87,7 @@ CODE_SAMPLE,
     public function getNodeTypes(): array
     {
         return [
+            Class_::class,
             New_::class,
             StaticCall::class,
             MethodCall::class,
@@ -95,6 +111,10 @@ CODE_SAMPLE,
 
     protected function isConfiguredClass(Node $node, ObjectType $class): bool
     {
+        if ($node instanceof Class_) {
+            return $this->isObjectType($node, $class);
+        }
+
         if ($node instanceof New_ || $node instanceof StaticCall) {
             return $this->isObjectType($node->class, $class);
         }
@@ -108,6 +128,10 @@ CODE_SAMPLE,
 
     protected function refactorNode(Node $node): ?Node
     {
+        if ($node instanceof Class_) {
+            return $this->refactorClass($node);
+        }
+
         if ($node instanceof New_) {
             return $this->refactorNewOrFromValue($node);
         }
@@ -153,6 +177,91 @@ CODE_SAMPLE,
         if ($node instanceof PropertyFetch) {
             if ($this->isName($node->name, 'key')) {
                 return $this->refactorKey($node);
+            }
+        }
+
+        return null;
+    }
+
+    /** @see \Rector\Php81\NodeFactory\EnumFactory */
+    protected function refactorClass(Class_ $class): ?Node
+    {
+        $enum = new Enum_(
+            $this->nodeNameResolver->getShortName($class),
+            [],
+            ['startLine' => $class->getStartLine(), 'endLine' => $class->getEndLine()]
+        );
+        $enum->namespacedName = $class->namespacedName;
+
+        $docComment = $class->getDocComment();
+        if ($docComment) {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNode($class);
+            $phpDocInfo->removeByType(MethodTagValueNode::class);
+            $enum->setDocComment(new Doc($this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo)));
+        }
+
+        $constants = $class->getConstants();
+
+        $enum->stmts = $class->getTraitUses();
+
+        if ($constants !== []) {
+            // Assume the first constant value has the correct type
+            $value = $this->valueResolver->getValue($constants[0]->consts[0]->value);
+            $enum->scalarType = is_string($value)
+                ? new Identifier('string')
+                : new Identifier('int');
+
+            foreach ($constants as $constant) {
+                $constConst = $constant->consts[0];
+                $enumCase = new EnumCase(
+                    $constConst->name,
+                    $constConst->value,
+                    [],
+                    [
+                        'startLine' => $constConst->getStartLine(),
+                        'endLine' => $constConst->getEndLine(),
+                    ]
+                );
+
+                // mirror comments
+                $enumCase->setAttribute(AttributeKey::PHP_DOC_INFO, $constant->getAttribute(AttributeKey::PHP_DOC_INFO));
+                $enumCase->setAttribute(AttributeKey::COMMENTS, $constant->getAttribute(AttributeKey::COMMENTS));
+
+                $enum->stmts[] = $enumCase;
+            }
+        }
+
+        $enum->stmts = [...$enum->stmts, ...$class->getMethods()];
+
+        return $enum;
+    }
+
+    /**
+     * @see Enum::__construct()
+     * @see Enum::fromValue()
+     */
+    protected function refactorNewOrFromValue(New_|StaticCall $node): ?Node
+    {
+        $class = $node->class;
+        if ($class instanceof Name) {
+            $args = $node->args;
+            if (isset($args[0]) && $args[0] instanceof Arg) {
+                $classString = $class->toString();
+
+                $argValue = $args[0]->value;
+                if ($argValue instanceof ClassConstFetch) {
+                    $argValueClass = $argValue->class;
+                    $argValueName = $argValue->name;
+                    if (
+                        $argValueClass instanceof Name
+                        && $argValueClass->toString() === $classString
+                        && $argValueName instanceof Identifier
+                    ) {
+                        return $this->nodeFactory->createClassConstFetch($classString, $argValueName->name);
+                    }
+                }
+
+                return $this->nodeFactory->createStaticCall($classString, 'from', [$argValue]);
             }
         }
 
@@ -208,38 +317,6 @@ CODE_SAMPLE,
             return new BooleanNot(
                 $this->nodeFactory->createFuncCall('in_array', [$node->var, $arg])
             );
-        }
-
-        return null;
-    }
-
-    /**
-     * @see Enum::__construct()
-     * @see Enum::fromValue()
-     */
-    protected function refactorNewOrFromValue(New_|StaticCall $node): ?Node
-    {
-        $class = $node->class;
-        if ($class instanceof Name) {
-            $args = $node->args;
-            if (isset($args[0]) && $args[0] instanceof Arg) {
-                $classString = $class->toString();
-
-                $argValue = $args[0]->value;
-                if ($argValue instanceof ClassConstFetch) {
-                    $argValueClass = $argValue->class;
-                    $argValueName = $argValue->name;
-                    if (
-                        $argValueClass instanceof Name
-                        && $argValueClass->toString() === $classString
-                        && $argValueName instanceof Identifier
-                    ) {
-                        return $this->nodeFactory->createClassConstFetch($classString, $argValueName->name);
-                    }
-                }
-
-                return $this->nodeFactory->createStaticCall($classString, 'from', [$argValue]);
-            }
         }
 
         return null;

@@ -84,7 +84,6 @@ For large projects, it is recommended to migrate one enum at a time.
    If their internal value is needed, add `->value`.
 1. Configure the enum class you want to convert in [`ToNativeRector`](rector-rules.md#tonativerector)
 1. Run rector with `vendor/bin/rector process`
-1. Run [`php artisan enum:to-native`](#php-artisan-enumto-native) on the enum class 
 1. Review and validate the code changes for missed edge cases
    - See [Unimplemented](tests/Rector/Unimplemented)
    - `Enum::fromKey()`: Either replace usages or implement the method in your native enum.
@@ -92,7 +91,8 @@ For large projects, it is recommended to migrate one enum at a time.
       If keys or instances could also be passed, you might need additional logic to cover this.
    - `Enum::getDescription()`: Implement an alternative.
 
-TODO check if 2. and 3. can be done in a single run of rector or if that would leave the project partially converted
+TODO check if conversion of enums and their uses can be done in a single run of rector,
+or if that would leave the project partially converted.
 
 ## Enum Library
 
