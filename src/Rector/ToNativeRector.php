@@ -197,6 +197,9 @@ CODE_SAMPLE,
             $phpDocInfo->removeByType(ExtendsTagValueNode::class);
 
             $phpdoc = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
+            // By removing unnecessary tags, we are usually left with a couple of redundant newlines.
+            // There might be valuable ones to keep in long descriptions which will unfortunately
+            // also be removed, but this should be less common.
             $withoutEmptyNewlines = preg_replace('/ \*\n/', '', $phpdoc);
 
             $enum->setDocComment(new Doc($withoutEmptyNewlines));
