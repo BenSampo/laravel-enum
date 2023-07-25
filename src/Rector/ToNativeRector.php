@@ -201,8 +201,9 @@ CODE_SAMPLE,
             // There might be valuable ones to keep in long descriptions which will unfortunately
             // also be removed, but this should be less common.
             $withoutEmptyNewlines = preg_replace('/ \*\n/', '', $phpdoc);
-
-            $enum->setDocComment(new Doc($withoutEmptyNewlines));
+            if ($withoutEmptyNewlines) {
+                $enum->setDocComment(new Doc($withoutEmptyNewlines));
+            }
         }
 
         $constants = $class->getConstants();
