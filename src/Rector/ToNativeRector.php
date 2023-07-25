@@ -101,41 +101,6 @@ CODE_SAMPLE,
     {
         $this->classes ??= [new ObjectType(Enum::class)];
 
-        foreach ($this->classes as $class) {
-            if ($this->usesConfiguredClass($node, $class)) {
-                return $this->refactorNode($node, $scope);
-            }
-        }
-
-        return null;
-    }
-
-    protected function usesConfiguredClass(Node $node, ObjectType $class): bool
-    {
-        if ($node instanceof Class_) {
-            return $this->isObjectType($node, $class);
-        }
-
-        if ($node instanceof ArrayItem) {
-            $key = $node->key;
-
-            return $key instanceof ClassConstFetch
-                && $this->isObjectType($key->class, $class);
-        }
-
-        if ($node instanceof New_ || $node instanceof ClassConstFetch || $node instanceof StaticCall) {
-            return $this->isObjectType($node->class, $class);
-        }
-
-        if ($node instanceof MethodCall || $node instanceof NullsafeMethodCall || $node instanceof PropertyFetch) {
-            return $this->isObjectType($node->var, $class);
-        }
-
-        return false;
-    }
-
-    protected function refactorNode(Node $node, Scope $scope): ?Node
-    {
         if ($node instanceof Class_) {
             return $this->refactorClass($node);
         }
@@ -153,6 +118,10 @@ CODE_SAMPLE,
         }
 
         if ($node instanceof StaticCall) {
+            if (! $this->inConfiguredClasses($node->class)) {
+                return null;
+            }
+
             if ($this->isName($node->name, 'fromValue')) {
                 return $this->refactorNewOrFromValue($node);
             }
@@ -173,6 +142,10 @@ CODE_SAMPLE,
         }
 
         if ($node instanceof MethodCall || $node instanceof NullsafeMethodCall) {
+            if (! $this->inConfiguredClasses($node->var)) {
+                return null;
+            }
+
             if ($this->isName($node->name, 'is')) {
                 return $this->refactorIs($node);
             }
@@ -191,6 +164,10 @@ CODE_SAMPLE,
         }
 
         if ($node instanceof PropertyFetch) {
+            if (! $this->inConfiguredClasses($node->var)) {
+                return null;
+            }
+
             if ($this->isName($node->name, 'key')) {
                 return $this->refactorKey($node);
             }
@@ -199,9 +176,24 @@ CODE_SAMPLE,
         return null;
     }
 
+    protected function inConfiguredClasses(Node $node): bool
+    {
+        foreach ($this->classes as $class) {
+            if ($this->isObjectType($node, $class)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /** @see \Rector\Php81\NodeFactory\EnumFactory */
     protected function refactorClass(Class_ $class): ?Node
     {
+        if (! $this->inConfiguredClasses($class)) {
+            return null;
+        }
+
         $enum = new Enum_(
             $this->nodeNameResolver->getShortName($class),
             [],
@@ -268,7 +260,7 @@ CODE_SAMPLE,
     protected function refactorNewOrFromValue(New_|StaticCall $node): ?Node
     {
         $class = $node->class;
-        if ($class instanceof Name) {
+        if ($class instanceof Name && $this->inConfiguredClasses($class)) {
             $args = $node->args;
             if (isset($args[0]) && $args[0] instanceof Arg) {
                 $classString = $class->toString();
@@ -295,6 +287,10 @@ CODE_SAMPLE,
 
     protected function refactorClassConstFetch(ClassConstFetch $node, Scope $scope): ?Node
     {
+        if (! $this->inConfiguredClasses($node)) {
+            return null;
+        }
+
         return null;
     }
 
@@ -452,7 +448,7 @@ CODE_SAMPLE,
     protected function refactorArrayItem(ArrayItem $node): ?Node
     {
         $key = $node->key;
-        if ($key instanceof ClassConstFetch) {
+        if ($key instanceof ClassConstFetch && $this->inConfiguredClasses($key->class)) {
             return new ArrayItem(
                 $node->value,
                 $this->nodeFactory->createPropertyFetch($key, 'value'),
