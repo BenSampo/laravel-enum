@@ -9,6 +9,8 @@ use BenSampo\Enum\Enum;
  *
  * @method static static BAR()
  * @method static static BAZ()
+ *
+ * @extends Enum<int>
  */
 class MagicCall extends Enum
 {

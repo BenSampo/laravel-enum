@@ -25,6 +25,7 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
@@ -46,7 +47,6 @@ class ToNativeRector extends AbstractRector implements ConfigurableRuleInterface
 
     public function __construct(
         protected PhpDocInfoPrinter $phpDocInfoPrinter,
-        protected DocBlockUpdater $docBlockUpdater,
     ) {}
 
     public function getRuleDefinition(): RuleDefinition
@@ -194,7 +194,12 @@ CODE_SAMPLE,
         if ($docComment) {
             $phpDocInfo = $this->phpDocInfoFactory->createFromNode($class);
             $phpDocInfo->removeByType(MethodTagValueNode::class);
-            $enum->setDocComment(new Doc($this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo)));
+            $phpDocInfo->removeByType(ExtendsTagValueNode::class);
+
+            $phpdoc = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
+            $withoutEmptyNewlines = preg_replace('/ \*\n/', '', $phpdoc);
+
+            $enum->setDocComment(new Doc($withoutEmptyNewlines));
         }
 
         $constants = $class->getConstants();
