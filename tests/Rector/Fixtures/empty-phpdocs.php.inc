@@ -17,7 +17,6 @@ class Foo extends Enum
 
 use BenSampo\Enum\Enum;
 
-
 enum Foo : int
 {
     case BAR = 1;
