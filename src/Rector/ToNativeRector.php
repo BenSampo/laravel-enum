@@ -27,14 +27,21 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
 use PHPStan\Analyser\Scope;
+use PHPStan\PhpDocParser\Ast\Node as PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
 use PHPStan\Type\ObjectType;
+use Rector\BetterPhpDocParser\PhpDoc\StringNode;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -43,11 +50,13 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /** @see \BenSampo\Enum\Tests\Rector\ToNativeRectorTest */
 class ToNativeRector extends AbstractScopeAwareRector implements ConfigurableRuleInterface, ConfigurableRectorInterface, AllowEmptyConfigurableRectorInterface
 {
+    const USAGES_MIGRATED = '@usages-migrated';
     /** @var array<ObjectType> */
     protected array $classes;
 
     public function __construct(
         protected PhpDocInfoPrinter $phpDocInfoPrinter,
+        protected PhpDocTagRemover $phpDocTagRemover,
     ) {}
 
     public function getRuleDefinition(): RuleDefinition
@@ -194,6 +203,14 @@ CODE_SAMPLE,
             return null;
         }
 
+        $docComment = $class->getDocComment();
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
+        if (! $phpDocInfo->hasByName(self::USAGES_MIGRATED)) {
+            $phpDocInfo->addPhpDocTagNode($this->usagesMigratedMarkerTag());
+            $class->setDocComment(new Doc($this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo)));
+            return $class;
+        }
+
         $enum = new Enum_(
             $this->nodeNameResolver->getShortName($class),
             [],
@@ -201,11 +218,10 @@ CODE_SAMPLE,
         );
         $enum->namespacedName = $class->namespacedName;
 
-        $docComment = $class->getDocComment();
         if ($docComment) {
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNode($class);
             $phpDocInfo->removeByType(MethodTagValueNode::class);
             $phpDocInfo->removeByType(ExtendsTagValueNode::class);
+            $this->phpDocTagRemover->removeByName($phpDocInfo, self::USAGES_MIGRATED);
 
             $phpdoc = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
             // By removing unnecessary tags, we are usually left with a couple of redundant newlines.
@@ -251,6 +267,15 @@ CODE_SAMPLE,
         $enum->stmts = [...$enum->stmts, ...$class->getMethods()];
 
         return $enum;
+    }
+
+    protected function usagesMigratedMarkerTag(): PhpDocTagNode
+    {
+        static $tag;
+        return $tag ??= new PhpDocTagNode(
+            self::USAGES_MIGRATED,
+            new GenericTagValueNode('run rector once more to finally convert this')
+        );
     }
 
     /**
