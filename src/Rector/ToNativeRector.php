@@ -8,6 +8,7 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
@@ -25,14 +26,14 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
+use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
@@ -40,7 +41,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /** @see \BenSampo\Enum\Tests\Rector\ToNativeRectorTest */
-class ToNativeRector extends AbstractRector implements ConfigurableRuleInterface, ConfigurableRectorInterface, AllowEmptyConfigurableRectorInterface
+class ToNativeRector extends AbstractScopeAwareRector implements ConfigurableRuleInterface, ConfigurableRectorInterface, AllowEmptyConfigurableRectorInterface
 {
     /** @var array<ObjectType> */
     protected array $classes;
@@ -86,6 +87,8 @@ CODE_SAMPLE,
         return [
             Class_::class,
             New_::class,
+            ClassConstFetch::class,
+            ArrayItem::class,
             StaticCall::class,
             MethodCall::class,
             NullsafeMethodCall::class,
@@ -93,26 +96,34 @@ CODE_SAMPLE,
         ];
     }
 
-    public function refactor(Node $node): ?Node
+    /** TODO scope necessary? */
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $this->classes ??= [new ObjectType(Enum::class)];
 
         foreach ($this->classes as $class) {
-            if ($this->isConfiguredClass($node, $class)) {
-                return $this->refactorNode($node);
+            if ($this->usesConfiguredClass($node, $class)) {
+                return $this->refactorNode($node, $scope);
             }
         }
 
         return null;
     }
 
-    protected function isConfiguredClass(Node $node, ObjectType $class): bool
+    protected function usesConfiguredClass(Node $node, ObjectType $class): bool
     {
         if ($node instanceof Class_) {
             return $this->isObjectType($node, $class);
         }
 
-        if ($node instanceof New_ || $node instanceof StaticCall) {
+        if ($node instanceof ArrayItem) {
+            $key = $node->key;
+
+            return $key instanceof ClassConstFetch
+                && $this->isObjectType($key->class, $class);
+        }
+
+        if ($node instanceof New_ || $node instanceof ClassConstFetch || $node instanceof StaticCall) {
             return $this->isObjectType($node->class, $class);
         }
 
@@ -123,14 +134,22 @@ CODE_SAMPLE,
         return false;
     }
 
-    protected function refactorNode(Node $node): ?Node
+    protected function refactorNode(Node $node, Scope $scope): ?Node
     {
         if ($node instanceof Class_) {
             return $this->refactorClass($node);
         }
 
+        if ($node instanceof ArrayItem) {
+            return $this->refactorArrayItem($node);
+        }
+
         if ($node instanceof New_) {
             return $this->refactorNewOrFromValue($node);
+        }
+
+        if ($node instanceof ClassConstFetch) {
+            return $this->refactorClassConstFetch($node, $scope);
         }
 
         if ($node instanceof StaticCall) {
@@ -271,6 +290,11 @@ CODE_SAMPLE,
             }
         }
 
+        return null;
+    }
+
+    protected function refactorClassConstFetch(ClassConstFetch $node, Scope $scope): ?Node
+    {
         return null;
     }
 
@@ -423,5 +447,21 @@ CODE_SAMPLE,
     protected function refactorKey(PropertyFetch $node): ?Node
     {
         return $this->nodeFactory->createPropertyFetch($node->var, 'name');
+    }
+
+    protected function refactorArrayItem(ArrayItem $node): ?Node
+    {
+        $key = $node->key;
+        if ($key instanceof ClassConstFetch) {
+            return new ArrayItem(
+                $node->value,
+                $this->nodeFactory->createPropertyFetch($key, 'value'),
+                $node->byRef,
+                $node->getAttributes(),
+                $node->unpack,
+            );
+        }
+
+        return null;
     }
 }
