@@ -72,20 +72,18 @@ $user = UserType::ADMIN;
 $user === UserType::ADMIN;
 CODE_SAMPLE,
                 [
-                    'classes' => [
-                        UserType::class,
-                    ],
+                    UserType::class,
                 ],
             ),
         ]);
     }
 
-    /** @param array{classes: array<class-string>} $configuration */
+    /** @param array<class-string> $configuration */
     public function configure(array $configuration): void
     {
         $this->classes = array_map(
             static fn (string $class): ObjectType => new ObjectType($class),
-            $configuration['classes'],
+            $configuration,
         );
     }
 
@@ -480,7 +478,9 @@ CODE_SAMPLE,
         $cond = $match->cond;
         if ($cond instanceof PropertyFetch && $this->inConfiguredClasses($cond->var)) {
             foreach ($match->arms as $arm) {
-                if ($arm->conds === null) continue;
+                if ($arm->conds === null) {
+                    continue;
+                }
                 foreach ($arm->conds as $armCond) {
                     if (! $armCond instanceof ClassConstFetch || ! $this->inConfiguredClasses($armCond->class)) {
                         // Arms must be exclusively enums

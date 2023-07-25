@@ -19,9 +19,7 @@ use Rector\Config\RectorConfig;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(ToNativeRector::class, [
-        'classes' => [
-            UserType::class,
-        ],
+        UserType::class,
     ]);
 };
 ```
