@@ -8,6 +8,9 @@ use BenSampo\Enum\Tests\Enums\UserType;
 match ($userType->value) {
     UserType::Administrator => null,
 };
+match ($userType->value) {
+    1 => null,
+};
 match ('foo') {
     UserType::Administrator => null,
 };
@@ -24,6 +27,9 @@ use BenSampo\Enum\Tests\Enums\UserType;
 [UserType::Administrator->value => null];
 match ($userType) {
     UserType::Administrator => null,
+};
+match ($userType->value) {
+    1 => null,
 };
 match ('foo') {
     UserType::Administrator->value => null,

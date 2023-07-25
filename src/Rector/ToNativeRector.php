@@ -14,6 +14,7 @@ use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
@@ -95,6 +96,7 @@ CODE_SAMPLE,
             New_::class,
             ClassConstFetch::class,
             ArrayItem::class,
+            Match_::class,
             StaticCall::class,
             MethodCall::class,
             NullsafeMethodCall::class,
@@ -111,12 +113,16 @@ CODE_SAMPLE,
             return $this->refactorClass($node);
         }
 
+        if ($node instanceof New_) {
+            return $this->refactorNewOrFromValue($node);
+        }
+
         if ($node instanceof ArrayItem) {
             return $this->refactorArrayItem($node);
         }
 
-        if ($node instanceof New_) {
-            return $this->refactorNewOrFromValue($node);
+        if ($node instanceof Match_) {
+            return $this->refactorMatch($node);
         }
 
         if ($node instanceof ClassConstFetch) {
@@ -467,6 +473,26 @@ CODE_SAMPLE,
     protected function refactorKey(PropertyFetch $node): ?Node
     {
         return $this->nodeFactory->createPropertyFetch($node->var, 'name');
+    }
+
+    protected function refactorMatch(Match_ $match): ?Node
+    {
+        $cond = $match->cond;
+        if ($cond instanceof PropertyFetch && $this->inConfiguredClasses($cond->var)) {
+            foreach ($match->arms as $arm) {
+                if ($arm->conds === null) continue;
+                foreach ($arm->conds as $armCond) {
+                    if (! $armCond instanceof ClassConstFetch || ! $this->inConfiguredClasses($armCond->class)) {
+                        // Arms must be exclusively enums
+                        return null;
+                    }
+                }
+            }
+
+            return new Match_($cond->var, $match->arms, $match->getAttributes());
+        }
+
+        return null;
     }
 
     protected function refactorArrayItem(ArrayItem $node): ?Node
