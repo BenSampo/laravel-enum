@@ -472,14 +472,25 @@ CODE_SAMPLE,
     protected function refactorArrayItem(ArrayItem $node): ?Node
     {
         $key = $node->key;
-        if ($key instanceof ClassConstFetch && $this->inConfiguredClasses($key->class)) {
+        $convertedKey = $this->ensureClassConstFetchRemainsValue($key);
+
+        if ($convertedKey) {
             return new ArrayItem(
                 $node->value,
-                $this->nodeFactory->createPropertyFetch($key, 'value'),
+                $convertedKey,
                 $node->byRef,
                 $node->getAttributes(),
                 $node->unpack,
             );
+        }
+
+        return null;
+    }
+
+    protected function ensureClassConstFetchRemainsValue(?Expr $expr): ?PropertyFetch
+    {
+        if ($expr instanceof ClassConstFetch && $this->inConfiguredClasses($expr->class)) {
+            return $this->nodeFactory->createPropertyFetch($expr, 'value');
         }
 
         return null;
