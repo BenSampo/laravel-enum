@@ -25,6 +25,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\MatchArm;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -106,7 +107,6 @@ CODE_SAMPLE,
         ];
     }
 
-    /** TODO scope necessary? */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $this->classes ??= [new ObjectType(Enum::class)];
@@ -128,7 +128,7 @@ CODE_SAMPLE,
         }
 
         if ($node instanceof Match_) {
-            return $this->refactorMatch($node);
+            return $this->refactorMatch($node, $scope);
         }
 
         if ($node instanceof ClassConstFetch) {
@@ -327,9 +327,7 @@ CODE_SAMPLE,
             return null;
         }
 
-        if ($scope->get) {
-            return null;
-        }
+        return null;
     }
 
     /** @see Enum::is() */
@@ -483,7 +481,7 @@ CODE_SAMPLE,
         return $this->nodeFactory->createPropertyFetch($node->var, 'name');
     }
 
-    protected function refactorMatch(Match_ $match): ?Node
+    protected function refactorMatch(Match_ $match, Scope $scope): ?Node
     {
         $cond = $match->cond;
         if ($cond instanceof PropertyFetch && $this->inConfiguredClasses($cond->var)) {
@@ -491,6 +489,7 @@ CODE_SAMPLE,
                 if ($arm->conds === null) {
                     continue;
                 }
+
                 foreach ($arm->conds as $armCond) {
                     if (! $armCond instanceof ClassConstFetch || ! $this->inConfiguredClasses($armCond->class)) {
                         // Arms must be exclusively enums
@@ -500,6 +499,24 @@ CODE_SAMPLE,
             }
 
             return new Match_($cond->var, $match->arms, $match->getAttributes());
+        }
+
+        $condType = $scope->getType($cond);
+        if ($condType->isString()->yes() || $condType->isInteger()->yes()) {
+            $arms = [];
+            foreach ($match->arms as $arm) {
+                if ($arm->conds === null) {
+                    $arms []= $arm;
+                }
+
+                $arms []= new MatchArm(
+                    array_map([$this, 'ensureClassConstFetchRemainsValue'], $arm->conds),
+                    $arm->body,
+                    $arm->getAttributes(),
+                );
+            }
+
+            return new Match_($cond, $arms, $match->getAttributes());
         }
 
         return null;
