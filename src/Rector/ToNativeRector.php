@@ -36,9 +36,7 @@ use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
 use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
@@ -50,10 +48,17 @@ use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/** @see \BenSampo\Enum\Tests\Rector\ToNativeRectorTest */
+/**
+ * @see \BenSampo\Enum\Tests\Rector\ToNativeRectorUsagesTest
+ * @see \BenSampo\Enum\Tests\Rector\ToNativeRectorImplementationTest
+ */
 class ToNativeRector extends AbstractScopeAwareRector implements ConfigurableRuleInterface, ConfigurableRectorInterface
 {
-    public const USAGES_MIGRATED = '@usages-migrated';
+    public const IMPLEMENTATION = 'implementation';
+    public const USAGES = 'usages';
+
+    /** @var 'implementation'|'usages' */
+    protected string $mode;
 
     /** @var array<ObjectType> */
     protected array $classes;
@@ -78,38 +83,81 @@ $user = UserType::ADMIN;
 $user === UserType::ADMIN;
 CODE_SAMPLE,
                 [
-                    UserType::class,
+                    'mode' => ToNativeRector::USAGES,
+                    'classes' => [UserType::class],
+                ],
+            ),
+            new ConfiguredCodeSample(
+                <<<'CODE_SAMPLE'
+/**
+ * @method static static ADMIN()
+ * @method static static MEMBER()
+ *
+ * @extends Enum<int>
+ */
+class UserType extends Enum
+{
+    const ADMIN = 1;
+    const MEMBER = 2;
+}
+CODE_SAMPLE
+
+                ,
+                <<<'CODE_SAMPLE'
+enum UserType : int
+{
+    case ADMIN = 1;
+    case MEMBER = 2;
+}
+CODE_SAMPLE,
+                [
+                    'mode' => ToNativeRector::IMPLEMENTATION,
+                    'classes' => [UserType::class],
                 ],
             ),
         ]);
     }
 
-    /** @param array<class-string> $configuration */
+    /**
+     * @param array{
+     *   mode: 'implementation'|'usages',
+     *   classes?: array<class-string>|null
+     * } $configuration
+     */
     public function configure(array $configuration): void
     {
-        $this->classes = array_map(
-            static fn (string $class): ObjectType => new ObjectType($class),
-            $configuration,
-        );
+        $this->mode = $configuration['mode'];
+
+        $classes = $configuration['classes'] ?? null;
+        if ($classes) {
+            $this->classes = array_map(
+                static fn (string $class): ObjectType => new ObjectType($class),
+                $classes,
+            );
+        }
     }
 
     public function getNodeTypes(): array
     {
-        return [
-            Class_::class,
-            New_::class,
-            ClassConstFetch::class,
-            ArrayItem::class,
-            BinaryOp::class,
-            Assign::class,
-            AssignOp::class,
-            AssignRef::class,
-            Match_::class,
-            StaticCall::class,
-            MethodCall::class,
-            NullsafeMethodCall::class,
-            PropertyFetch::class,
-        ];
+        return match ($this->mode) {
+            ToNativeRector::USAGES => [
+                New_::class,
+                ClassConstFetch::class,
+                ArrayItem::class,
+                BinaryOp::class,
+                Assign::class,
+                AssignOp::class,
+                AssignRef::class,
+                Match_::class,
+                StaticCall::class,
+                MethodCall::class,
+                NullsafeMethodCall::class,
+                PropertyFetch::class,
+            ],
+            ToNativeRector::IMPLEMENTATION => [
+                Class_::class,
+            ],
+        };
     }
 
     public function refactorWithScope(Node $node, Scope $scope): ?Node
@@ -221,15 +269,6 @@ CODE_SAMPLE,
             return null;
         }
 
-        $docComment = $class->getDocComment();
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
-        if (! $phpDocInfo->hasByName(self::USAGES_MIGRATED)) {
-            $phpDocInfo->addPhpDocTagNode($this->usagesMigratedMarkerTag());
-            $class->setDocComment(new Doc($this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo)));
-
-            return $class;
-        }
-
         $enum = new Enum_(
             $this->nodeNameResolver->getShortName($class),
             [],
@@ -237,10 +276,10 @@ CODE_SAMPLE,
         );
         $enum->namespacedName = $class->namespacedName;
 
-        if ($docComment) {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($class);
+        if ($phpDocInfo) {
             $phpDocInfo->removeByType(MethodTagValueNode::class);
             $phpDocInfo->removeByType(ExtendsTagValueNode::class);
-            $this->phpDocTagRemover->removeByName($phpDocInfo, self::USAGES_MIGRATED);
 
             $phpdoc = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
             // By removing unnecessary tags, we are usually left with a couple of redundant newlines.
@@ -286,16 +325,6 @@ CODE_SAMPLE,
         $enum->stmts = [...$enum->stmts, ...$class->getMethods()];
 
         return $enum;
-    }
-
-    protected function usagesMigratedMarkerTag(): PhpDocTagNode
-    {
-        static $tag;
-
-        return $tag ??= new PhpDocTagNode(
-            self::USAGES_MIGRATED,
-            new GenericTagValueNode('run rector once more to finally convert this')
-        );
     }
 
     /**

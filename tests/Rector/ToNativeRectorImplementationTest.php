@@ -5,7 +5,7 @@ namespace BenSampo\Enum\Tests\Rector;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 /** @see \BenSampo\Enum\Rector\ToNativeRector */
-final class ToNativeRectorTest extends AbstractRectorTestCase
+final class ToNativeRectorImplementationTest extends AbstractRectorTestCase
 {
     /** @dataProvider provideData */
     public function test(string $filePath): void
@@ -16,11 +16,11 @@ final class ToNativeRectorTest extends AbstractRectorTestCase
     /** @return iterable<string> */
     public static function provideData(): iterable
     {
-        return self::yieldFilesFromDirectory(__DIR__ . '/Fixtures');
+        return self::yieldFilesFromDirectory(__DIR__ . '/Implementation');
     }
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config.php';
+        return __DIR__ . '/implementation.php';
     }
 }

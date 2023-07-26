@@ -7,7 +7,6 @@ use BenSampo\Enum\Enum;
  * @method static static BAZ()
  *
  * @extends Enum<int>
- * @usages-migrated
  */
 class Foo extends Enum
 {

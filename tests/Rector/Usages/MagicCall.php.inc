@@ -1,6 +1,6 @@
 <?php
 
-namespace BenSampo\Enum\Tests\Rector\Fixtures;
+namespace BenSampo\Enum\Tests\Rector\Usages;
 
 use BenSampo\Enum\Enum;
 
@@ -33,7 +33,7 @@ class MagicCall extends Enum
 -----
 <?php
 
-namespace BenSampo\Enum\Tests\Rector\Fixtures;
+namespace BenSampo\Enum\Tests\Rector\Usages;
 
 use BenSampo\Enum\Enum;
 
@@ -44,7 +44,6 @@ use BenSampo\Enum\Enum;
  * @method static static BAZ()
  *
  * @extends Enum<int>
- * @usages-migrated run rector once more to finally convert this
  */
 class MagicCall extends Enum
 {

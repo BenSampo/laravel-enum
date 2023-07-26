@@ -78,22 +78,25 @@ PHP 8.1 supports enums natively.
 You can migrate your usages of `BenSampo\Enum\Enum` to native PHP enums using the following steps.
 
 For large projects, it is recommended to migrate one enum at a time. 
+Conversion of enums and their uses can not be done in a single run of rector,
+that would leave the project partially converted.
+Usages seen after the enum classes have been converted will no longer be transformed.
 
-1. Review direct uses of the enums constant.
+1. TODO no longer necessary?
+   Review direct uses of the enums constant.
    If they are used in places where enum instances are also accepted, leave them.
    If their internal value is needed, add `->value`.
+
 1. Configure the enum class you want to convert in [`ToNativeRector`](rector-rules.md#tonativerector)
-1. Run rector with `vendor/bin/rector process --clear-cache` two times,
-   once to convert the usages and once the implementations.
+   in mode `ToNativeRector::USAGES` and run `vendor/bin/rector process --clear-cache` once.
+   Running repeatedly messes up the conversion.
+1. Set mode to `ToNativeRector::IMPLEMENTATION` and run `vendor/bin/rector process --clear-cache` once again.
 1. Review and validate the code changes for missed edge cases
    - See [Unimplemented](tests/Rector/Unimplemented)
    - `Enum::fromKey()`: Either replace usages or implement the method in your native enum.
    - `Enum::coerce()`: If only values were passed, you can replace it with `tryFrom()`.
       If keys or instances could also be passed, you might need additional logic to cover this.
    - `Enum::getDescription()`: Implement an alternative.
-
-TODO check if conversion of enums and their uses can be done in a single run of rector,
-or if that would leave the project partially converted.
 
 ## Enum Library
 
