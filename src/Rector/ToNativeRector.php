@@ -506,10 +506,10 @@ CODE_SAMPLE,
             $arms = [];
             foreach ($match->arms as $arm) {
                 if ($arm->conds === null) {
-                    $arms []= $arm;
+                    $arms[] = $arm;
                 }
 
-                $arms []= new MatchArm(
+                $arms[] = new MatchArm(
                     array_map([$this, 'ensureClassConstFetchRemainsValue'], $arm->conds),
                     $arm->body,
                     $arm->getAttributes(),
