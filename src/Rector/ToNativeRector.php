@@ -10,7 +10,10 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -94,6 +97,7 @@ CODE_SAMPLE,
             New_::class,
             ClassConstFetch::class,
             ArrayItem::class,
+            BinaryOp::class,
             Match_::class,
             StaticCall::class,
             MethodCall::class,
@@ -117,6 +121,10 @@ CODE_SAMPLE,
 
         if ($node instanceof ArrayItem) {
             return $this->refactorArrayItem($node);
+        }
+
+        if ($node instanceof BinaryOp) {
+            return $this->refactorBinaryOp($node, $scope);
         }
 
         if ($node instanceof Match_) {
@@ -319,7 +327,9 @@ CODE_SAMPLE,
             return null;
         }
 
-        return null;
+        if ($scope->get) {
+            return null;
+        }
     }
 
     /** @see Enum::is() */
@@ -517,6 +527,62 @@ CODE_SAMPLE,
     {
         if ($expr instanceof ClassConstFetch && $this->inConfiguredClasses($expr->class)) {
             return $this->nodeFactory->createPropertyFetch($expr, 'value');
+        }
+
+        return null;
+    }
+
+    /**
+     * Binary operations that use the constant values of an enum class are very
+     * unlikely to make sense with an enum instance:.
+     */
+    protected function refactorBinaryOp(BinaryOp $binaryOp, Scope $scope): ?Node
+    {
+        $left = $binaryOp->left;
+        $convertedLeft = $this->ensureClassConstFetchRemainsValue($left);
+
+        $right = $binaryOp->right;
+        $convertedRight = $this->ensureClassConstFetchRemainsValue($right);
+
+        // It may be valid to use an Enum in comparison with unknown values.
+        // However, if we know the other side is a string or int, we can safely convert.
+        $isComparison = $binaryOp instanceof Equal
+            || $binaryOp instanceof Identical
+            || $binaryOp instanceof NotEqual
+            || $binaryOp instanceof NotIdentical;
+        if ($isComparison) {
+            if ($convertedLeft && $convertedRight) {
+                // Maybe evaluate for truthiness and replace with static value?
+                return null;
+            }
+
+            $isStringOrInt = function (Expr $expr) use ($scope): bool {
+                $type = $scope->getType($expr);
+
+                return $type->isString()->yes() || $type->isInteger()->yes();
+            };
+
+            if ($convertedLeft && $isStringOrInt($right)) {
+                return new $binaryOp($convertedLeft, $right, $binaryOp->getAttributes());
+            }
+
+            if ($convertedRight && $isStringOrInt($left)) {
+                return new $binaryOp($left, $convertedRight, $binaryOp->getAttributes());
+            }
+
+            return null;
+        }
+
+        // All other operators only make sense with the underlying values of enums
+        // ?? or ?: enums will never be null or falsy, result is likely not used as an enum
+        // arithmetic, bitwise, comparison, logical, or string operators do not support enums
+
+        if ($convertedLeft || $convertedRight) {
+            return new $binaryOp(
+                $convertedLeft ?? $left,
+                $convertedRight ?? $right,
+                $binaryOp->getAttributes(),
+            );
         }
 
         return null;
