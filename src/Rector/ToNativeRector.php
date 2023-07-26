@@ -10,6 +10,9 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\AssignOp;
+use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
@@ -99,6 +102,9 @@ CODE_SAMPLE,
             ClassConstFetch::class,
             ArrayItem::class,
             BinaryOp::class,
+            Assign::class,
+            AssignOp::class,
+            AssignRef::class,
             Match_::class,
             StaticCall::class,
             MethodCall::class,
@@ -125,6 +131,10 @@ CODE_SAMPLE,
 
         if ($node instanceof BinaryOp) {
             return $this->refactorBinaryOp($node, $scope);
+        }
+
+        if ($node instanceof Assign || $node instanceof AssignOp || $node instanceof AssignRef) {
+            return $this->refactorAssign($node);
         }
 
         if ($node instanceof Match_) {
@@ -549,10 +559,6 @@ CODE_SAMPLE,
         return null;
     }
 
-    /**
-     * Binary operations that use the constant values of an enum class are very
-     * unlikely to make sense with an enum instance:.
-     */
     protected function refactorBinaryOp(BinaryOp $binaryOp, Scope $scope): ?Node
     {
         $left = $binaryOp->left;
@@ -600,6 +606,16 @@ CODE_SAMPLE,
                 $convertedRight ?? $right,
                 $binaryOp->getAttributes(),
             );
+        }
+
+        return null;
+    }
+
+    protected function refactorAssign(Assign|AssignOp|AssignRef $assign): ?Node
+    {
+        $convertedExpr = $this->ensureClassConstFetchRemainsValue($assign->expr);
+        if ($convertedExpr) {
+            return new $assign($assign->var, $convertedExpr, $assign->getAttributes());
         }
 
         return null;
