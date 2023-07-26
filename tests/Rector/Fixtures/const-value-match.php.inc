@@ -5,13 +5,15 @@ use BenSampo\Enum\Tests\Enums\UserType;
 /** @var UserType $userType */
 
 match ($userType->value) {
-    UserType::Administrator => null,
+    UserType::Administrator => 1,
+    default => 2,
 };
 match ($userType->value) {
-    1 => null,
+    1 => 1,
+    default => 2,
 };
 match ('foo') {
-    UserType::Administrator => null,
+    UserType::Administrator, UserType::Subscriber => null,
 };
 
 -----
@@ -22,11 +24,13 @@ use BenSampo\Enum\Tests\Enums\UserType;
 /** @var UserType $userType */
 
 match ($userType) {
-    UserType::Administrator => null,
+    UserType::Administrator => 1,
+    default => 2,
 };
 match ($userType->value) {
-    1 => null,
+    1 => 1,
+    default => 2,
 };
 match ('foo') {
-    UserType::Administrator->value => null,
+    UserType::Administrator->value, UserType::Subscriber->value => null,
 };
