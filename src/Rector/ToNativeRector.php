@@ -517,7 +517,7 @@ CODE_SAMPLE,
                 $arms[] = $arm->conds === null
                     ? $arm
                     : new MatchArm(
-                        array_map([$this, 'ensureClassConstFetchRemainsValue'], $arm->conds),
+                        array_map([$this, 'convertClassConstFetchOrNot'], $arm->conds),
                         $arm->body,
                         $arm->getAttributes(),
                     );
@@ -532,7 +532,7 @@ CODE_SAMPLE,
     protected function refactorArrayItem(ArrayItem $node): ?Node
     {
         $key = $node->key;
-        $convertedKey = $this->ensureClassConstFetchRemainsValue($key);
+        $convertedKey = $this->convertClassConstFetch($key);
 
         if ($convertedKey) {
             return new ArrayItem(
@@ -547,7 +547,7 @@ CODE_SAMPLE,
         return null;
     }
 
-    protected function ensureClassConstFetchRemainsValue(?Expr $expr): ?PropertyFetch
+    protected function convertClassConstFetch(?Expr $expr): ?PropertyFetch
     {
         if ($expr instanceof ClassConstFetch && $this->inConfiguredClasses($expr->class)) {
             return $this->nodeFactory->createPropertyFetch($expr, 'value');
@@ -556,13 +556,22 @@ CODE_SAMPLE,
         return null;
     }
 
+    protected function convertClassConstFetchOrNot(?Expr $expr): ?Expr
+    {
+        if ($expr instanceof ClassConstFetch && $this->inConfiguredClasses($expr->class)) {
+            return $this->nodeFactory->createPropertyFetch($expr, 'value');
+        }
+
+        return $expr;
+    }
+
     protected function refactorBinaryOp(BinaryOp $binaryOp, Scope $scope): ?Node
     {
         $left = $binaryOp->left;
-        $convertedLeft = $this->ensureClassConstFetchRemainsValue($left);
+        $convertedLeft = $this->convertClassConstFetch($left);
 
         $right = $binaryOp->right;
-        $convertedRight = $this->ensureClassConstFetchRemainsValue($right);
+        $convertedRight = $this->convertClassConstFetch($right);
 
         // It may be valid to use an Enum in comparison with unknown values.
         // However, if we know the other side is a string or int, we can safely convert.
@@ -610,7 +619,7 @@ CODE_SAMPLE,
 
     protected function refactorAssign(Assign|AssignOp|AssignRef $assign): ?Node
     {
-        $convertedExpr = $this->ensureClassConstFetchRemainsValue($assign->expr);
+        $convertedExpr = $this->convertClassConstFetch($assign->expr);
         if ($convertedExpr) {
             return new $assign($assign->var, $convertedExpr, $assign->getAttributes());
         }

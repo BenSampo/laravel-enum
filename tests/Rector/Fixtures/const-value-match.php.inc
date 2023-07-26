@@ -10,11 +10,13 @@ match ($userType->value) {
     default => 3,
 };
 match ($userType->value) {
+    UserType::Administrator => 0,
     1 => 1,
     default => 2,
 };
 match ('foo') {
-    UserType::Administrator, UserType::Subscriber => null,
+    UserType::Administrator, UserType::Subscriber => 1,
+    $var => 2,
 };
 
 -----
@@ -30,9 +32,11 @@ match ($userType) {
     default => 3,
 };
 match ($userType->value) {
+    UserType::Administrator => 0,
     1 => 1,
     default => 2,
 };
 match ('foo') {
-    UserType::Administrator->value, UserType::Subscriber->value => null,
+    UserType::Administrator->value, UserType::Subscriber->value => 1,
+    $var => 2,
 };
