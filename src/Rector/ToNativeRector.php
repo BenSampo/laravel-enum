@@ -515,7 +515,7 @@ CODE_SAMPLE,
             $arms = [];
             foreach ($match->arms as $arm) {
                 $arms[] = $arm->conds === null
-                    ? $arms
+                    ? $arm
                     : new MatchArm(
                         array_map([$this, 'ensureClassConstFetchRemainsValue'], $arm->conds),
                         $arm->body,
