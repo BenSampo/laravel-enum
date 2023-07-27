@@ -16,6 +16,7 @@ ceil(UserType::Administrator);
 (new ConstValueCall(UserType::Administrator))->maybeInt(UserType::Administrator);
 ConstValueCall::int(UserType::Administrator);
 $intOrString(UserType::Administrator);
+$intOrString(UserType::class);
 
 -----
 <?php
@@ -36,3 +37,4 @@ ceil(UserType::Administrator->value);
 (new ConstValueCall(UserType::Administrator->value))->maybeInt(UserType::Administrator->value);
 ConstValueCall::int(UserType::Administrator->value);
 $intOrString(UserType::Administrator->value);
+$intOrString(UserType::class);

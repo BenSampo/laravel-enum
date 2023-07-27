@@ -44,15 +44,13 @@ use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\VariadicPlaceholder;
-use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
-use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Rector\AbstractScopeAwareRector;
+use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
@@ -63,7 +61,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @see \BenSampo\Enum\Tests\Rector\ToNativeRectorUsagesTest
  * @see \BenSampo\Enum\Tests\Rector\ToNativeRectorImplementationTest
  */
-class ToNativeRector extends AbstractScopeAwareRector implements ConfigurableRuleInterface, ConfigurableRectorInterface
+class ToNativeRector extends AbstractRector implements ConfigurableRuleInterface, ConfigurableRectorInterface
 {
     public const IMPLEMENTATION = 'implementation';
     public const USAGES = 'usages';
@@ -79,7 +77,6 @@ class ToNativeRector extends AbstractScopeAwareRector implements ConfigurableRul
 
     public function __construct(
         protected PhpDocInfoPrinter $phpDocInfoPrinter,
-        protected PhpDocTagRemover $phpDocTagRemover,
     ) {}
 
     public function getRuleDefinition(): RuleDefinition
@@ -166,6 +163,7 @@ CODE_SAMPLE,
                 AssignRef::class,
                 ArrowFunction::class,
                 Return_::class,
+                Param::class,
                 Match_::class,
                 CallLike::class,
                 PropertyFetch::class,
@@ -176,8 +174,7 @@ CODE_SAMPLE,
         };
     }
 
-    // TODO replace Scope by $this->getType()?
-    public function refactorWithScope(Node $node, Scope $scope): ?Node
+    public function refactor(Node $node): ?Node
     {
         $this->classes ??= [new ObjectType(Enum::class)];
 
@@ -194,7 +191,7 @@ CODE_SAMPLE,
         }
 
         if ($node instanceof BinaryOp) {
-            return $this->refactorBinaryOp($node, $scope);
+            return $this->refactorBinaryOp($node);
         }
 
         if ($node instanceof Cast) {
@@ -217,8 +214,12 @@ CODE_SAMPLE,
             return $this->refactorReturn($node);
         }
 
+        if ($node instanceof Param) {
+            return $this->refactorParam($node);
+        }
+
         if ($node instanceof Match_) {
-            return $this->refactorMatch($node, $scope);
+            return $this->refactorMatch($node);
         }
 
         if ($node instanceof CallLike) {
@@ -253,7 +254,7 @@ CODE_SAMPLE,
                 && $this->inConfiguredClasses($node->var)
             ) {
                 if ($this->isName($node->name, 'is')) {
-                    return $this->refactorIs($node, $scope);
+                    return $this->refactorIs($node);
                 }
 
                 if ($this->isName($node->name, 'isNot')) {
@@ -273,7 +274,7 @@ CODE_SAMPLE,
                 }
             }
 
-            return $this->refactorCall($node, $scope);
+            return $this->refactorCall($node);
         }
 
         if ($node instanceof PropertyFetch) {
@@ -402,7 +403,7 @@ CODE_SAMPLE,
     }
 
     /** @see Enum::is() */
-    protected function refactorIs(MethodCall|NullsafeMethodCall $call, Scope $scope): ?Node
+    protected function refactorIs(MethodCall|NullsafeMethodCall $call): ?Node
     {
         if ($call->isFirstClassCallable()) {
             $param = new Variable('value');
@@ -420,7 +421,7 @@ CODE_SAMPLE,
             $right = $arg->value;
 
             $var = $call->var;
-            $left = $this->willBeEnumInstance($right, $scope)
+            $left = $this->willBeEnumInstance($right)
                 ? $var
                 : $this->nodeFactory->createPropertyFetch($var, 'value');
 
@@ -430,7 +431,7 @@ CODE_SAMPLE,
         return null;
     }
 
-    protected function willBeEnumInstance(Expr $expr, Scope $scope): bool
+    protected function willBeEnumInstance(Expr $expr): bool
     {
         if ($expr instanceof ClassConstFetch && $this->inConfiguredClasses($expr->class)) {
             return true;
@@ -585,14 +586,14 @@ CODE_SAMPLE,
         return $this->nodeFactory->createPropertyFetch($node->var, 'name');
     }
 
-    protected function refactorMatch(Match_ $match, Scope $scope): ?Node
+    protected function refactorMatch(Match_ $match): ?Node
     {
         $cond = $match->cond;
         if (($cond instanceof PropertyFetch || $cond instanceof NullsafePropertyFetch)
             && $this->inConfiguredClasses($cond->var)
         ) {
             $var = $cond->var;
-            $varType = $scope->getType($var);
+            $varType = $this->getType($var);
 
             $armsAreExclusivelyEnumsOrNull = true;
             foreach ($match->arms as $arm) {
@@ -603,7 +604,7 @@ CODE_SAMPLE,
                 foreach ($arm->conds as $armCond) {
                     $isEnum = $varType->equals($this->getType($armCond))
                         || ($armCond instanceof ClassConstFetch && $this->inConfiguredClasses($armCond->class));
-                    $isNull = $scope->getType($armCond)->isNull()->yes();
+                    $isNull = $this->getType($armCond)->isNull()->yes();
 
                     if (! $isEnum && ! $isNull) {
                         $armsAreExclusivelyEnumsOrNull = false;
@@ -654,14 +655,12 @@ CODE_SAMPLE,
 
     protected function convertToValueFetch(?Expr $expr): ?Expr
     {
-        if (! $expr || $expr->hasAttribute(self::CONVERTED_INSTANTIATION)) {
-            return null;
+        $constValueFetch = $this->convertConstToValueFetch($expr);
+        if ($constValueFetch) {
+            return $constValueFetch;
         }
 
-        if (
-            ($expr instanceof ClassConstFetch && $this->inConfiguredClasses($expr->class))
-            || $this->inConfiguredClasses($expr)
-        ) {
+        if ($this->inConfiguredClasses($expr)) {
             return $this->createValueFetch($expr, $this->nodeTypeResolver->isNullableType($expr));
         }
 
@@ -670,20 +669,22 @@ CODE_SAMPLE,
 
     protected function convertConstToValueFetch(?Expr $expr): ?Expr
     {
-        if ($expr instanceof ClassConstFetch && $this->inConfiguredClasses($expr->class)) {
+        if (! $expr || $expr->hasAttribute(self::CONVERTED_INSTANTIATION)) {
+            return null;
+        }
+
+        if (
+            $expr instanceof ClassConstFetch
+            && $this->inConfiguredClasses($expr->class)
+            && $expr->name->name !== 'class'
+        ) {
             return $this->createValueFetch($expr, false);
         }
 
         return null;
     }
 
-    public function isPossibleEnumValueType(Type $condType): bool
-    {
-        // includes int|string|null
-        return $condType->isScalar()->yes();
-    }
-
-    protected function refactorBinaryOp(BinaryOp $binaryOp, Scope $scope): ?Node
+    protected function refactorBinaryOp(BinaryOp $binaryOp): ?Node
     {
         if ($binaryOp->hasAttribute(self::CONVERTED_COMPARISON)) {
             return null;
@@ -707,8 +708,9 @@ CODE_SAMPLE,
                 return null;
             }
 
-            $isPossibleEnumValueType = function (Expr $expr) use ($scope): bool {
-                return $this->isPossibleEnumValueType($scope->getType($expr));
+            $isPossibleEnumValueType = function (Expr $expr): bool {
+                // includes int|string|null
+                return $this->getType($expr)->isScalar()->yes();
             };
 
             if ($convertedLeft && $isPossibleEnumValueType($right)) {
@@ -749,7 +751,7 @@ CODE_SAMPLE,
         return null;
     }
 
-    protected function refactorCall(CallLike $call, Scope $scope): ?CallLike
+    protected function refactorCall(CallLike $call): ?CallLike
     {
         // At this point, we know the call is neither new'ing up a Bensampo\Enum\Enum,
         // nor is it statically or dynamically calling any of its methods which require
@@ -880,5 +882,24 @@ CODE_SAMPLE,
             $constName,
             [self::CONVERTED_INSTANTIATION => true],
         );
+    }
+
+    protected function refactorParam(Param $param): ?Param
+    {
+        $convertedDefault = $this->convertConstToValueFetch($param->default);
+        if ($convertedDefault) {
+            return new Param(
+                $param->var,
+                $convertedDefault,
+                $param->type,
+                $param->byRef,
+                $param->variadic,
+                $param->getAttributes(),
+                $param->flags,
+                $param->attrGroups,
+            );
+        }
+
+        return null;
     }
 }
