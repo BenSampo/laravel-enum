@@ -386,11 +386,7 @@ CODE_SAMPLE,
                         && $argValueClass->toString() === $classString
                         && $argValueName instanceof Identifier
                     ) {
-                        return new ClassConstFetch(
-                            $class,
-                            $argValueName->name,
-                            [self::CONVERTED_INSTANTIATION => true],
-                        );
+                        return $this->createEnumCaseAccess($class, $argValueName->name);
                     }
                 }
 
@@ -562,11 +558,7 @@ CODE_SAMPLE,
             }
             $constName = $name->toString();
             if (defined("{$fullyQualifiedClassName}::{$constName}")) {
-                return new ClassConstFetch(
-                    $class,
-                    $constName,
-                    [self::CONVERTED_INSTANTIATION => true],
-                );
+                return $this->createEnumCaseAccess($class, $constName);
             }
         }
 
@@ -648,7 +640,7 @@ CODE_SAMPLE,
 
     protected function convertToValueFetch(?Expr $expr): ?Expr
     {
-        if (! $expr) {
+        if (! $expr || $expr->hasAttribute(self::CONVERTED_INSTANTIATION)) {
             return null;
         }
 
@@ -772,7 +764,6 @@ CODE_SAMPLE,
 
     protected function refactorReturn(Return_ $return): ?Node
     {
-        // TODO consider return value
         $expr = $return->expr;
         if ($expr->hasAttribute(self::CONVERTED_INSTANTIATION)) {
             return null;
@@ -820,6 +811,7 @@ CODE_SAMPLE,
         return null;
     }
 
+    /** @see Enum::__toString() */
     protected function refactorMagicToString(MethodCall|NullsafeMethodCall $node): Cast
     {
         return new String_(
@@ -852,5 +844,14 @@ CODE_SAMPLE,
         }
 
         return null;
+    }
+
+    protected function createEnumCaseAccess(Name $class, string $constName): ClassConstFetch
+    {
+        return new ClassConstFetch(
+            $class,
+            $constName,
+            [self::CONVERTED_INSTANTIATION => true],
+        );
     }
 }
