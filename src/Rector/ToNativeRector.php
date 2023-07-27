@@ -685,6 +685,10 @@ CODE_SAMPLE,
 
     protected function refactorBinaryOp(BinaryOp $binaryOp, Scope $scope): ?Node
     {
+        if ($binaryOp->hasAttribute(self::CONVERTED_COMPARISON)) {
+            return null;
+        }
+
         $left = $binaryOp->left;
         $convertedLeft = $this->convertToValueFetch($left);
 
@@ -758,7 +762,7 @@ CODE_SAMPLE,
         $args = [];
         foreach ($call->getArgs() as $arg) {
             $args[] = new Arg(
-                $this->convertToValueFetch($arg->value) ?? $arg->value,
+                $this->convertConstToValueFetch($arg->value) ?? $arg->value,
                 $arg->byRef,
                 $arg->unpack,
                 $arg->getAttributes(),
@@ -792,7 +796,7 @@ CODE_SAMPLE,
             return null;
         }
 
-        $convertedExpr = $this->convertToValueFetch($expr);
+        $convertedExpr = $this->convertConstToValueFetch($expr);
         if ($convertedExpr) {
             return new Return_($convertedExpr, $return->getAttributes());
         }
