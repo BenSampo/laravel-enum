@@ -68,6 +68,9 @@ class ToNativeRector extends AbstractScopeAwareRector implements ConfigurableRul
     public const IMPLEMENTATION = 'implementation';
     public const USAGES = 'usages';
 
+    public const CONVERTED_IN_ARRAY = ToNativeRector::class . '@converted-in-array';
+    public const CONVERTED_INSTANTIATION = ToNativeRector::class . '@converted-instantiation';
+
     /** @var 'implementation'|'usages' */
     protected string $mode;
 
@@ -161,6 +164,7 @@ CODE_SAMPLE,
                 Assign::class,
                 AssignOp::class,
                 AssignRef::class,
+                ArrowFunction::class,
                 Return_::class,
                 Match_::class,
                 CallLike::class,
@@ -203,6 +207,10 @@ CODE_SAMPLE,
 
         if ($node instanceof Assign || $node instanceof AssignOp || $node instanceof AssignRef) {
             return $this->refactorAssign($node);
+        }
+
+        if ($node instanceof ArrowFunction) {
+            return $this->refactorArrowFunction($node);
         }
 
         if ($node instanceof Return_) {
@@ -378,7 +386,11 @@ CODE_SAMPLE,
                         && $argValueClass->toString() === $classString
                         && $argValueName instanceof Identifier
                     ) {
-                        return $this->nodeFactory->createClassConstFetch($classString, $argValueName->name);
+                        return new ClassConstFetch(
+                            $class,
+                            $argValueName->name,
+                            [self::CONVERTED_INSTANTIATION => true],
+                        );
                     }
                 }
 
@@ -437,7 +449,11 @@ CODE_SAMPLE,
         if (isset($args[0]) && $args[0] instanceof Arg) {
             $arg = $args[0];
 
-            return $this->nodeFactory->createFuncCall('in_array', [$node->var, $arg]);
+            return new FuncCall(
+                new Name('in_array'),
+                [new Arg($node->var), $arg],
+                [self::CONVERTED_IN_ARRAY => true],
+            );
         }
 
         return null;
@@ -451,7 +467,11 @@ CODE_SAMPLE,
             $arg = $args[0];
 
             return new BooleanNot(
-                $this->nodeFactory->createFuncCall('in_array', [$node->var, $arg])
+                new FuncCall(
+                    new Name('in_array'),
+                    [new Arg($node->var), $arg],
+                    [self::CONVERTED_IN_ARRAY => true],
+                )
             );
         }
 
@@ -542,7 +562,11 @@ CODE_SAMPLE,
             }
             $constName = $name->toString();
             if (defined("{$fullyQualifiedClassName}::{$constName}")) {
-                return $this->nodeFactory->createClassConstFetch($class->toString(), $constName);
+                return new ClassConstFetch(
+                    $class,
+                    $constName,
+                    [self::CONVERTED_INSTANTIATION => true],
+                );
             }
         }
 
@@ -575,7 +599,7 @@ CODE_SAMPLE,
                         || ($armCond instanceof ClassConstFetch && $this->inConfiguredClasses($armCond->class));
                     $isNull = $scope->getType($armCond)->isNull()->yes();
 
-                    if (! $isEnum && !$isNull) {
+                    if (! $isEnum && ! $isNull) {
                         $armsAreExclusivelyEnumsOrNull = false;
                     }
                 }
@@ -727,9 +751,9 @@ CODE_SAMPLE,
             );
         }
 
-//        if ($call instanceof FuncCall) {
-//            return new FuncCall($call->name, $args, $call->getAttributes());
-//        }
+        if ($call instanceof FuncCall && ! $call->hasAttribute(self::CONVERTED_IN_ARRAY)) {
+            return new FuncCall($call->name, $args, $call->getAttributes());
+        }
 
         if ($call instanceof New_) {
             return new New_($call->class, $args, $call->getAttributes());
@@ -749,7 +773,12 @@ CODE_SAMPLE,
     protected function refactorReturn(Return_ $return): ?Node
     {
         // TODO consider return value
-        $convertedExpr = $this->convertToValueFetch($return->expr);
+        $expr = $return->expr;
+        if ($expr->hasAttribute(self::CONVERTED_INSTANTIATION)) {
+            return null;
+        }
+
+        $convertedExpr = $this->convertToValueFetch($expr);
         if ($convertedExpr) {
             return new Return_($convertedExpr, $return->getAttributes());
         }
@@ -772,9 +801,9 @@ CODE_SAMPLE,
         $parts = [];
         foreach ($encapsed->parts as $part) {
             if ($part instanceof EncapsedStringPart) {
-                $parts []= $part;
+                $parts[] = $part;
             } else {
-                $parts []= $this->convertToValueFetch($part) ?? $part;
+                $parts[] = $this->convertToValueFetch($part) ?? $part;
             }
         }
 
@@ -803,5 +832,25 @@ CODE_SAMPLE,
         return $isNullable
             ? new NullsafePropertyFetch($expr, 'value')
             : new PropertyFetch($expr, 'value');
+    }
+
+    protected function refactorArrowFunction(ArrowFunction $arrowFunction): ?ArrowFunction
+    {
+        $convertedExpr = $this->convertToValueFetch($arrowFunction->expr);
+        if ($convertedExpr) {
+            return new ArrowFunction(
+                [
+                    'static' => $arrowFunction->static,
+                    'byRef' => $arrowFunction->byRef,
+                    'params' => $arrowFunction->params,
+                    'returnType' => $arrowFunction->returnType,
+                    'expr' => $convertedExpr,
+                    'attrGroups' => $arrowFunction->attrGroups,
+                ],
+                $arrowFunction->getAttributes(),
+            );
+        }
+
+        return null;
     }
 }

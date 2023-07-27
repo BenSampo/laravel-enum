@@ -38,7 +38,7 @@ use BenSampo\Enum\Tests\Enums\UserType;
 
 match ($userType) {
     UserType::Administrator => 1,
-    \BenSampo\Enum\Tests\Enums\UserType::Subscriber => 2,
+    UserType::Subscriber => 2,
     default => 3,
 };
 match ($userType) {

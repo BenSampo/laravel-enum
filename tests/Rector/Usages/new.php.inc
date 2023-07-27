@@ -10,4 +10,4 @@ new UserType(UserType::Administrator);
 use BenSampo\Enum\Tests\Enums\UserType;
 
 \BenSampo\Enum\Tests\Enums\UserType::from('foo');
-\BenSampo\Enum\Tests\Enums\UserType::Administrator;
+UserType::Administrator;
