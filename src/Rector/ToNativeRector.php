@@ -143,7 +143,6 @@ CODE_SAMPLE,
         return match ($this->mode) {
             ToNativeRector::USAGES => [
                 New_::class,
-                ClassConstFetch::class,
                 ArrayItem::class,
                 BinaryOp::class,
                 Assign::class,
@@ -187,10 +186,6 @@ CODE_SAMPLE,
 
         if ($node instanceof Match_) {
             return $this->refactorMatch($node, $scope);
-        }
-
-        if ($node instanceof ClassConstFetch) {
-            return $this->refactorClassConstFetch($node, $scope);
         }
 
         if ($node instanceof StaticCall) {
@@ -355,15 +350,6 @@ CODE_SAMPLE,
 
                 return $this->nodeFactory->createStaticCall($classString, 'from', [$argValue]);
             }
-        }
-
-        return null;
-    }
-
-    protected function refactorClassConstFetch(ClassConstFetch $node, Scope $scope): ?Node
-    {
-        if (! $this->inConfiguredClasses($node)) {
-            return null;
         }
 
         return null;
