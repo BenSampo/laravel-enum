@@ -6,7 +6,12 @@ use BenSampo\Enum\Tests\Enums\UserType;
 
 match ($userType->value) {
     UserType::Administrator => 1,
-    UserType::Subscriber => 2,
+    new UserType(UserType::Subscriber) => 2,
+    default => 3,
+};
+match ($userType?->value) {
+    UserType::Administrator => 1,
+    null => 2,
     default => 3,
 };
 match ($userType->value) {
@@ -33,7 +38,12 @@ use BenSampo\Enum\Tests\Enums\UserType;
 
 match ($userType) {
     UserType::Administrator => 1,
-    UserType::Subscriber => 2,
+    \BenSampo\Enum\Tests\Enums\UserType::Subscriber => 2,
+    default => 3,
+};
+match ($userType) {
+    UserType::Administrator => 1,
+    null => 2,
     default => 3,
 };
 match ($userType->value) {

@@ -8,6 +8,7 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
@@ -20,11 +21,15 @@ use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\CallLike;
+use PhpParser\Node\Expr\Cast;
+use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\NullsafePropertyFetch;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
@@ -32,9 +37,13 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\MatchArm;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\Scalar\Encapsed;
+use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
+use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
@@ -145,10 +154,14 @@ CODE_SAMPLE,
             ToNativeRector::USAGES => [
                 New_::class,
                 ArrayItem::class,
+                ArrayDimFetch::class,
                 BinaryOp::class,
+                Cast::class,
+                Encapsed::class,
                 Assign::class,
                 AssignOp::class,
                 AssignRef::class,
+                Return_::class,
                 Match_::class,
                 CallLike::class,
                 PropertyFetch::class,
@@ -159,6 +172,7 @@ CODE_SAMPLE,
         };
     }
 
+    // TODO replace Scope by $this->getType()?
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $this->classes ??= [new ObjectType(Enum::class)];
@@ -167,20 +181,32 @@ CODE_SAMPLE,
             return $this->refactorClass($node);
         }
 
-        if ($node instanceof New_) {
-            return $this->refactorNewOrFromValue($node);
-        }
-
         if ($node instanceof ArrayItem) {
             return $this->refactorArrayItem($node);
+        }
+
+        if ($node instanceof ArrayDimFetch) {
+            return $this->refactorArrayDimFetch($node);
         }
 
         if ($node instanceof BinaryOp) {
             return $this->refactorBinaryOp($node, $scope);
         }
 
+        if ($node instanceof Cast) {
+            return $this->refactorCast($node);
+        }
+
+        if ($node instanceof Encapsed) {
+            return $this->refactorEncapsed($node);
+        }
+
         if ($node instanceof Assign || $node instanceof AssignOp || $node instanceof AssignRef) {
             return $this->refactorAssign($node);
+        }
+
+        if ($node instanceof Return_) {
+            return $this->refactorReturn($node);
         }
 
         if ($node instanceof Match_) {
@@ -188,6 +214,10 @@ CODE_SAMPLE,
         }
 
         if ($node instanceof CallLike) {
+            if ($node instanceof New_ && $this->inConfiguredClasses($node->class)) {
+                return $this->refactorNewOrFromValue($node);
+            }
+
             if ($node instanceof StaticCall && $this->inConfiguredClasses($node->class)) {
                 if ($this->isName($node->name, 'fromValue')) {
                     return $this->refactorNewOrFromValue($node);
@@ -204,6 +234,8 @@ CODE_SAMPLE,
                 if ($this->isName($node->name, 'getValues')) {
                     return $this->refactorGetValues($node);
                 }
+
+                // TODO getRandomInstance
 
                 return $this->refactorMagicStaticCall($node);
             }
@@ -226,6 +258,10 @@ CODE_SAMPLE,
 
                 if ($this->isName($node->name, 'notIn')) {
                     return $this->refactorNotIn($node);
+                }
+
+                if ($this->isName($node->name, '__toString')) {
+                    return $this->refactorMagicToString($node);
                 }
             }
 
@@ -328,7 +364,7 @@ CODE_SAMPLE,
     protected function refactorNewOrFromValue(New_|StaticCall $node): ?Node
     {
         $class = $node->class;
-        if ($class instanceof Name && $this->inConfiguredClasses($class)) {
+        if ($class instanceof Name) {
             $args = $node->args;
             if (isset($args[0]) && $args[0] instanceof Arg) {
                 $classString = $class->toString();
@@ -522,22 +558,31 @@ CODE_SAMPLE,
     protected function refactorMatch(Match_ $match, Scope $scope): ?Node
     {
         $cond = $match->cond;
-        if ($cond instanceof PropertyFetch && $this->inConfiguredClasses($cond->var)) {
-            $armsAreExclusivelyEnums = true;
+        if (($cond instanceof PropertyFetch || $cond instanceof NullsafePropertyFetch)
+            && $this->inConfiguredClasses($cond->var)
+        ) {
+            $var = $cond->var;
+            $varType = $scope->getType($var);
+
+            $armsAreExclusivelyEnumsOrNull = true;
             foreach ($match->arms as $arm) {
                 if ($arm->conds === null) {
                     continue;
                 }
 
                 foreach ($arm->conds as $armCond) {
-                    if (! $armCond instanceof ClassConstFetch || ! $this->inConfiguredClasses($armCond->class)) {
-                        $armsAreExclusivelyEnums = false;
+                    $isEnum = $varType->equals($this->getType($armCond))
+                        || ($armCond instanceof ClassConstFetch && $this->inConfiguredClasses($armCond->class));
+                    $isNull = $scope->getType($armCond)->isNull()->yes();
+
+                    if (! $isEnum && !$isNull) {
+                        $armsAreExclusivelyEnumsOrNull = false;
                     }
                 }
             }
 
-            if ($armsAreExclusivelyEnums) {
-                return new Match_($cond->var, $match->arms, $match->getAttributes());
+            if ($armsAreExclusivelyEnumsOrNull) {
+                return new Match_($var, $match->arms, $match->getAttributes());
             }
         }
 
@@ -550,7 +595,7 @@ CODE_SAMPLE,
             $arms[] = $arm->conds === null
                 ? $arm
                 : new MatchArm(
-                    array_map([$this, 'convertClassConstFetchOrNot'], $arm->conds),
+                    array_map(fn (Expr $expr) => $this->convertToValueFetch($expr) ?? $expr, $arm->conds),
                     $arm->body,
                     $arm->getAttributes(),
                 );
@@ -562,7 +607,7 @@ CODE_SAMPLE,
     protected function refactorArrayItem(ArrayItem $node): ?Node
     {
         $key = $node->key;
-        $convertedKey = $this->convertClassConstFetch($key);
+        $convertedKey = $this->convertToValueFetch($key);
 
         if ($convertedKey) {
             return new ArrayItem(
@@ -577,10 +622,17 @@ CODE_SAMPLE,
         return null;
     }
 
-    protected function convertClassConstFetch(?Expr $expr): ?PropertyFetch
+    protected function convertToValueFetch(?Expr $expr): ?Expr
     {
-        if ($expr instanceof ClassConstFetch && $this->inConfiguredClasses($expr->class)) {
-            return $this->nodeFactory->createPropertyFetch($expr, 'value');
+        if (! $expr) {
+            return null;
+        }
+
+        if (
+            ($expr instanceof ClassConstFetch && $this->inConfiguredClasses($expr->class))
+            || $this->inConfiguredClasses($expr)
+        ) {
+            return $this->createValueFetch($expr, $this->nodeTypeResolver->isNullableType($expr));
         }
 
         return null;
@@ -588,25 +640,17 @@ CODE_SAMPLE,
 
     public function isPossibleEnumValueType(Type $condType): bool
     {
-        return $condType->isString()->yes() || $condType->isInteger()->yes();
-    }
-
-    protected function convertClassConstFetchOrNot(?Expr $expr): ?Expr
-    {
-        if ($expr instanceof ClassConstFetch && $this->inConfiguredClasses($expr->class)) {
-            return $this->nodeFactory->createPropertyFetch($expr, 'value');
-        }
-
-        return $expr;
+        // includes int|string|null
+        return $condType->isScalar()->yes();
     }
 
     protected function refactorBinaryOp(BinaryOp $binaryOp, Scope $scope): ?Node
     {
         $left = $binaryOp->left;
-        $convertedLeft = $this->convertClassConstFetch($left);
+        $convertedLeft = $this->convertToValueFetch($left);
 
         $right = $binaryOp->right;
-        $convertedRight = $this->convertClassConstFetch($right);
+        $convertedRight = $this->convertToValueFetch($right);
 
         // It may be valid to use an Enum in comparison with unknown values.
         // However, if we know the other side is a string or int, we can safely convert.
@@ -632,10 +676,9 @@ CODE_SAMPLE,
                 return new $binaryOp($left, $convertedRight, $binaryOp->getAttributes());
             }
 
-            // TODO maybe convert either way?
+            // TODO maybe convert either way? e.g. $foo?->var === UserType::Admin
             return null;
         }
-
 
         // All other operators only make sense with the underlying values of enums
         // arithmetic, bitwise, comparison, logical, or string operators do not support enums
@@ -654,7 +697,7 @@ CODE_SAMPLE,
 
     protected function refactorAssign(Assign|AssignOp|AssignRef $assign): ?Node
     {
-        $convertedExpr = $this->convertClassConstFetch($assign->expr);
+        $convertedExpr = $this->convertToValueFetch($assign->expr);
         $var = $assign->var;
         if ($convertedExpr && ! $this->inConfiguredClasses($var)) {
             return new $assign($var, $convertedExpr, $assign->getAttributes());
@@ -665,11 +708,100 @@ CODE_SAMPLE,
 
     protected function refactorCall(CallLike $call, Scope $scope): ?CallLike
     {
-//        if ($call instanceof StaticCall) {
-//            $class = $call->class;
-//            $method = $call->name;
+        // At this point, we know the call is neither new'ing up a Bensampo\Enum\Enum,
+        // nor is it statically or dynamically calling any of its methods which require
+        // special conversion rules. Thus, we are safe to transform any const fetches to values.
+
+        $args = [];
+        foreach ($call->getArgs() as $arg) {
+            if ($arg instanceof VariadicPlaceholder) {
+                return null;
+            }
+
+            $args[] = new Arg(
+                $this->convertToValueFetch($arg->value) ?? $arg->value,
+                $arg->byRef,
+                $arg->unpack,
+                $arg->getAttributes(),
+                $arg->name,
+            );
+        }
+
+//        if ($call instanceof FuncCall) {
+//            return new FuncCall($call->name, $args, $call->getAttributes());
 //        }
-//        $call->getArgs()
+
+        if ($call instanceof New_) {
+            return new New_($call->class, $args, $call->getAttributes());
+        }
+
+        if ($call instanceof MethodCall || $call instanceof NullsafeMethodCall) {
+            return new $call($call->var, $call->name, $args, $call->getAttributes());
+        }
+
+        if ($call instanceof StaticCall) {
+            return new StaticCall($call->class, $call->name, $args, $call->getAttributes());
+        }
+
         return null;
+    }
+
+    protected function refactorReturn(Return_ $return): ?Node
+    {
+        // TODO consider return value
+        $convertedExpr = $this->convertToValueFetch($return->expr);
+        if ($convertedExpr) {
+            return new Return_($convertedExpr, $return->getAttributes());
+        }
+
+        return null;
+    }
+
+    protected function refactorArrayDimFetch(ArrayDimFetch $arrayDimFetch): ?Node
+    {
+        $convertedDim = $this->convertToValueFetch($arrayDimFetch->dim);
+        if ($convertedDim) {
+            return new ArrayDimFetch($arrayDimFetch->var, $convertedDim, $arrayDimFetch->getAttributes());
+        }
+
+        return null;
+    }
+
+    protected function refactorEncapsed(Encapsed $encapsed): Encapsed
+    {
+        $parts = [];
+        foreach ($encapsed->parts as $part) {
+            if ($part instanceof EncapsedStringPart) {
+                $parts []= $part;
+            } else {
+                $parts []= $this->convertToValueFetch($part) ?? $part;
+            }
+        }
+
+        return new Encapsed($parts, $encapsed->getAttributes());
+    }
+
+    protected function refactorCast(Cast $cast): ?Cast
+    {
+        $convertedExpr = $this->convertToValueFetch($cast->expr);
+        if ($convertedExpr) {
+            return new $cast($convertedExpr, $cast->getAttributes());
+        }
+
+        return null;
+    }
+
+    protected function refactorMagicToString(MethodCall|NullsafeMethodCall $node): Cast
+    {
+        return new String_(
+            $this->createValueFetch($node->var, $node instanceof NullsafeMethodCall)
+        );
+    }
+
+    protected function createValueFetch(Expr $expr, bool $isNullable): NullsafePropertyFetch|PropertyFetch
+    {
+        return $isNullable
+            ? new NullsafePropertyFetch($expr, 'value')
+            : new PropertyFetch($expr, 'value');
     }
 }
