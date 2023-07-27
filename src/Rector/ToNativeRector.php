@@ -54,6 +54,7 @@ use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -727,6 +728,10 @@ CODE_SAMPLE,
         // At this point, we know the call is neither new'ing up a Bensampo\Enum\Enum,
         // nor is it statically or dynamically calling any of its methods which require
         // special conversion rules. Thus, we are safe to transform any const fetches to values.
+
+        if ($call->isFirstClassCallable()) {
+            return null;
+        }
 
         $args = [];
         foreach ($call->getArgs() as $arg) {
