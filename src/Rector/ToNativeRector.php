@@ -43,7 +43,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
@@ -54,7 +53,6 @@ use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -735,10 +733,6 @@ CODE_SAMPLE,
 
         $args = [];
         foreach ($call->getArgs() as $arg) {
-            if ($arg instanceof VariadicPlaceholder) {
-                return null;
-            }
-
             $args[] = new Arg(
                 $this->convertToValueFetch($arg->value) ?? $arg->value,
                 $arg->byRef,
@@ -770,7 +764,7 @@ CODE_SAMPLE,
     protected function refactorReturn(Return_ $return): ?Node
     {
         $expr = $return->expr;
-        if ($expr->hasAttribute(self::CONVERTED_INSTANTIATION)) {
+        if (! $expr || $expr->hasAttribute(self::CONVERTED_INSTANTIATION)) {
             return null;
         }
 
