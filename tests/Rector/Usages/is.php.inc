@@ -8,6 +8,7 @@ $userType->is(UserType::Administrator);
 $userType?->is(UserType::Administrator);
 $userType->is($userType);
 $userType->is($int);
+$userType->is(...);
 -----
 <?php
 
@@ -19,3 +20,4 @@ $userType === UserType::Administrator;
 $userType === UserType::Administrator;
 $userType === $userType;
 $userType->value === $int;
+fn(mixed $value): bool => $userType === $value;

@@ -68,7 +68,7 @@ class ToNativeRector extends AbstractScopeAwareRector implements ConfigurableRul
     public const IMPLEMENTATION = 'implementation';
     public const USAGES = 'usages';
 
-    public const CONVERTED_IN_ARRAY = ToNativeRector::class . '@converted-in-array';
+    public const CONVERTED_COMPARISON = ToNativeRector::class . '@converted-comparison';
     public const CONVERTED_INSTANTIATION = ToNativeRector::class . '@converted-instantiation';
 
     /** @var 'implementation'|'usages' */
@@ -380,7 +380,7 @@ CODE_SAMPLE,
             }
 
             $args = $node->args;
-            if (isset($args[0]) && $args[0] instanceof Arg) {
+            if (isset($args[0])) {
                 $argValue = $args[0]->value;
                 if ($argValue instanceof ClassConstFetch) {
                     $argValueClass = $argValue->class;
@@ -402,19 +402,29 @@ CODE_SAMPLE,
     }
 
     /** @see Enum::is() */
-    protected function refactorIs(MethodCall|NullsafeMethodCall $node, Scope $scope): ?Node
+    protected function refactorIs(MethodCall|NullsafeMethodCall $call, Scope $scope): ?Node
     {
-        $args = $node->args;
-        if (isset($args[0]) && $args[0] instanceof Arg) {
+        if ($call->isFirstClassCallable()) {
+            $param = new Variable('value');
+
+            return new ArrowFunction([
+                'params' => [new Param($param, null, 'mixed')],
+                'returnType' => 'bool',
+                'expr' => new Identical($call->var, $param, [self::CONVERTED_COMPARISON => true]),
+            ]);
+        }
+
+        $args = $call->getArgs();
+        if (isset($args[0])) {
             $arg = $args[0];
             $right = $arg->value;
 
-            $var = $node->var;
+            $var = $call->var;
             $left = $this->willBeEnumInstance($right, $scope)
                 ? $var
                 : $this->nodeFactory->createPropertyFetch($var, 'value');
 
-            return new Identical($left, $right);
+            return new Identical($left, $right, [self::CONVERTED_COMPARISON => true]);
         }
 
         return null;
@@ -436,7 +446,7 @@ CODE_SAMPLE,
         if (isset($args[0]) && $args[0] instanceof Arg) {
             $arg = $args[0];
 
-            return new NotIdentical($node->var, $arg->value);
+            return new NotIdentical($node->var, $arg->value, [self::CONVERTED_COMPARISON => true]);
         }
 
         return null;
@@ -452,7 +462,7 @@ CODE_SAMPLE,
             return new FuncCall(
                 new Name('in_array'),
                 [new Arg($node->var), $arg],
-                [self::CONVERTED_IN_ARRAY => true],
+                [self::CONVERTED_COMPARISON => true],
             );
         }
 
@@ -470,7 +480,7 @@ CODE_SAMPLE,
                 new FuncCall(
                     new Name('in_array'),
                     [new Arg($node->var), $arg],
-                    [self::CONVERTED_IN_ARRAY => true],
+                    [self::CONVERTED_COMPARISON => true],
                 )
             );
         }
@@ -627,7 +637,7 @@ CODE_SAMPLE,
     protected function refactorArrayItem(ArrayItem $node): ?Node
     {
         $key = $node->key;
-        $convertedKey = $this->convertToValueFetch($key);
+        $convertedKey = $this->convertConstToValueFetch($key);
 
         if ($convertedKey) {
             return new ArrayItem(
@@ -653,6 +663,15 @@ CODE_SAMPLE,
             || $this->inConfiguredClasses($expr)
         ) {
             return $this->createValueFetch($expr, $this->nodeTypeResolver->isNullableType($expr));
+        }
+
+        return null;
+    }
+
+    protected function convertConstToValueFetch(?Expr $expr): ?Expr
+    {
+        if ($expr instanceof ClassConstFetch && $this->inConfiguredClasses($expr->class)) {
+            return $this->createValueFetch($expr, false);
         }
 
         return null;
@@ -717,7 +736,7 @@ CODE_SAMPLE,
 
     protected function refactorAssign(Assign|AssignOp|AssignRef $assign): ?Node
     {
-        $convertedExpr = $this->convertToValueFetch($assign->expr);
+        $convertedExpr = $this->convertConstToValueFetch($assign->expr);
         $var = $assign->var;
         if ($convertedExpr && ! $this->inConfiguredClasses($var)) {
             return new $assign($var, $convertedExpr, $assign->getAttributes());
@@ -747,7 +766,7 @@ CODE_SAMPLE,
             );
         }
 
-        if ($call instanceof FuncCall && ! $call->hasAttribute(self::CONVERTED_IN_ARRAY)) {
+        if ($call instanceof FuncCall && ! $call->hasAttribute(self::CONVERTED_COMPARISON)) {
             return new FuncCall($call->name, $args, $call->getAttributes());
         }
 
@@ -832,7 +851,7 @@ CODE_SAMPLE,
 
     protected function refactorArrowFunction(ArrowFunction $arrowFunction): ?ArrowFunction
     {
-        $convertedExpr = $this->convertToValueFetch($arrowFunction->expr);
+        $convertedExpr = $this->convertConstToValueFetch($arrowFunction->expr);
         if ($convertedExpr) {
             return new ArrowFunction(
                 [
