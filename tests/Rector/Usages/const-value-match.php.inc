@@ -14,6 +14,11 @@ match ($userType->value) {
     1 => 1,
     default => 2,
 };
+match ($mixed) {
+    UserType::Administrator => 0,
+    1 => 1,
+    default => 2,
+};
 match ('foo') {
     UserType::Administrator, UserType::Subscriber => 1,
     $var => 2,
@@ -32,7 +37,12 @@ match ($userType) {
     default => 3,
 };
 match ($userType->value) {
-    UserType::Administrator => 0,
+    UserType::Administrator->value => 0,
+    1 => 1,
+    default => 2,
+};
+match ($mixed) {
+    UserType::Administrator->value => 0,
     1 => 1,
     default => 2,
 };

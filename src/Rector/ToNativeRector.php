@@ -19,6 +19,7 @@ use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
@@ -149,9 +150,7 @@ CODE_SAMPLE,
                 AssignOp::class,
                 AssignRef::class,
                 Match_::class,
-                StaticCall::class,
-                MethodCall::class,
-                NullsafeMethodCall::class,
+                CallLike::class,
                 PropertyFetch::class,
             ],
             ToNativeRector::IMPLEMENTATION => [
@@ -188,50 +187,49 @@ CODE_SAMPLE,
             return $this->refactorMatch($node, $scope);
         }
 
-        if ($node instanceof StaticCall) {
-            if (! $this->inConfiguredClasses($node->class)) {
-                return null;
+        if ($node instanceof CallLike) {
+            if ($node instanceof StaticCall && $this->inConfiguredClasses($node->class)) {
+                if ($this->isName($node->name, 'fromValue')) {
+                    return $this->refactorNewOrFromValue($node);
+                }
+
+                if ($this->isName($node->name, 'getInstances')) {
+                    return $this->refactorGetInstances($node);
+                }
+
+                if ($this->isName($node->name, 'getKeys')) {
+                    return $this->refactorGetKeys($node);
+                }
+
+                if ($this->isName($node->name, 'getValues')) {
+                    return $this->refactorGetValues($node);
+                }
+
+                return $this->refactorMagicStaticCall($node);
             }
 
-            if ($this->isName($node->name, 'fromValue')) {
-                return $this->refactorNewOrFromValue($node);
+            if (
+                ($node instanceof MethodCall || $node instanceof NullsafeMethodCall)
+                && $this->inConfiguredClasses($node->var)
+            ) {
+                if ($this->isName($node->name, 'is')) {
+                    return $this->refactorIs($node, $scope);
+                }
+
+                if ($this->isName($node->name, 'isNot')) {
+                    return $this->refactorIsNot($node);
+                }
+
+                if ($this->isName($node->name, 'in')) {
+                    return $this->refactorIn($node);
+                }
+
+                if ($this->isName($node->name, 'notIn')) {
+                    return $this->refactorNotIn($node);
+                }
             }
 
-            if ($this->isName($node->name, 'getInstances')) {
-                return $this->refactorGetInstances($node);
-            }
-
-            if ($this->isName($node->name, 'getKeys')) {
-                return $this->refactorGetKeys($node);
-            }
-
-            if ($this->isName($node->name, 'getValues')) {
-                return $this->refactorGetValues($node);
-            }
-
-            return $this->refactorMagicStaticCall($node);
-        }
-
-        if ($node instanceof MethodCall || $node instanceof NullsafeMethodCall) {
-            if (! $this->inConfiguredClasses($node->var)) {
-                return null;
-            }
-
-            if ($this->isName($node->name, 'is')) {
-                return $this->refactorIs($node, $scope);
-            }
-
-            if ($this->isName($node->name, 'isNot')) {
-                return $this->refactorIsNot($node);
-            }
-
-            if ($this->isName($node->name, 'in')) {
-                return $this->refactorIn($node);
-            }
-
-            if ($this->isName($node->name, 'notIn')) {
-                return $this->refactorNotIn($node);
-            }
+            return $this->refactorCall($node, $scope);
         }
 
         if ($node instanceof PropertyFetch) {
@@ -525,6 +523,7 @@ CODE_SAMPLE,
     {
         $cond = $match->cond;
         if ($cond instanceof PropertyFetch && $this->inConfiguredClasses($cond->var)) {
+            $armsAreExclusivelyEnums = true;
             foreach ($match->arms as $arm) {
                 if ($arm->conds === null) {
                     continue;
@@ -532,32 +531,32 @@ CODE_SAMPLE,
 
                 foreach ($arm->conds as $armCond) {
                     if (! $armCond instanceof ClassConstFetch || ! $this->inConfiguredClasses($armCond->class)) {
-                        // Arms must be exclusively enums
-                        return null;
+                        $armsAreExclusivelyEnums = false;
                     }
                 }
             }
 
-            return new Match_($cond->var, $match->arms, $match->getAttributes());
-        }
-
-        $condType = $scope->getType($cond);
-        if ($this->isPossibleEnumValueType($condType)) {
-            $arms = [];
-            foreach ($match->arms as $arm) {
-                $arms[] = $arm->conds === null
-                    ? $arm
-                    : new MatchArm(
-                        array_map([$this, 'convertClassConstFetchOrNot'], $arm->conds),
-                        $arm->body,
-                        $arm->getAttributes(),
-                    );
+            if ($armsAreExclusivelyEnums) {
+                return new Match_($cond->var, $match->arms, $match->getAttributes());
             }
-
-            return new Match_($cond, $arms, $match->getAttributes());
         }
 
-        return null;
+        if ($this->inConfiguredClasses($cond)) {
+            return null;
+        }
+
+        $arms = [];
+        foreach ($match->arms as $arm) {
+            $arms[] = $arm->conds === null
+                ? $arm
+                : new MatchArm(
+                    array_map([$this, 'convertClassConstFetchOrNot'], $arm->conds),
+                    $arm->body,
+                    $arm->getAttributes(),
+                );
+        }
+
+        return new Match_($cond, $arms, $match->getAttributes());
     }
 
     protected function refactorArrayItem(ArrayItem $node): ?Node
@@ -611,34 +610,36 @@ CODE_SAMPLE,
 
         // It may be valid to use an Enum in comparison with unknown values.
         // However, if we know the other side is a string or int, we can safely convert.
-        $isComparison = $binaryOp instanceof Equal
+        if ($binaryOp instanceof Equal
             || $binaryOp instanceof Identical
             || $binaryOp instanceof NotEqual
-            || $binaryOp instanceof NotIdentical;
-        if ($isComparison) {
+            || $binaryOp instanceof NotIdentical
+        ) {
             if ($convertedLeft && $convertedRight) {
                 // Maybe evaluate for truthiness and replace with static value?
                 return null;
             }
 
-            $isStringOrInt = function (Expr $expr) use ($scope): bool {
+            $isPossibleEnumValueType = function (Expr $expr) use ($scope): bool {
                 return $this->isPossibleEnumValueType($scope->getType($expr));
             };
 
-            if ($convertedLeft && $isStringOrInt($right)) {
+            if ($convertedLeft && $isPossibleEnumValueType($right)) {
                 return new $binaryOp($convertedLeft, $right, $binaryOp->getAttributes());
             }
 
-            if ($convertedRight && $isStringOrInt($left)) {
+            if ($convertedRight && $isPossibleEnumValueType($left)) {
                 return new $binaryOp($left, $convertedRight, $binaryOp->getAttributes());
             }
 
+            // TODO maybe convert either way?
             return null;
         }
 
+
         // All other operators only make sense with the underlying values of enums
-        // ?? or ?: enums will never be null or falsy, result is likely not used as an enum
         // arithmetic, bitwise, comparison, logical, or string operators do not support enums
+        // ?? or ?: enums will never be null or falsy, result is likely not used as an enum
 
         if ($convertedLeft || $convertedRight) {
             return new $binaryOp(
@@ -659,6 +660,16 @@ CODE_SAMPLE,
             return new $assign($var, $convertedExpr, $assign->getAttributes());
         }
 
+        return null;
+    }
+
+    protected function refactorCall(CallLike $call, Scope $scope): ?CallLike
+    {
+//        if ($call instanceof StaticCall) {
+//            $class = $call->class;
+//            $method = $call->name;
+//        }
+//        $call->getArgs()
         return null;
     }
 }
