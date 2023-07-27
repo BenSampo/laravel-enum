@@ -38,6 +38,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
@@ -222,7 +223,7 @@ CODE_SAMPLE,
             }
 
             if ($this->isName($node->name, 'is')) {
-                return $this->refactorIs($node);
+                return $this->refactorIs($node, $scope);
             }
 
             if ($this->isName($node->name, 'isNot')) {
@@ -369,16 +370,31 @@ CODE_SAMPLE,
     }
 
     /** @see Enum::is() */
-    protected function refactorIs(MethodCall|NullsafeMethodCall $node): ?Node
+    protected function refactorIs(MethodCall|NullsafeMethodCall $node, Scope $scope): ?Node
     {
         $args = $node->args;
         if (isset($args[0]) && $args[0] instanceof Arg) {
             $arg = $args[0];
+            $right = $arg->value;
 
-            return new Identical($node->var, $arg->value);
+            $var = $node->var;
+            $left = $this->willBeEnumInstance($right, $scope)
+                ? $var
+                : $this->nodeFactory->createPropertyFetch($var, 'value');
+
+            return new Identical($left, $right);
         }
 
         return null;
+    }
+
+    protected function willBeEnumInstance(Expr $expr, Scope $scope): bool
+    {
+        if ($expr instanceof ClassConstFetch && $this->inConfiguredClasses($expr->class)) {
+            return true;
+        }
+
+        return $this->inConfiguredClasses($expr);
     }
 
     /** @see Enum::isNot() */
@@ -540,7 +556,7 @@ CODE_SAMPLE,
         }
 
         $condType = $scope->getType($cond);
-        if ($condType->isString()->yes() || $condType->isInteger()->yes()) {
+        if ($this->isPossibleEnumValueType($condType)) {
             $arms = [];
             foreach ($match->arms as $arm) {
                 $arms[] = $arm->conds === null
@@ -585,6 +601,11 @@ CODE_SAMPLE,
         return null;
     }
 
+    public function isPossibleEnumValueType(Type $condType): bool
+    {
+        return $condType->isString()->yes() || $condType->isInteger()->yes();
+    }
+
     protected function convertClassConstFetchOrNot(?Expr $expr): ?Expr
     {
         if ($expr instanceof ClassConstFetch && $this->inConfiguredClasses($expr->class)) {
@@ -615,9 +636,7 @@ CODE_SAMPLE,
             }
 
             $isStringOrInt = function (Expr $expr) use ($scope): bool {
-                $type = $scope->getType($expr);
-
-                return $type->isString()->yes() || $type->isInteger()->yes();
+                return $this->isPossibleEnumValueType($scope->getType($expr));
             };
 
             if ($convertedLeft && $isStringOrInt($right)) {
