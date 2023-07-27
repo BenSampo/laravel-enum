@@ -654,8 +654,9 @@ CODE_SAMPLE,
     protected function refactorAssign(Assign|AssignOp|AssignRef $assign): ?Node
     {
         $convertedExpr = $this->convertClassConstFetch($assign->expr);
-        if ($convertedExpr) {
-            return new $assign($assign->var, $convertedExpr, $assign->getAttributes());
+        $var = $assign->var;
+        if ($convertedExpr && ! $this->inConfiguredClasses($var)) {
+            return new $assign($var, $convertedExpr, $assign->getAttributes());
         }
 
         return null;
