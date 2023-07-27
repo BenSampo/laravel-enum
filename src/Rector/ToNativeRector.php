@@ -43,6 +43,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
@@ -372,10 +373,14 @@ CODE_SAMPLE,
     {
         $class = $node->class;
         if ($class instanceof Name) {
+            $classString = $class->toString();
+
+            if ($node->isFirstClassCallable()) {
+                return new StaticCall($class, 'from', [new VariadicPlaceholder()]);
+            }
+
             $args = $node->args;
             if (isset($args[0]) && $args[0] instanceof Arg) {
-                $classString = $class->toString();
-
                 $argValue = $args[0]->value;
                 if ($argValue instanceof ClassConstFetch) {
                     $argValueClass = $argValue->class;
@@ -389,7 +394,7 @@ CODE_SAMPLE,
                     }
                 }
 
-                return $this->nodeFactory->createStaticCall($classString, 'from', [$argValue]);
+                return new StaticCall($class, 'from', [new Arg($argValue)]);
             }
         }
 
