@@ -7,7 +7,6 @@ use BenSampo\Enum\Tests\Enums\UserType;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
@@ -16,21 +15,15 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
-use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \BenSampo\Enum\Tests\Rector\ToNativeRectorImplementationTest
  */
-class ToNativeImplementationRector extends AbstractRector implements ConfigurableRuleInterface, ConfigurableRectorInterface
+class ToNativeImplementationRector extends ToNativeRector
 {
-    /** @var array<ObjectType> */
-    protected array $classes;
-
     public function __construct(
         protected PhpDocInfoPrinter $phpDocInfoPrinter,
     ) {}
@@ -68,29 +61,9 @@ CODE_SAMPLE,
         ]);
     }
 
-    /** @param array<class-string> $configuration */
-    public function configure(array $configuration): void
-    {
-        $this->classes = array_map(
-            static fn (string $class): ObjectType => new ObjectType($class),
-            $configuration,
-        );
-    }
-
     public function getNodeTypes(): array
     {
         return [Class_::class];
-    }
-
-    protected function inConfiguredClasses(Node $node): bool
-    {
-        foreach ($this->classes as $class) {
-            if ($this->isObjectType($node, $class)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**

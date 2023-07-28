@@ -5,7 +5,7 @@ namespace BenSampo\Enum\Tests\Rector;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 /** @see \BenSampo\Enum\Rector\ToNativeImplementationRector */
-final class ToNativeRectorImplementationTest extends AbstractRectorTestCase
+final class ToNativeImplementationRectorTest extends AbstractRectorTestCase
 {
     /** @dataProvider provideData */
     public function test(string $filePath): void

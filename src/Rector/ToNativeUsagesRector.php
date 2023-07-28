@@ -43,23 +43,17 @@ use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Type\ObjectType;
-use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Rector\AbstractRector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
-use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \BenSampo\Enum\Tests\Rector\ToNativeRectorUsagesTest
  */
-class ToNativeUsagesRector extends AbstractRector implements ConfigurableRuleInterface, ConfigurableRectorInterface
+class ToNativeUsagesRector extends ToNativeRector
 {
     public const CONVERTED_COMPARISON = ToNativeUsagesRector::class . '@converted-comparison';
     public const CONVERTED_INSTANTIATION = ToNativeUsagesRector::class . '@converted-instantiation';
-
-    /** @var array<ObjectType> */
-    protected array $classes;
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -80,15 +74,6 @@ CODE_SAMPLE,
                 ],
             ),
         ]);
-    }
-
-    /** @param array<class-string> $configuration */
-    public function configure(array $configuration): void
-    {
-        $this->classes = array_map(
-            static fn (string $class): ObjectType => new ObjectType($class),
-            $configuration,
-        );
     }
 
     public function getNodeTypes(): array
@@ -229,17 +214,6 @@ CODE_SAMPLE,
         }
 
         return null;
-    }
-
-    protected function inConfiguredClasses(Node $node): bool
-    {
-        foreach ($this->classes as $class) {
-            if ($this->isObjectType($node, $class)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
