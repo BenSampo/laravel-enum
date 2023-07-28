@@ -45,7 +45,6 @@ Created by [Ben Sampson](https://sampo.co.uk)
 - [Extending the Enum Base Class](#extending-the-enum-base-class)
 - [Laravel Nova Integration](#laravel-nova-integration)
 - [PHPStan Integration](#phpstan-integration)
-- [Rector Integration](#rector-integration)
 - [Artisan Command List](#artisan-command-list)
 - [Enum Class Reference](#enum-class-reference)
 - [Stubs](#stubs)
@@ -865,11 +864,6 @@ includes:
 - vendor/bensampo/laravel-enum/extension.neon
 ```
 
-## Rector Integration
-
-You can leverage [Rector](https://getrector.com) for automated refactorings,
-see [Rector rules](rector-rules.md).
-
 ## Artisan Command List
 
 ### `php artisan make:enum`
@@ -884,7 +878,7 @@ Generate DocBlock annotations for enum classes.
 
 ### `php artisan enum:to-native`
 
-Convert a class that extends `BenSampo\Enum\Enum` to a native PHP enum.
+Deprecated, see [migrate to native PHP enums](#migrate-to-native-php-enums).
 
 ## Enum Class Reference
 
