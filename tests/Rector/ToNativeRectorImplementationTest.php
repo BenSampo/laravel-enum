@@ -4,7 +4,7 @@ namespace BenSampo\Enum\Tests\Rector;
 
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-/** @see \BenSampo\Enum\Rector\ToNativeRector */
+/** @see \BenSampo\Enum\Rector\ToNativeImplementationRector */
 final class ToNativeRectorImplementationTest extends AbstractRectorTestCase
 {
     /** @dataProvider provideData */

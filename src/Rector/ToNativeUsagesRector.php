@@ -4,7 +4,6 @@ namespace BenSampo\Enum\Rector;
 
 use BenSampo\Enum\Enum;
 use BenSampo\Enum\Tests\Enums\UserType;
-use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -41,19 +40,11 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\EncapsedStringPart;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Enum_;
-use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\VariadicPlaceholder;
-use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\Type;
-use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -61,25 +52,14 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \BenSampo\Enum\Tests\Rector\ToNativeRectorUsagesTest
- * @see \BenSampo\Enum\Tests\Rector\ToNativeRectorImplementationTest
  */
-class ToNativeRector extends AbstractRector implements ConfigurableRuleInterface, ConfigurableRectorInterface
+class ToNativeUsagesRector extends AbstractRector implements ConfigurableRuleInterface, ConfigurableRectorInterface
 {
-    public const IMPLEMENTATION = 'implementation';
-    public const USAGES = 'usages';
-
-    public const CONVERTED_COMPARISON = ToNativeRector::class . '@converted-comparison';
-    public const CONVERTED_INSTANTIATION = ToNativeRector::class . '@converted-instantiation';
-
-    /** @var 'implementation'|'usages' */
-    protected string $mode;
+    public const CONVERTED_COMPARISON = ToNativeUsagesRector::class . '@converted-comparison';
+    public const CONVERTED_INSTANTIATION = ToNativeUsagesRector::class . '@converted-instantiation';
 
     /** @var array<ObjectType> */
     protected array $classes;
-
-    public function __construct(
-        protected PhpDocInfoPrinter $phpDocInfoPrinter,
-    ) {}
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -96,94 +76,46 @@ $user = UserType::ADMIN;
 $user === UserType::ADMIN;
 CODE_SAMPLE,
                 [
-                    'mode' => ToNativeRector::USAGES,
-                    'classes' => [UserType::class],
-                ],
-            ),
-            new ConfiguredCodeSample(
-                <<<'CODE_SAMPLE'
-/**
- * @method static static ADMIN()
- * @method static static MEMBER()
- *
- * @extends Enum<int>
- */
-class UserType extends Enum
-{
-    const ADMIN = 1;
-    const MEMBER = 2;
-}
-CODE_SAMPLE
-
-                ,
-                <<<'CODE_SAMPLE'
-enum UserType : int
-{
-    case ADMIN = 1;
-    case MEMBER = 2;
-}
-CODE_SAMPLE,
-                [
-                    'mode' => ToNativeRector::IMPLEMENTATION,
-                    'classes' => [UserType::class],
+                    UserType::class,
                 ],
             ),
         ]);
     }
 
-    /**
-     * @param array{
-     *   mode: 'implementation'|'usages',
-     *   classes?: array<class-string>|null
-     * } $configuration
-     */
+    /** @param array<class-string> $configuration */
     public function configure(array $configuration): void
     {
-        $this->mode = $configuration['mode'];
-
-        $classes = $configuration['classes'] ?? null;
-        if ($classes) {
-            $this->classes = array_map(
-                static fn (string $class): ObjectType => new ObjectType($class),
-                $classes,
-            );
-        }
+        $this->classes = array_map(
+            static fn (string $class): ObjectType => new ObjectType($class),
+            $configuration,
+        );
     }
 
     public function getNodeTypes(): array
     {
-        return match ($this->mode) {
-            ToNativeRector::USAGES => [
-                New_::class,
-                ArrayItem::class,
-                ArrayDimFetch::class,
-                BinaryOp::class,
-                Ternary::class,
-                Cast::class,
-                Encapsed::class,
-                Assign::class,
-                AssignOp::class,
-                AssignRef::class,
-                ArrowFunction::class,
-                Return_::class,
-                Param::class,
-                Match_::class,
-                CallLike::class,
-                PropertyFetch::class,
-            ],
-            ToNativeRector::IMPLEMENTATION => [
-                Class_::class,
-            ],
-        };
+        return [
+            New_::class,
+            ArrayItem::class,
+            ArrayDimFetch::class,
+            BinaryOp::class,
+            Ternary::class,
+            Cast::class,
+            Encapsed::class,
+            Assign::class,
+            AssignOp::class,
+            AssignRef::class,
+            ArrowFunction::class,
+            Return_::class,
+            Param::class,
+            Match_::class,
+            CallLike::class,
+            PropertyFetch::class,
+        ];
     }
 
     public function refactor(Node $node): ?Node
     {
         $this->classes ??= [new ObjectType(Enum::class)];
-
-        if ($node instanceof Class_) {
-            return $this->refactorClass($node);
-        }
 
         if ($node instanceof ArrayItem) {
             return $this->refactorArrayItem($node);
@@ -308,71 +240,6 @@ CODE_SAMPLE,
         }
 
         return false;
-    }
-
-    /** @see \Rector\Php81\NodeFactory\EnumFactory */
-    protected function refactorClass(Class_ $class): ?Node
-    {
-        if (! $this->inConfiguredClasses($class)) {
-            return null;
-        }
-
-        $enum = new Enum_(
-            $this->nodeNameResolver->getShortName($class),
-            [],
-            ['startLine' => $class->getStartLine(), 'endLine' => $class->getEndLine()]
-        );
-        $enum->namespacedName = $class->namespacedName;
-
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($class);
-        if ($phpDocInfo) {
-            $phpDocInfo->removeByType(MethodTagValueNode::class);
-            $phpDocInfo->removeByType(ExtendsTagValueNode::class);
-
-            $phpdoc = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
-            // By removing unnecessary tags, we are usually left with a couple of redundant newlines.
-            // There might be valuable ones to keep in long descriptions which will unfortunately
-            // also be removed, but this should be less common.
-            $withoutEmptyNewlines = preg_replace('/ \*\n/', '', $phpdoc);
-            if ($withoutEmptyNewlines) {
-                $enum->setDocComment(new Doc($withoutEmptyNewlines));
-            }
-        }
-
-        $constants = $class->getConstants();
-
-        $enum->stmts = $class->getTraitUses();
-
-        if ($constants !== []) {
-            // Assume the first constant value has the correct type
-            $value = $this->valueResolver->getValue($constants[0]->consts[0]->value);
-            $enum->scalarType = is_string($value)
-                ? new Identifier('string')
-                : new Identifier('int');
-
-            foreach ($constants as $constant) {
-                $constConst = $constant->consts[0];
-                $enumCase = new EnumCase(
-                    $constConst->name,
-                    $constConst->value,
-                    [],
-                    [
-                        'startLine' => $constConst->getStartLine(),
-                        'endLine' => $constConst->getEndLine(),
-                    ]
-                );
-
-                // mirror comments
-                $enumCase->setAttribute(AttributeKey::PHP_DOC_INFO, $constant->getAttribute(AttributeKey::PHP_DOC_INFO));
-                $enumCase->setAttribute(AttributeKey::COMMENTS, $constant->getAttribute(AttributeKey::COMMENTS));
-
-                $enum->stmts[] = $enumCase;
-            }
-        }
-
-        $enum->stmts = [...$enum->stmts, ...$class->getMethods()];
-
-        return $enum;
     }
 
     /**
@@ -664,6 +531,10 @@ CODE_SAMPLE,
 
     protected function convertToValueFetch(?Expr $expr): ?Expr
     {
+        if (! $expr) {
+            return null;
+        }
+
         $constValueFetch = $this->convertConstToValueFetch($expr);
         if ($constValueFetch) {
             return $constValueFetch;
