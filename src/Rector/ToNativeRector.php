@@ -244,7 +244,9 @@ CODE_SAMPLE,
                     return $this->refactorGetValues($node);
                 }
 
-                // TODO getRandomInstance
+                if ($this->isName($node->name, 'getRandomInstance')) {
+                    return $this->refactorGetRandomInstance($node);
+                }
 
                 return $this->refactorMagicStaticCall($node);
             }
@@ -490,11 +492,11 @@ CODE_SAMPLE,
     }
 
     /** @see Enum::getInstances() */
-    protected function refactorGetInstances(StaticCall $node): ?Node
+    protected function refactorGetInstances(StaticCall $node): ?StaticCall
     {
         $class = $node->class;
         if ($class instanceof Name) {
-            return $this->nodeFactory->createStaticCall($class->toString(), 'cases');
+            return new StaticCall($class, 'cases');
         }
 
         return null;
@@ -901,5 +903,14 @@ CODE_SAMPLE,
         }
 
         return null;
+    }
+
+    protected function refactorGetRandomInstance(StaticCall $staticCall): ?Node
+    {
+        return new MethodCall(
+            new FuncCall(new Name('fake')),
+            'randomElement',
+            [new Arg(new StaticCall($staticCall->class, 'cases'))]
+        );
     }
 }
