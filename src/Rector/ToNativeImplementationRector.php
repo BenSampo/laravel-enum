@@ -117,10 +117,7 @@ CODE_SAMPLE,
                     $constConst->name,
                     $constConst->value,
                     [],
-                    [
-                        'startLine' => $constConst->getStartLine(),
-                        'endLine' => $constConst->getEndLine(),
-                    ]
+                    ['startLine' => $constConst->getStartLine(), 'endLine' => $constConst->getEndLine()],
                 );
 
                 // mirror comments

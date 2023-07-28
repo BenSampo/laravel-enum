@@ -172,7 +172,7 @@ CODE_SAMPLE,
                     return $this->refactorGetRandomInstance($node);
                 }
 
-                return $this->refactorMagicStaticCall($node);
+                return $this->refactorMaybeMagicStaticCall($node);
             }
 
             if (
@@ -246,6 +246,107 @@ CODE_SAMPLE,
                 }
 
                 return new StaticCall($class, 'from', [new Arg($argValue)]);
+            }
+        }
+
+        return null;
+    }
+
+    /** @see Enum::getInstances() */
+    protected function refactorGetInstances(StaticCall $node): ?StaticCall
+    {
+        $class = $node->class;
+        if ($class instanceof Name) {
+            return new StaticCall($class, 'cases');
+        }
+
+        return null;
+    }
+
+    /** @see Enum::getKeys() */
+    protected function refactorGetKeys(StaticCall $node): ?Node
+    {
+        $class = $node->class;
+        if ($class instanceof Name) {
+            $args = $node->args;
+            if ($args === []) {
+                $paramName = lcfirst($class->getLast());
+                $paramVariable = new Variable($paramName);
+
+                return $this->nodeFactory->createFuncCall('array_map', [
+                    new ArrowFunction([
+                        'static' => true,
+                        'params' => [new Param($paramVariable, null, $class)],
+                        'returnType' => 'string',
+                        'expr' => new PropertyFetch($paramVariable, 'name'),
+                    ]),
+                    $this->nodeFactory->createStaticCall($class->toString(), 'cases'),
+                ]);
+            }
+        }
+
+        return null;
+    }
+
+    /** @see Enum::getValues() */
+    protected function refactorGetValues(StaticCall $node): ?Node
+    {
+        $class = $node->class;
+        if ($class instanceof Name) {
+            $args = $node->args;
+            if ($args === []) {
+                $paramName = lcfirst($class->getLast());
+                $paramVariable = new Variable($paramName);
+
+                return $this->nodeFactory->createFuncCall('array_map', [
+                    new ArrowFunction([
+                        'static' => true,
+                        'params' => [new Param($paramVariable, null, $class)],
+                        'expr' => new PropertyFetch($paramVariable, 'value'),
+                    ]),
+                    $this->nodeFactory->createStaticCall($class->toString(), 'cases'),
+                ]);
+            }
+        }
+
+        return null;
+    }
+
+    /** @see Enum::getRandomInstance() */
+    protected function refactorGetRandomInstance(StaticCall $staticCall): ?Node
+    {
+        return new MethodCall(
+            new FuncCall(new Name('fake')),
+            'randomElement',
+            [new Arg(new StaticCall($staticCall->class, 'cases'))]
+        );
+    }
+
+    /**
+     * @see Enum::__callStatic()
+     * @see Enum::__call()
+     */
+    protected function refactorMaybeMagicStaticCall(StaticCall $node): ?Node
+    {
+        $name = $node->name;
+        if ($name instanceof Expr) {
+            return null;
+        }
+
+        $class = $node->class;
+        if ($class instanceof Name) {
+            if ($class->isSpecialClassName()) {
+                $type = $this->getType($class);
+                if (! $type instanceof FullyQualifiedObjectType) {
+                    return null;
+                }
+                $fullyQualifiedClassName = $type->getClassName();
+            } else {
+                $fullyQualifiedClassName = $class->toString();
+            }
+            $constName = $name->toString();
+            if (defined("{$fullyQualifiedClassName}::{$constName}")) {
+                return $this->createEnumCaseAccess($class, $constName);
             }
         }
 
@@ -339,95 +440,12 @@ CODE_SAMPLE,
         return null;
     }
 
-    /** @see Enum::getInstances() */
-    protected function refactorGetInstances(StaticCall $node): ?StaticCall
+    /** @see Enum::__toString() */
+    protected function refactorMagicToString(MethodCall|NullsafeMethodCall $node): Cast
     {
-        $class = $node->class;
-        if ($class instanceof Name) {
-            return new StaticCall($class, 'cases');
-        }
-
-        return null;
-    }
-
-    /** @see Enum::getKeys() */
-    protected function refactorGetKeys(StaticCall $node): ?Node
-    {
-        $class = $node->class;
-        if ($class instanceof Name) {
-            $args = $node->args;
-            if ($args === []) {
-                $paramName = lcfirst($class->getLast());
-                $paramVariable = new Variable($paramName);
-
-                return $this->nodeFactory->createFuncCall('array_map', [
-                    new ArrowFunction([
-                        'static' => true,
-                        'params' => [new Param($paramVariable, null, $class)],
-                        'returnType' => 'string',
-                        'expr' => new PropertyFetch($paramVariable, 'name'),
-                    ]),
-                    $this->nodeFactory->createStaticCall($class->toString(), 'cases'),
-                ]);
-            }
-        }
-
-        return null;
-    }
-
-    /** @see Enum::getValues() */
-    protected function refactorGetValues(StaticCall $node): ?Node
-    {
-        $class = $node->class;
-        if ($class instanceof Name) {
-            $args = $node->args;
-            if ($args === []) {
-                $paramName = lcfirst($class->getLast());
-                $paramVariable = new Variable($paramName);
-
-                return $this->nodeFactory->createFuncCall('array_map', [
-                    new ArrowFunction([
-                        'static' => true,
-                        'params' => [new Param($paramVariable, null, $class)],
-                        'expr' => new PropertyFetch($paramVariable, 'value'),
-                    ]),
-                    $this->nodeFactory->createStaticCall($class->toString(), 'cases'),
-                ]);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @see Enum::__callStatic()
-     * @see Enum::__call()
-     */
-    protected function refactorMagicStaticCall(StaticCall $node): ?Node
-    {
-        $name = $node->name;
-        if ($name instanceof Expr) {
-            return null;
-        }
-
-        $class = $node->class;
-        if ($class instanceof Name) {
-            if ($class->isSpecialClassName()) {
-                $type = $this->getType($class);
-                if (! $type instanceof FullyQualifiedObjectType) {
-                    return null;
-                }
-                $fullyQualifiedClassName = $type->getClassName();
-            } else {
-                $fullyQualifiedClassName = $class->toString();
-            }
-            $constName = $name->toString();
-            if (defined("{$fullyQualifiedClassName}::{$constName}")) {
-                return $this->createEnumCaseAccess($class, $constName);
-            }
-        }
-
-        return null;
+        return new String_(
+            $this->createValueFetch($node->var, $node instanceof NullsafeMethodCall)
+        );
     }
 
     /** @see Enum::$key */
@@ -706,14 +724,6 @@ CODE_SAMPLE,
         return null;
     }
 
-    /** @see Enum::__toString() */
-    protected function refactorMagicToString(MethodCall|NullsafeMethodCall $node): Cast
-    {
-        return new String_(
-            $this->createValueFetch($node->var, $node instanceof NullsafeMethodCall)
-        );
-    }
-
     protected function createValueFetch(Expr $expr, bool $isNullable): NullsafePropertyFetch|PropertyFetch
     {
         return $isNullable
@@ -767,15 +777,6 @@ CODE_SAMPLE,
         }
 
         return null;
-    }
-
-    protected function refactorGetRandomInstance(StaticCall $staticCall): ?Node
-    {
-        return new MethodCall(
-            new FuncCall(new Name('fake')),
-            'randomElement',
-            [new Arg(new StaticCall($staticCall->class, 'cases'))]
-        );
     }
 
     protected function refactorTernary(Ternary $ternary): ?Node

@@ -87,6 +87,7 @@ Usages seen after the enum classes have been converted will no longer be transfo
    Running repeatedly messes up the conversion.
 1. Switch the rector to [`ToNativeImplementationRector`](rector-rules.md#tonativeimplementationrector) 
    and run `vendor/bin/rector process --clear-cache` once again.
+   If you have just one or a few classes, you may pass their paths to speed this up.
 1. Review and validate the code changes for missed edge cases
    - See [Unimplemented](tests/Rector/Unimplemented)
    - `Enum::fromKey()`: Either replace usages or implement the method in your native enum.
