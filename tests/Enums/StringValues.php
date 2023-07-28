@@ -5,6 +5,8 @@ namespace BenSampo\Enum\Tests\Enums;
 use BenSampo\Enum\Enum;
 
 /**
+ * @method static static Administrator()
+ *
  * @extends Enum<self::*>
  */
 final class StringValues extends Enum

@@ -566,14 +566,32 @@ CODE_SAMPLE,
         $right = $binaryOp->right;
 
         if ($binaryOp instanceof Coalesce) {
+            // ->isString()->yes() could be string or string|null, but since it is one the left side of ?? we assume the latter
+            if ($this->getType($left)->isString()->yes() && ! $this->willBeEnumInstance($left)) {
+                $convertedRight = $this->convertToValueFetch($right);
+                if ($convertedRight) {
+                    return new Coalesce($left, $convertedRight, $binaryOp->getAttributes());
+                }
+            }
+            if ($this->getType($right)->isString()->yes() && ! $this->willBeEnumInstance($right)) {
+                $convertedLeft = $this->convertToValueFetch($left);
+                if ($convertedLeft) {
+                    return new Coalesce($convertedLeft, $right, $binaryOp->getAttributes());
+                }
+            }
+
             $convertedLeft = $this->convertConstToValueFetch($left);
             $convertedRight = $this->convertConstToValueFetch($right);
 
-            return new Coalesce(
-                $convertedLeft ?? $left,
-                $convertedRight ?? $right,
-                $binaryOp->getAttributes(),
-            );
+            if ($convertedLeft || $convertedRight) {
+                return new Coalesce(
+                    $convertedLeft ?? $left,
+                    $convertedRight ?? $right,
+                    $binaryOp->getAttributes(),
+                );
+            }
+
+            return null;
         }
 
         if ($binaryOp instanceof Equal
