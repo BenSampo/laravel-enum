@@ -15,6 +15,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotEqual;
@@ -693,10 +694,15 @@ CODE_SAMPLE,
         }
 
         $left = $binaryOp->left;
-        $convertedLeft = $this->convertToValueFetch($left);
-
         $right = $binaryOp->right;
-        $convertedRight = $this->convertToValueFetch($right);
+
+        if ($binaryOp instanceof Coalesce) {
+            $convertedLeft = $this->convertConstToValueFetch($left);
+            $convertedRight = $this->convertConstToValueFetch($right);
+        } else {
+            $convertedLeft = $this->convertToValueFetch($left);
+            $convertedRight = $this->convertToValueFetch($right);
+        }
 
         // It may be valid to use an Enum in comparison with unknown values.
         // However, if we know the other side is a string or int, we can safely convert.
@@ -726,6 +732,8 @@ CODE_SAMPLE,
             // TODO maybe convert either way? e.g. $foo?->var === UserType::Admin
             return null;
         }
+
+//        if ($binaryOp instanceof Nu)
 
         // All other operators only make sense with the underlying values of enums
         // arithmetic, bitwise, comparison, logical, or string operators do not support enums

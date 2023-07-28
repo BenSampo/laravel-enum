@@ -2,10 +2,13 @@
 
 use BenSampo\Enum\Tests\Enums\UserType;
 
+/** @var UserType|null $maybeUserType */
+
 class Foo {
     public UserType $userType;
 }
 
+$foo = $maybeUserType ?? UserType::Administrator();
 $foo = UserType::Administrator;
 $bar ??= UserType::Administrator;
 $baz .= UserType::Administrator;
@@ -17,10 +20,13 @@ $ref &= UserType::Administrator;
 
 use BenSampo\Enum\Tests\Enums\UserType;
 
+/** @var UserType|null $maybeUserType */
+
 class Foo {
     public UserType $userType;
 }
 
+$foo = $maybeUserType ?? UserType::Administrator;
 $foo = UserType::Administrator->value;
 $bar ??= UserType::Administrator->value;
 $baz .= UserType::Administrator->value;
