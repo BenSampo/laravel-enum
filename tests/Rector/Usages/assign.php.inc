@@ -9,7 +9,7 @@ class Foo {
 }
 
 $foo = $maybeUserType ?? UserType::Administrator();
-$foo = UserType::Administrator;
+$qux = UserType::Administrator;
 $bar ??= UserType::Administrator;
 $baz .= UserType::Administrator;
 $ref &= UserType::Administrator;
@@ -27,7 +27,7 @@ class Foo {
 }
 
 $foo = $maybeUserType ?? UserType::Administrator;
-$foo = UserType::Administrator->value;
+$qux = UserType::Administrator->value;
 $bar ??= UserType::Administrator->value;
 $baz .= UserType::Administrator->value;
 $ref &= UserType::Administrator->value;

@@ -7,6 +7,7 @@ use BenSampo\Enum\Tests\Enums\UserType;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -52,7 +53,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 class ToNativeUsagesRector extends ToNativeRector
 {
-    public const CONVERTED_COMPARISON = ToNativeUsagesRector::class . '@converted-comparison';
+    public const COMPARED_AGAINST_ENUM_INSTANCE = ToNativeUsagesRector::class . '@compared-against-enum-instance';
     public const CONVERTED_INSTANTIATION = ToNativeUsagesRector::class . '@converted-instantiation';
 
     public function getRuleDefinition(): RuleDefinition
@@ -180,19 +181,19 @@ CODE_SAMPLE,
                 && $this->inConfiguredClasses($node->var)
             ) {
                 if ($this->isName($node->name, 'is')) {
-                    return $this->refactorIs($node);
+                    return $this->refactorIsOrIsNot($node, true);
                 }
 
                 if ($this->isName($node->name, 'isNot')) {
-                    return $this->refactorIsNot($node);
+                    return $this->refactorIsOrIsNot($node, false);
                 }
 
                 if ($this->isName($node->name, 'in')) {
-                    return $this->refactorIn($node);
+                    return $this->refactorInOrNotIn($node, true);
                 }
 
                 if ($this->isName($node->name, 'notIn')) {
-                    return $this->refactorNotIn($node);
+                    return $this->refactorInOrNotIn($node, false);
                 }
 
                 if ($this->isName($node->name, '__toString')) {
@@ -367,16 +368,21 @@ CODE_SAMPLE,
         return null;
     }
 
-    /** @see Enum::is() */
-    protected function refactorIs(MethodCall|NullsafeMethodCall $call): ?Node
+    /**
+     * @see Enum::is()
+     * @see Enum::isNot()
+     */
+    protected function refactorIsOrIsNot(MethodCall|NullsafeMethodCall $call, bool $is): ?Node
     {
+        $comparison = $is ? Identical::class : NotIdentical::class;
+
         if ($call->isFirstClassCallable()) {
             $param = new Variable('value');
 
             return new ArrowFunction([
                 'params' => [new Param($param, null, 'mixed')],
                 'returnType' => 'bool',
-                'expr' => new Identical($call->var, $param, [self::CONVERTED_COMPARISON => true]),
+                'expr' => new $comparison($call->var, $param, [self::COMPARED_AGAINST_ENUM_INSTANCE => true]),
             ]);
         }
 
@@ -390,65 +396,39 @@ CODE_SAMPLE,
                 ? $var
                 : new PropertyFetch($var, 'value');
 
-            return new Identical($left, $right, [self::CONVERTED_COMPARISON => true]);
+            return new $comparison($left, $right, [self::COMPARED_AGAINST_ENUM_INSTANCE => true]);
         }
 
         return null;
     }
 
-    protected function willBeEnumInstance(Expr $expr): bool
-    {
-        if ($expr instanceof ClassConstFetch && $this->inConfiguredClasses($expr->class)) {
-            return true;
-        }
-
-        return $this->inConfiguredClasses($expr);
-    }
-
-    /** @see Enum::isNot() */
-    protected function refactorIsNot(MethodCall|NullsafeMethodCall $node): ?Node
+    /**
+     * @see Enum::in()
+     * @see Enum::notIn()
+     */
+    protected function refactorInOrNotIn(MethodCall|NullsafeMethodCall $node, bool $in): ?Node
     {
         $args = $node->args;
         if (isset($args[0]) && $args[0] instanceof Arg) {
-            $arg = $args[0];
+            $needle = new Arg($node->var);
+            $haystack = $args[0];
 
-            return new NotIdentical($node->var, $arg->value, [self::CONVERTED_COMPARISON => true]);
-        }
+            $haystackValue = $haystack->value;
+            if ($haystackValue instanceof Array_) {
+                foreach ($haystackValue->items as $item) {
+                    $item?->setAttribute(self::COMPARED_AGAINST_ENUM_INSTANCE, true);
+                }
+            }
 
-        return null;
-    }
-
-    /** @see Enum::in() */
-    protected function refactorIn(MethodCall|NullsafeMethodCall $node): ?Node
-    {
-        $args = $node->args;
-        if (isset($args[0]) && $args[0] instanceof Arg) {
-            $arg = $args[0];
-
-            return new FuncCall(
+            $inArray = new FuncCall(
                 new Name('in_array'),
-                [new Arg($node->var), $arg],
-                [self::CONVERTED_COMPARISON => true],
+                [$needle, $haystack],
+                [self::COMPARED_AGAINST_ENUM_INSTANCE => true],
             );
-        }
 
-        return null;
-    }
-
-    /** @see Enum::notIn() */
-    protected function refactorNotIn(MethodCall|NullsafeMethodCall $node): ?Node
-    {
-        $args = $node->args;
-        if (isset($args[0]) && $args[0] instanceof Arg) {
-            $arg = $args[0];
-
-            return new BooleanNot(
-                new FuncCall(
-                    new Name('in_array'),
-                    [new Arg($node->var), $arg],
-                    [self::CONVERTED_COMPARISON => true],
-                )
-            );
+            return $in
+                ? $inArray
+                : new BooleanNot($inArray);
         }
 
         return null;
@@ -522,10 +502,16 @@ CODE_SAMPLE,
         $key = $node->key;
         $convertedKey = $this->convertConstToValueFetch($key);
 
-        if ($convertedKey) {
+        $value = $node->value;
+        $hasAttribute = $node->hasAttribute(self::COMPARED_AGAINST_ENUM_INSTANCE);
+        $convertedValue = $hasAttribute
+            ? null
+            : $this->convertConstToValueFetch($value);
+
+        if ($convertedKey || $convertedValue) {
             return new ArrayItem(
-                $node->value,
-                $convertedKey,
+                $convertedValue ?? $value,
+                $convertedKey ?? $key,
                 $node->byRef,
                 $node->getAttributes(),
                 $node->unpack,
@@ -533,6 +519,15 @@ CODE_SAMPLE,
         }
 
         return null;
+    }
+
+    protected function willBeEnumInstance(Expr $expr): bool
+    {
+        if ($expr instanceof ClassConstFetch && $this->inConfiguredClasses($expr->class)) {
+            return true;
+        }
+
+        return $this->inConfiguredClasses($expr);
     }
 
     protected function convertToValueFetch(?Expr $expr): ?Expr
@@ -555,7 +550,10 @@ CODE_SAMPLE,
 
     protected function convertConstToValueFetch(?Expr $expr): ?Expr
     {
-        if (! $expr || $expr->hasAttribute(self::CONVERTED_INSTANTIATION)) {
+        if (! $expr
+            || $expr->hasAttribute(self::CONVERTED_INSTANTIATION)
+            || $expr->hasAttribute(self::COMPARED_AGAINST_ENUM_INSTANCE)
+        ) {
             return null;
         }
 
@@ -572,7 +570,7 @@ CODE_SAMPLE,
 
     protected function refactorBinaryOp(BinaryOp $binaryOp): ?Node
     {
-        if ($binaryOp->hasAttribute(self::CONVERTED_COMPARISON)) {
+        if ($binaryOp->hasAttribute(self::COMPARED_AGAINST_ENUM_INSTANCE)) {
             return null;
         }
 
@@ -688,7 +686,7 @@ CODE_SAMPLE,
             );
         }
 
-        if ($call instanceof FuncCall && ! $call->hasAttribute(self::CONVERTED_COMPARISON)) {
+        if ($call instanceof FuncCall && ! $call->hasAttribute(self::COMPARED_AGAINST_ENUM_INSTANCE)) {
             return new FuncCall($call->name, $args, $call->getAttributes());
         }
 
