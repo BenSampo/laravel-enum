@@ -273,15 +273,22 @@ CODE_SAMPLE,
                 $paramName = lcfirst($class->getLast());
                 $paramVariable = new Variable($paramName);
 
-                return $this->nodeFactory->createFuncCall('array_map', [
-                    new ArrowFunction([
-                        'static' => true,
-                        'params' => [new Param($paramVariable, null, $class)],
-                        'returnType' => 'string',
-                        'expr' => new PropertyFetch($paramVariable, 'name'),
-                    ]),
-                    $this->nodeFactory->createStaticCall($class->toString(), 'cases'),
-                ]);
+                return new FuncCall(
+                    new Name('array_map'),
+                    [
+                        new Arg(
+                            new ArrowFunction([
+                                'static' => true,
+                                'params' => [new Param($paramVariable, null, $class)],
+                                'returnType' => 'string',
+                                'expr' => new PropertyFetch($paramVariable, 'name'),
+                            ])
+                        ),
+                        new Arg(
+                            new StaticCall($class, 'cases')
+                        ),
+                    ]
+                );
             }
         }
 
@@ -298,14 +305,21 @@ CODE_SAMPLE,
                 $paramName = lcfirst($class->getLast());
                 $paramVariable = new Variable($paramName);
 
-                return $this->nodeFactory->createFuncCall('array_map', [
-                    new ArrowFunction([
-                        'static' => true,
-                        'params' => [new Param($paramVariable, null, $class)],
-                        'expr' => new PropertyFetch($paramVariable, 'value'),
-                    ]),
-                    $this->nodeFactory->createStaticCall($class->toString(), 'cases'),
-                ]);
+                return new FuncCall(
+                    new Name('array_map'),
+                    [
+                        new Arg(
+                            new ArrowFunction([
+                                'static' => true,
+                                'params' => [new Param($paramVariable, null, $class)],
+                                'expr' => new PropertyFetch($paramVariable, 'value'),
+                            ])
+                        ),
+                        new Arg(
+                            new StaticCall($class, 'cases')
+                        ),
+                    ],
+                );
             }
         }
 
@@ -374,7 +388,7 @@ CODE_SAMPLE,
             $var = $call->var;
             $left = $this->willBeEnumInstance($right)
                 ? $var
-                : $this->nodeFactory->createPropertyFetch($var, 'value');
+                : new PropertyFetch($var, 'value');
 
             return new Identical($left, $right, [self::CONVERTED_COMPARISON => true]);
         }
@@ -451,7 +465,7 @@ CODE_SAMPLE,
     /** @see Enum::$key */
     protected function refactorKey(PropertyFetch $node): ?Node
     {
-        return $this->nodeFactory->createPropertyFetch($node->var, 'name');
+        return new PropertyFetch($node->var, 'name');
     }
 
     protected function refactorMatch(Match_ $match): ?Node

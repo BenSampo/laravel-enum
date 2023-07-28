@@ -8,4 +8,4 @@ UserType::getValues();
 
 use BenSampo\Enum\Tests\Enums\UserType;
 
-array_map(static fn(UserType $userType) => $userType->value, \BenSampo\Enum\Tests\Enums\UserType::cases());
+array_map(static fn(UserType $userType) => $userType->value, UserType::cases());
