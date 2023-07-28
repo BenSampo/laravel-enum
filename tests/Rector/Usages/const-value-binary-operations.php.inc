@@ -7,6 +7,7 @@ use BenSampo\Enum\Tests\Enums\UserType;
 UserType::Administrator > 3;
 2 * UserType::Subscriber;
 2 | UserType::Subscriber->value;
+$param ?? UserType::Administrator;
 $userType->is($param ?? UserType::Administrator);
 
 -----
@@ -19,4 +20,5 @@ use BenSampo\Enum\Tests\Enums\UserType;
 UserType::Administrator->value > 3;
 2 * UserType::Subscriber->value;
 2 | UserType::Subscriber->value;
+$param ?? UserType::Administrator->value;
 $userType->value === ($param ?? UserType::Administrator->value);

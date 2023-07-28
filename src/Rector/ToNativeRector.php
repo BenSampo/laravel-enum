@@ -33,6 +33,7 @@ use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\NullsafePropertyFetch;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\MatchArm;
@@ -157,6 +158,7 @@ CODE_SAMPLE,
                 ArrayItem::class,
                 ArrayDimFetch::class,
                 BinaryOp::class,
+                Ternary::class,
                 Cast::class,
                 Encapsed::class,
                 Assign::class,
@@ -193,6 +195,10 @@ CODE_SAMPLE,
 
         if ($node instanceof BinaryOp) {
             return $this->refactorBinaryOp($node);
+        }
+
+        if ($node instanceof Ternary) {
+            return $this->refactorTernary($node);
         }
 
         if ($node instanceof Cast) {
@@ -699,46 +705,51 @@ CODE_SAMPLE,
         if ($binaryOp instanceof Coalesce) {
             $convertedLeft = $this->convertConstToValueFetch($left);
             $convertedRight = $this->convertConstToValueFetch($right);
-        } else {
-            $convertedLeft = $this->convertToValueFetch($left);
-            $convertedRight = $this->convertToValueFetch($right);
+
+            return new Coalesce(
+                $convertedLeft ?? $left,
+                $convertedRight ?? $right,
+                $binaryOp->getAttributes(),
+            );
         }
 
-        // It may be valid to use an Enum in comparison with unknown values.
-        // However, if we know the other side is a string or int, we can safely convert.
         if ($binaryOp instanceof Equal
             || $binaryOp instanceof Identical
             || $binaryOp instanceof NotEqual
             || $binaryOp instanceof NotIdentical
         ) {
-            if ($convertedLeft && $convertedRight) {
-                // Maybe evaluate for truthiness and replace with static value?
+            // Comparison of two class constants of the same class will become enum comparison
+            if (
+                ($left instanceof ClassConstFetch && $right instanceof ClassConstFetch)
+                && ($left->class instanceof Name && $right->class instanceof Name)
+                && ($left->class->toString() === $right->class->toString())
+            ) {
                 return null;
             }
 
-            $isPossibleEnumValueType = function (Expr $expr): bool {
-                // includes int|string|null
-                return $this->getType($expr)->isScalar()->yes();
-            };
-
-            if ($convertedLeft && $isPossibleEnumValueType($right)) {
-                return new $binaryOp($convertedLeft, $right, $binaryOp->getAttributes());
+            // If either side of the comparison is an enum, do not convert
+            if ($this->inConfiguredClasses($left) || $this->inConfiguredClasses($right)) {
+                return null;
             }
 
-            if ($convertedRight && $isPossibleEnumValueType($left)) {
-                return new $binaryOp($left, $convertedRight, $binaryOp->getAttributes());
+            $convertedLeft = $this->convertConstToValueFetch($left);
+            $convertedRight = $this->convertConstToValueFetch($right);
+
+            if ($convertedLeft || $convertedRight) {
+                return new $binaryOp(
+                    $convertedLeft ?? $left,
+                    $convertedRight ?? $right,
+                    $binaryOp->getAttributes(),
+                );
             }
 
-            // TODO maybe convert either way? e.g. $foo?->var === UserType::Admin
             return null;
         }
 
-//        if ($binaryOp instanceof Nu)
-
-        // All other operators only make sense with the underlying values of enums
-        // arithmetic, bitwise, comparison, logical, or string operators do not support enums
-        // ?? or ?: enums will never be null or falsy, result is likely not used as an enum
-
+        // The remaining operators are: arithmetic, bitwise, comparison, logical, string.
+        // They do not support enums and only work with the underlying values.
+        $convertedLeft = $this->convertToValueFetch($left);
+        $convertedRight = $this->convertToValueFetch($right);
         if ($convertedLeft || $convertedRight) {
             return new $binaryOp(
                 $convertedLeft ?? $left,
@@ -920,5 +931,25 @@ CODE_SAMPLE,
             'randomElement',
             [new Arg(new StaticCall($staticCall->class, 'cases'))]
         );
+    }
+
+    protected function refactorTernary(Ternary $ternary): ?Node
+    {
+        $if = $ternary->if;
+        $convertedIf = $this->convertConstToValueFetch($if);
+
+        $else = $ternary->else;
+        $convertedElse = $this->convertConstToValueFetch($else);
+
+        if ($convertedIf || $convertedElse) {
+            return new Ternary(
+                $ternary->cond,
+                $convertedIf ?? $if,
+                $convertedElse ?? $else,
+                $ternary->getAttributes(),
+            );
+        }
+
+        return null;
     }
 }
