@@ -14,7 +14,6 @@ $bar ??= UserType::Administrator;
 $baz .= UserType::Administrator;
 $ref &= UserType::Administrator;
 (new Foo)->userType = UserType::Administrator;
-
 -----
 <?php
 

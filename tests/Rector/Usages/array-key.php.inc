@@ -5,7 +5,6 @@ use BenSampo\Enum\Tests\Enums\UserType;
 
 [$userType->value => null];
 [UserType::Administrator => null];
-
 -----
 <?php
 

@@ -28,7 +28,6 @@ match ('foo') {
     UserType::Administrator, UserType::Subscriber => 1,
     $var => 2,
 };
-
 -----
 <?php
 

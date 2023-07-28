@@ -7,7 +7,6 @@ use BenSampo\Enum\Tests\Enums\UserType;
 $a = [];
 $a[$userType];
 $a[UserType::Administrator];
-
 -----
 <?php
 

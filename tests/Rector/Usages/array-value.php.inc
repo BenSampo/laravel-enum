@@ -7,7 +7,6 @@ use BenSampo\Enum\Tests\Enums\UserType;
 [$userType];
 ['foo' => UserType::Administrator];
 [UserType::Administrator];
-
 -----
 <?php
 

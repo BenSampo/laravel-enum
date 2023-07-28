@@ -7,7 +7,6 @@ use BenSampo\Enum\Tests\Enums\UserType;
 $maybe ? UserType::Administrator : $userType;
 !$maybe ? $userType : UserType::Administrator;
 $maybe ?: UserType::Administrator;
-
 -----
 <?php
 

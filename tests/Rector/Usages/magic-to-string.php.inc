@@ -13,7 +13,6 @@ $maybeUserType . '';
 (string) $maybeUserType;
 $userType->__toString();
 $maybeUserType?->__toString();
-
 -----
 <?php
 

@@ -17,7 +17,6 @@ $maybeString ?? StringValues::Administrator();
 $maybeStringValues ?? 'fallback';
 $maybeStringValues ?? StringValues::Administrator();
 $userType->is($param ?? UserType::Administrator);
-
 -----
 <?php
 

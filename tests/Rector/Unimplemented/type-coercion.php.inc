@@ -8,7 +8,6 @@ use BenSampo\Enum\Tests\Enums\UserType;
 function notStrict(string|null $value) {}
 notStrict($userType);
 notStrict($maybeUserType);
-
 -----
 <?php
 

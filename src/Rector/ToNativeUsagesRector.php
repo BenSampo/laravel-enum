@@ -41,7 +41,9 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\EncapsedStringPart;
+use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Type\ObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -94,6 +96,7 @@ CODE_SAMPLE,
             Return_::class,
             Param::class,
             Match_::class,
+            Switch_::class,
             CallLike::class,
             PropertyFetch::class,
         ];
@@ -145,6 +148,10 @@ CODE_SAMPLE,
 
         if ($node instanceof Match_) {
             return $this->refactorMatch($node);
+        }
+
+        if ($node instanceof Switch_) {
+            return $this->refactorSwitch($node);
         }
 
         if ($node instanceof CallLike) {
@@ -495,6 +502,53 @@ CODE_SAMPLE,
         }
 
         return new Match_($cond, $arms, $match->getAttributes());
+    }
+
+    protected function refactorSwitch(Switch_ $switch): ?Node
+    {
+        $cond = $switch->cond;
+        if (($cond instanceof PropertyFetch || $cond instanceof NullsafePropertyFetch)
+            && $this->inConfiguredClasses($cond->var)
+        ) {
+            $var = $cond->var;
+            $varType = $this->getType($var);
+
+            $casesAreExclusivelyEnumsOrNull = true;
+            foreach ($switch->cases as $case) {
+                $caseCond = $case->cond;
+                if ($caseCond === null) {
+                    continue;
+                }
+
+                $isEnum = $varType->equals($this->getType($caseCond))
+                    || ($caseCond instanceof ClassConstFetch && $this->inConfiguredClasses($caseCond->class));
+                $isNull = $this->getType($caseCond)->isNull()->yes();
+
+                if (! $isEnum && ! $isNull) {
+                    $casesAreExclusivelyEnumsOrNull = false;
+                }
+            }
+
+            if ($casesAreExclusivelyEnumsOrNull) {
+                return new Switch_($var, $switch->cases, $switch->getAttributes());
+            }
+        }
+
+        if ($this->inConfiguredClasses($cond)) {
+            return null;
+        }
+
+        $cases = [];
+        foreach ($switch->cases as $case) {
+            $caseCond = $case->cond;
+            $cases[] = new Case_(
+                $this->convertToValueFetch($caseCond) ?? $caseCond,
+                $case->stmts,
+                $case->getAttributes(),
+            );
+        }
+
+        return new Switch_($cond, $cases, $switch->getAttributes());
     }
 
     protected function refactorArrayItem(ArrayItem $node): ?Node

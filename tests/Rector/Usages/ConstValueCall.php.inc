@@ -17,7 +17,6 @@ ceil(UserType::Administrator);
 ConstValueCall::int(UserType::Administrator);
 $intOrString(UserType::Administrator);
 $intOrString(UserType::class);
-
 -----
 <?php
 

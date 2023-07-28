@@ -13,7 +13,6 @@ UserType::Subscriber === 2;
 $userType === UserType::Subscriber;
 $userType === $mixed;
 UserType::Subscriber != $userType;
-
 -----
 <?php
 

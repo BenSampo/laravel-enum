@@ -9,7 +9,6 @@ fn () => $userType;
 function () { return UserType::Administrator; };
 function () use ($userType) { return $userType; };
 function () { return; };
-
 -----
 <?php
 
