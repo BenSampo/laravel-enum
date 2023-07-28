@@ -4,10 +4,10 @@ namespace BenSampo\Enum\Rector;
 
 use PhpParser\Node;
 use PHPStan\Type\ObjectType;
+use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
 
-abstract class ToNativeRector extends AbstractRector implements ConfigurableRuleInterface
+abstract class ToNativeRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /** @var array<ObjectType> */
     protected array $classes;
