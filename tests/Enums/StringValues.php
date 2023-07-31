@@ -6,6 +6,7 @@ use BenSampo\Enum\Enum;
 
 /**
  * @method static static Administrator()
+ * @method static static Moderator()
  *
  * @extends Enum<self::*>
  */
