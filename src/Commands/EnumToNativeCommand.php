@@ -39,16 +39,18 @@ class EnumToNativeCommand extends Command
 
         $usagesConfig = realpath(__DIR__ . '/../Rector/usages.php');
 
-        $this->info('Converting usages...');
-        $run("vendor/bin/rector process --clear-cache --config={$usagesConfig}");
+        $convertUsages = "vendor/bin/rector process --clear-cache --config={$usagesConfig}";
+        $this->info("Converting usages, running: {$convertUsages}");
+        $run($convertUsages);
 
         $implementationConfig = realpath(__DIR__ . '/../Rector/implementation.php');
         $classFileName = $class
             ? (new \ReflectionClass($class))->getFileName()
             : null;
 
-        $this->info('Converting implementation...');
-        $run("vendor/bin/rector process --clear-cache --config={$implementationConfig} {$classFileName}");
+        $convertImplementation = "vendor/bin/rector process --clear-cache --config={$implementationConfig} {$classFileName}";
+        $this->info("Converting implementation, running: {$convertImplementation}");
+        $run($convertImplementation);
 
         return 0;
     }
