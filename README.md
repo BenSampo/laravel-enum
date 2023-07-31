@@ -76,22 +76,23 @@ composer require bensampo/laravel-enum
 PHP 8.1 supports enums natively.
 You can migrate your usages of `BenSampo\Enum\Enum` to native PHP enums using the following steps.
 
-For large projects, it is recommended to migrate one enum at a time. 
-Conversion of enums and their usages can not be done in a single run of rector,
-that would leave the project partially converted.
-Usages seen after the enum classes have been converted will no longer be transformed.
+Make sure you meet the following requirements:
+- PHP 8.1 or higher
+- Laravel 10 or higher
+- Latest version of this library
 
-1. Configure the enum class you want to convert in [`ToNativeUsagesRector`](rector-rules.md#tonativeusagesrector)
-   and run `vendor/bin/rector process --clear-cache` once.
-   Running repeatedly messes up the conversion.
-1. Switch the rector to [`ToNativeImplementationRector`](rector-rules.md#tonativeimplementationrector) 
-   and run `vendor/bin/rector process --clear-cache` once again.
-   If you have just one or a few classes, you may pass their paths to speed this up.
-1. Review and validate the code changes for missed edge cases
-   - See [Unimplemented](tests/Rector/Unimplemented)
-   - `Enum::coerce()`: If only values were passed, you can replace it with `tryFrom()`.
-      If keys or instances could also be passed, you might need additional logic to cover this.
-   - `Enum::getDescription()`: Implement an alternative.
+Depending on the size of your project, you may choose to migrate all enums at once,
+or migrate just a couple or one enum at a time.
+- Convert all enums at once: `php artisan enum:to-native`
+- Pass the fully qualified class name of an enum to limit the conversion: `php artisan enum:to-native "\App\Enums\UserType"`
+
+Review and validate the code changes for missed edge cases:
+- See [Unimplemented](tests/Rector/Unimplemented)
+- `Enum::coerce()`: If only values were passed, you can replace it with `tryFrom()`.
+   If keys or instances could also be passed, you might need additional logic to cover this.
+- `Enum::$description` and `Enum::getDescription()`: Implement an alternative.
+
+Once all enums are converted, you can remove your dependency on this library.
 
 ## Enum Library
 
@@ -877,7 +878,7 @@ Generate DocBlock annotations for enum classes.
 
 ### `php artisan enum:to-native`
 
-Deprecated, see [migrate to native PHP enums](#migrate-to-native-php-enums).
+See [migrate to native PHP enums](#migrate-to-native-php-enums).
 
 ## Enum Class Reference
 

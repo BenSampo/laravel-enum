@@ -2,8 +2,11 @@
 
 namespace BenSampo\Enum\Tests;
 
-use Illuminate\Filesystem\Filesystem;
-use Laminas\Code\Generator\EnumGenerator\EnumGenerator;
+use BenSampo\Enum\Commands\EnumToNativeCommand;
+use BenSampo\Enum\Enum;
+use BenSampo\Enum\Tests\Enums\UserType;
+use Illuminate\Process\PendingProcess;
+use Illuminate\Support\Facades\Process;
 
 final class EnumToNativeCommandTest extends ApplicationTestCase
 {
@@ -11,59 +14,62 @@ final class EnumToNativeCommandTest extends ApplicationTestCase
     {
         parent::setUp();
 
-        if (! class_exists(EnumGenerator::class)) {
-            $this->markTestSkipped('Missing laminas/laminas-code 4.');
+        if (! class_exists(Process::class)) {
+            $this->markTestSkipped('Requires Laravel 10.');
         }
     }
 
-    /** @dataProvider classes */
-    public function testClassToNative(string $class): void
+    public function testAll(): void
     {
-        $filesystem = $this->filesystem();
-        $this->prepareToNativeDirectory($filesystem);
+        $process = Process::fake();
 
-        $this->artisan('enum:to-native', ['class' => "BenSampo\\Enum\\Tests\\Enums\\ToNative\\{$class}"])
+        $this->artisan('enum:to-native')
             ->assertExitCode(0);
 
-        $this->assertNativeEnumMatchesFixture($filesystem, $class);
+        $count = 0;
+        $process->assertRan(function (PendingProcess $process) use (&$count): bool {
+            ++$count;
+            $this->assertSame([
+                EnumToNativeCommand::TO_NATIVE_CLASS_ENV => Enum::class,
+                EnumToNativeCommand::BASE_RECTOR_CONFIG_PATH_ENV => base_path('rector.php'),
+            ], $process->environment);
+            $this->assertMatchesRegularExpression(
+                match ($count) {
+                    1 => '#^vendor/bin/rector process --clear-cache --config=/.+/src/Rector/usages\.php$#',
+                    2 => '#^vendor/bin/rector process --clear-cache --config=/.+/src/Rector/implementation\.php $#',
+                    default => throw new \Exception('Only expected 2 processes'),
+                },
+                $process->command
+            );
+
+            return true;
+        });
     }
 
-    /** @return iterable<array{string}> */
-    public static function classes(): iterable
+    public function testClass(): void
     {
-        yield ['UserType'];
-    }
+        $process = Process::fake();
 
-    public function testAnnotateFolder(): void
-    {
-        $filesystem = $this->filesystem();
-        $this->prepareToNativeDirectory($filesystem);
+        $this->artisan('enum:to-native', ['class' => UserType::class])
+            ->assertExitCode(0);
 
-        $this->artisan('enum:to-native', ['--folder' => __DIR__ . '/Enums/ToNative'])->assertExitCode(0);
+        $count = 0;
+        $process->assertRan(function (PendingProcess $process) use (&$count): bool {
+            ++$count;
+            $this->assertSame([
+                EnumToNativeCommand::TO_NATIVE_CLASS_ENV => UserType::class,
+                EnumToNativeCommand::BASE_RECTOR_CONFIG_PATH_ENV => base_path('rector.php'),
+            ], $process->environment);
+            $this->assertMatchesRegularExpression(
+                match ($count) {
+                    1 => '#^vendor/bin/rector process --clear-cache --config=/.+/src/Rector/usages\.php$#',
+                    2 => '#^vendor/bin/rector process --clear-cache --config=/.+/src/Rector/implementation\.php /.+/tests/Enums/UserType.php$#',
+                    default => throw new \Exception('Only expected 2 processes'),
+                },
+                $process->command
+            );
 
-        foreach (self::classes() as $class) {
-            $this->assertNativeEnumMatchesFixture($filesystem, $class[0]);
-        }
-    }
-
-    private function filesystem(): Filesystem
-    {
-        $filesystem = $this->app->make(Filesystem::class);
-        assert($filesystem instanceof Filesystem);
-
-        return $filesystem;
-    }
-
-    private function assertNativeEnumMatchesFixture(Filesystem $filesystem, string $class): void
-    {
-        $this->assertStringEqualsFile(
-            __DIR__ . "/Enums/ToNativeFixtures/{$class}.php",
-            $filesystem->get(__DIR__ . "/Enums/ToNative/{$class}.php")
-        );
-    }
-
-    private function prepareToNativeDirectory(Filesystem $filesystem): void
-    {
-        $filesystem->copyDirectory(__DIR__ . '/Enums/ToNativeOriginals', __DIR__ . '/Enums/ToNative');
+            return true;
+        });
     }
 }
