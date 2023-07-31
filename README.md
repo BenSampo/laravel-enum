@@ -89,7 +89,6 @@ Usages seen after the enum classes have been converted will no longer be transfo
    If you have just one or a few classes, you may pass their paths to speed this up.
 1. Review and validate the code changes for missed edge cases
    - See [Unimplemented](tests/Rector/Unimplemented)
-   - `Enum::fromKey()`: Either replace usages or implement the method in your native enum.
    - `Enum::coerce()`: If only values were passed, you can replace it with `tryFrom()`.
       If keys or instances could also be passed, you might need additional logic to cover this.
    - `Enum::getDescription()`: Implement an alternative.
