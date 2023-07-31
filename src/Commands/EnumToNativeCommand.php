@@ -2,6 +2,7 @@
 
 namespace BenSampo\Enum\Commands;
 
+use BenSampo\Enum\Enum;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Process;
 use Symfony\Component\Console\Input\InputArgument;
@@ -28,7 +29,7 @@ class EnumToNativeCommand extends Command
         $class = $this->argument('class');
 
         $env = [
-            self::TO_NATIVE_CLASS_ENV => $class,
+            self::TO_NATIVE_CLASS_ENV => $class ?? Enum::class,
             self::BASE_RECTOR_CONFIG_PATH_ENV => base_path('rector.php'),
         ];
         $withPipedOutput = function (string $type, string $output): void {

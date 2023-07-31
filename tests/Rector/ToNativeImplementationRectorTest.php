@@ -21,6 +21,6 @@ final class ToNativeImplementationRectorTest extends AbstractRectorTestCase
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/../../src/Rector/implementation.php';
+        return __DIR__ . '/implementation.php';
     }
 }

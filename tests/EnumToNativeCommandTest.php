@@ -3,6 +3,7 @@
 namespace BenSampo\Enum\Tests;
 
 use BenSampo\Enum\Commands\EnumToNativeCommand;
+use BenSampo\Enum\Enum;
 use BenSampo\Enum\Tests\Enums\UserType;
 use Illuminate\Process\PendingProcess;
 use Illuminate\Support\Facades\Process;
@@ -29,7 +30,7 @@ final class EnumToNativeCommandTest extends ApplicationTestCase
         $process->assertRan(function (PendingProcess $process) use (&$count): bool {
             ++$count;
             $this->assertSame([
-                EnumToNativeCommand::TO_NATIVE_CLASS_ENV => null,
+                EnumToNativeCommand::TO_NATIVE_CLASS_ENV => Enum::class,
                 EnumToNativeCommand::BASE_RECTOR_CONFIG_PATH_ENV => base_path('rector.php'),
             ], $process->environment);
             $this->assertMatchesRegularExpression(
