@@ -34,17 +34,21 @@ class EnumToNativeCommand extends Command
         $withPipedOutput = function (string $type, string $output): void {
             echo $output;
         };
+        $run = fn (string $command) => Process::env($env)
+            ->run($command, $withPipedOutput);
 
         $usagesConfig = realpath(__DIR__ . '/../Rector/usages.php');
-        Process::env($env)
-            ->run("vendor/bin/rector process --clear-cache --config={$usagesConfig}", $withPipedOutput);
+
+        $this->info('Converting usages...');
+        $run("vendor/bin/rector process --clear-cache --config={$usagesConfig}");
 
         $implementationConfig = realpath(__DIR__ . '/../Rector/implementation.php');
         $classFileName = $class
             ? (new \ReflectionClass($class))->getFileName()
             : null;
-        Process::env($env)
-            ->run("vendor/bin/rector process --clear-cache --config={$implementationConfig} {$classFileName}", $withPipedOutput);
+
+        $this->info('Converting implementation...');
+        $run("vendor/bin/rector process --clear-cache --config={$implementationConfig} {$classFileName}");
 
         return 0;
     }

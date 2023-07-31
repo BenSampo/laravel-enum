@@ -7,6 +7,13 @@ use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 
+/**
+ * Conversion of enums and their usages can not be done in a single run of Rector,
+ * that would leave the project partially converted.
+ * Usages seen after the enum classes have been converted will no longer be transformed.
+ *
+ * Thus, we split into two rectors that can be run separately.
+ */
 abstract class ToNativeRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /** @var array<ObjectType> */
