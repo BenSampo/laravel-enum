@@ -28,7 +28,10 @@ final class EnumToNativeCommandTest extends ApplicationTestCase
         $count = 0;
         $process->assertRan(function (PendingProcess $process) use (&$count): bool {
             ++$count;
-            $this->assertSame([], $process->environment);
+            $this->assertSame([
+                EnumToNativeCommand::TO_NATIVE_CLASS_ENV => null,
+                EnumToNativeCommand::BASE_RECTOR_CONFIG_PATH_ENV => base_path('rector.php'),
+            ], $process->environment);
             $this->assertMatchesRegularExpression(
                 match ($count) {
                     1 => '#^vendor/bin/rector process --clear-cache --config=/.+/src/Rector/usages\.php$#',
@@ -52,7 +55,10 @@ final class EnumToNativeCommandTest extends ApplicationTestCase
         $count = 0;
         $process->assertRan(function (PendingProcess $process) use (&$count): bool {
             ++$count;
-            $this->assertSame([EnumToNativeCommand::CLASS_ENV => UserType::class], $process->environment);
+            $this->assertSame([
+                EnumToNativeCommand::TO_NATIVE_CLASS_ENV => UserType::class,
+                EnumToNativeCommand::BASE_RECTOR_CONFIG_PATH_ENV => base_path('rector.php'),
+            ], $process->environment);
             $this->assertMatchesRegularExpression(
                 match ($count) {
                     1 => '#^vendor/bin/rector process --clear-cache --config=/.+/src/Rector/usages\.php$#',

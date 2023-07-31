@@ -8,7 +8,8 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class EnumToNativeCommand extends Command
 {
-    public const CLASS_ENV = 'TO_NATIVE_CLASS';
+    public const TO_NATIVE_CLASS_ENV = 'TO_NATIVE_CLASS';
+    public const BASE_RECTOR_CONFIG_PATH_ENV = 'BASE_RECTOR_CONFIG_PATH';
 
     protected $name = 'enum:to-native';
 
@@ -26,19 +27,23 @@ class EnumToNativeCommand extends Command
     {
         $class = $this->argument('class');
 
+        $env = [
+            self::TO_NATIVE_CLASS_ENV => $class,
+            self::BASE_RECTOR_CONFIG_PATH_ENV => base_path('rector.php'),
+        ];
         $withPipedOutput = function (string $type, string $output): void {
             echo $output;
         };
 
         $usagesConfig = realpath(__DIR__ . '/../Rector/usages.php');
-        Process::env($class ? [self::CLASS_ENV => $class] : [])
+        Process::env($env)
             ->run("vendor/bin/rector process --clear-cache --config={$usagesConfig}", $withPipedOutput);
 
         $implementationConfig = realpath(__DIR__ . '/../Rector/implementation.php');
         $classFileName = $class
             ? (new \ReflectionClass($class))->getFileName()
             : null;
-        Process::env($class ? [self::CLASS_ENV => $class] : [])
+        Process::env($env)
             ->run("vendor/bin/rector process --clear-cache --config={$implementationConfig} {$classFileName}", $withPipedOutput);
 
         return 0;
