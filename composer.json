@@ -1,5 +1,4 @@
 {
-{
     "name": "bensampo/laravel-enum",
     "description": "Simple, extensible and powerful enumeration implementation for Laravel.",
     "license": "MIT",
