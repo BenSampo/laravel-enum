@@ -76,18 +76,23 @@ composer require bensampo/laravel-enum
 PHP 8.1 supports enums natively.
 You can migrate your usages of `BenSampo\Enum\Enum` to native PHP enums using the following steps.
 
+Make sure you meet the following requirements:
+- PHP 8.1 or higher
+- Laravel 10 or higher
+- Latest version of this library
+
 Depending on the size of your project, you may choose to migrate all enums at once,
 or migrate just a couple or one enum at a time.
-
-Run `php artisan enum:to-native` to convert all enums at once.
-Pass the fully qualified class name of an enum to limit the conversion,
-e.g. `php artisan enum:to-native "\App\Enums\UserType"`
+- Convert all enums at once: `php artisan enum:to-native`
+- Pass the fully qualified class name of an enum to limit the conversion: `php artisan enum:to-native "\App\Enums\UserType"`
 
 Review and validate the code changes for missed edge cases:
 - See [Unimplemented](tests/Rector/Unimplemented)
 - `Enum::coerce()`: If only values were passed, you can replace it with `tryFrom()`.
    If keys or instances could also be passed, you might need additional logic to cover this.
-- `Enum::getDescription()`: Implement an alternative.
+- `Enum::$description` and `Enum::getDescription()`: Implement an alternative.
+
+Once all enums are converted, you can remove your dependency on this library.
 
 ## Enum Library
 
