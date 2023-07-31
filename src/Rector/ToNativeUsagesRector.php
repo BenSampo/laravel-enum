@@ -41,6 +41,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\EncapsedStringPart;
+use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
@@ -164,6 +165,10 @@ CODE_SAMPLE,
                     return $this->refactorNewOrFromValue($node);
                 }
 
+                if ($this->isName($node->name, 'fromKey')) {
+                    return $this->refactorFromKey($node);
+                }
+
                 if ($this->isName($node->name, 'getInstances')) {
                     return $this->refactorGetInstances($node);
                 }
@@ -254,6 +259,57 @@ CODE_SAMPLE,
                 }
 
                 return new StaticCall($class, 'from', [new Arg($argValue)]);
+            }
+        }
+
+        return null;
+    }
+
+    /** @see Enum::fromKey() */
+    protected function refactorFromKey(StaticCall $call): ?Node
+    {
+        $class = $call->class;
+        if ($class instanceof Name) {
+            $makeFromKey = function (Expr $key) use ($class): Expr {
+                $paramName = lcfirst($class->getLast());
+                $paramVariable = new Variable($paramName);
+
+                $enumInstanceMatchesKey = new ArrowFunction([
+                    'params' => [new Param($paramVariable, null, $class)],
+                    'returnType' => 'bool',
+                    'expr' => new Identical(
+                        new PropertyFetch($paramVariable, 'name'),
+                        $key,
+                    ),
+                ]);
+
+                $arrayMatching = new FuncCall(
+                    new Name('array_filter'),
+                    [
+                        new Arg(new StaticCall($class, 'cases')),
+                        new Arg($enumInstanceMatchesKey),
+                    ],
+                );
+
+                return new ArrayDimFetch($arrayMatching, new LNumber(0));
+            };
+
+            if ($call->isFirstClassCallable()) {
+                $keyVariable = new Variable('key');
+
+                return new ArrowFunction([
+                    'static' => true,
+                    'params' => [new Param($keyVariable, null, 'string')],
+                    'returnType' => $class,
+                    'expr' => $makeFromKey($keyVariable),
+                ]);
+            }
+
+            $args = $call->args;
+            if (isset($args[0])) {
+                $argValue = $args[0]->value;
+
+                return $makeFromKey($argValue);
             }
         }
 
