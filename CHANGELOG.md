@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 6.5.0
+
+### Added
+
+- Add Rector rules for conversion of classes that extend `BenSampo\Enum\Enum` to native PHP enums
+
+### Deprecated
+
+- Deprecate command `enum:to-native` in favor of Rector conversion
+
 ## 6.4.1
 
 ### Fixed

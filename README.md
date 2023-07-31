@@ -26,9 +26,10 @@ Created by [Ben Sampson](https://sampo.co.uk)
 
 - [Guide](#guide)
 - [Installation](#installation)
+- [Migrate to Native PHP Enums](#migrate-to-native-PHP-enums)
 - [Enum Library](enum-library.md)
 - [Basic Usage](#basic-usage)
-  - [Enum definition](#enum-definition)
+  - [Enum Definition](#enum-definition)
   - [Instantiation](#instantiation)
   - [Instance Properties](#instance-properties)
   - [Instance Equality](#instance-equality)
@@ -38,7 +39,9 @@ Created by [Ben Sampson](https://sampo.co.uk)
 - [Migrations](#migrations)
 - [Validation](#validation)
 - [Localization](#localization)
-- [Customizing descriptions](#customizing-descriptions)
+- [Customizing Descriptions](#customizing-descriptions)
+  - [Customizing Class Description](#customizing-class-description)
+  - [Customizing Value Descriptions](#customizing-value-descriptions)
 - [Extending the Enum Base Class](#extending-the-enum-base-class)
 - [Laravel Nova Integration](#laravel-nova-integration)
 - [PHPStan Integration](#phpstan-integration)
@@ -54,7 +57,7 @@ You are reading the documentation for `6.x`.
 - If you're using **Laravel 7** please see the [docs for `2.x`](https://github.com/BenSampo/laravel-enum/blob/v2.2.0/README.md).
 - If you're using **Laravel 6** or below, please see the [docs for `1.x`](https://github.com/BenSampo/laravel-enum/blob/v1.38.0/README.md).
 
-Please see the [upgrade guide](./UPGRADE.md) for information on how to upgrade to the latest version.
+Please see the [upgrade guide](UPGRADE.md) for information on how to upgrade to the latest version.
 
 ## Guide
 
@@ -62,16 +65,33 @@ I wrote a blog post about using laravel-enum: https://sampo.co.uk/blog/using-enu
 
 ## Installation
 
-### Requirements
+Requires PHP 8, and Laravel 9 or 10.
 
-- Laravel `9` or higher
-- PHP `8.0` or higher
-
-Via Composer
-
-```bash
+```sh
 composer require bensampo/laravel-enum
 ```
+
+## Migrate to Native PHP Enums
+
+PHP 8.1 supports enums natively.
+You can migrate your usages of `BenSampo\Enum\Enum` to native PHP enums using the following steps.
+
+For large projects, it is recommended to migrate one enum at a time. 
+Conversion of enums and their usages can not be done in a single run of rector,
+that would leave the project partially converted.
+Usages seen after the enum classes have been converted will no longer be transformed.
+
+1. Configure the enum class you want to convert in [`ToNativeUsagesRector`](rector-rules.md#tonativeusagesrector)
+   and run `vendor/bin/rector process --clear-cache` once.
+   Running repeatedly messes up the conversion.
+1. Switch the rector to [`ToNativeImplementationRector`](rector-rules.md#tonativeimplementationrector) 
+   and run `vendor/bin/rector process --clear-cache` once again.
+   If you have just one or a few classes, you may pass their paths to speed this up.
+1. Review and validate the code changes for missed edge cases
+   - See [Unimplemented](tests/Rector/Unimplemented)
+   - `Enum::coerce()`: If only values were passed, you can replace it with `tryFrom()`.
+      If keys or instances could also be passed, you might need additional logic to cover this.
+   - `Enum::getDescription()`: Implement an alternative.
 
 ## Enum Library
 
@@ -144,15 +164,15 @@ $enumInstance = UserType::coerce($someValue);
 If you want your IDE to autocomplete the static instantiation helpers, you can
 generate PHPDoc annotations through an artisan command.
 
-By default all Enums in `app/Enums` will be annotated (you can change the folder by passing a path to `--folder`)
+By default, all Enums in `app/Enums` will be annotated (you can change the folder by passing a path to `--folder`).
 
-```bash
+```sh
 php artisan enum:annotate
 ```
 
-You can annotate a single class by specifying the class name
+You can annotate a single class by specifying the class name.
 
-```bash
+```sh
 php artisan enum:annotate "App\Enums\UserType"
 ```
 
@@ -768,7 +788,9 @@ final class UserType extends Enum implements LocalizedEnum
 
 The `getDescription` method will now look for the value in your localization files. If a value doesn't exist for a given key, the default description is returned instead.
 
-## Customizing enum class description
+## Customizing descriptions
+
+### Customizing class description
 
 If you'd like to return a custom description for your enum class, add a `Description` attribute to your Enum class:
 
@@ -787,7 +809,7 @@ Calling `UserType::getClassDescription()` now returns `List of available User ty
 
 You may also override the `getClassDescription` method on the base Enum class if you wish to have more control of the description.
 
-## Customizing value descriptions
+### Customizing value descriptions
 
 If you'd like to return a custom description for your enum values, add a `Description` attribute to your Enum constants:
 
@@ -828,7 +850,7 @@ It's best to register the macro inside a service providers' boot method.
 
 Use the [nova-enum-field](https://github.com/simplesquid/nova-enum-field) package by Simple Squid to easily create fields for your Enums in Nova. See their readme for usage.
 
-## PHPStan integration
+## PHPStan Integration
 
 If you are using [PHPStan](https://github.com/phpstan/phpstan) for static
 analysis, you can enable the extension for proper recognition of the
@@ -855,7 +877,7 @@ Generate DocBlock annotations for enum classes.
 
 ### `php artisan enum:to-native`
 
-Convert a class that extends `BenSampo\Enum\Enum` to a native PHP enum.
+Deprecated, see [migrate to native PHP enums](#migrate-to-native-php-enums).
 
 ## Enum Class Reference
 

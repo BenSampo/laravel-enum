@@ -5,6 +5,11 @@ namespace BenSampo\Enum\Tests\Enums;
 use BenSampo\Enum\Enum;
 
 /**
+ * @method static static Administrator()
+ * @method static static Moderator()
+ * @method static static Subscriber()
+ * @method static static SuperAdministrator()
+ *
  * @extends Enum<self::*>
  */
 final class UserType extends Enum

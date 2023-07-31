@@ -10,11 +10,12 @@ use Laminas\Code\Generator\EnumGenerator\EnumGenerator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+/** @deprecated use Rector conversion */
 class EnumToNativeCommand extends Command
 {
     protected $name = 'enum:to-native';
 
-    protected $description = 'Convert a class that extends BenSampo\Enum\Enum to a native PHP enum';
+    protected $description = 'Deprecated, use Rector to convert classes that extend BenSampo\Enum\Enum to native PHP enums';
 
     protected Filesystem $filesystem;
 

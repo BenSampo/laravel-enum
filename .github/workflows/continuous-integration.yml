@@ -32,7 +32,9 @@ jobs:
         with:
           dependency-versions: ${{ matrix.dependency-versions }}
 
-      - run: vendor/bin/phpunit
+      - run: vendor/bin/phpunit --testsuite=Tests
+
+      - run: vendor/bin/phpunit --testsuite=Rector
 
   static-analysis:
     runs-on: ubuntu-latest
