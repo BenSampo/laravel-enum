@@ -2,22 +2,17 @@
 
 namespace BenSampo\Enum\Commands;
 
-use BenSampo\Enum\Enum;
-use Composer\ClassMapGenerator\ClassMapGenerator;
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
-use Laminas\Code\Generator\EnumGenerator\EnumGenerator;
+use Illuminate\Support\Facades\Process;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
-/** @deprecated use Rector conversion */
 class EnumToNativeCommand extends Command
 {
+    public const CLASS_ENV = 'TO_NATIVE_CLASS';
+
     protected $name = 'enum:to-native';
 
-    protected $description = 'Deprecated, use Rector to convert classes that extend BenSampo\Enum\Enum to native PHP enums';
-
-    protected Filesystem $filesystem;
+    protected $description = 'Use Rector to convert classes that extend BenSampo\Enum\Enum to native PHP enums';
 
     /** @return array<int, array<int, mixed>> */
     protected function getArguments(): array
@@ -27,104 +22,25 @@ class EnumToNativeCommand extends Command
         ];
     }
 
-    /** @return array<int, array<int, mixed>> */
-    protected function getOptions(): array
+    public function handle(): int
     {
-        return [
-            ['folder', null, InputOption::VALUE_OPTIONAL, 'The folder to scan for classes to convert'],
-        ];
-    }
-
-    public function handle(Filesystem $filesystem): int
-    {
-        $this->filesystem = $filesystem;
-
         $class = $this->argument('class');
-        if ($class) {
-            $this->annotateClass($class);
 
-            return 0;
-        }
+        $withPipedOutput = function (string $type, string $output): void {
+            echo $output;
+        };
 
-        $this->convertFolder();
+        $usagesConfig = realpath(__DIR__ . '/../Rector/usages.php');
+        Process::env($class ? [self::CLASS_ENV => $class] : [])
+            ->run("vendor/bin/rector process --clear-cache --config={$usagesConfig}", $withPipedOutput);
+
+        $implementationConfig = realpath(__DIR__ . '/../Rector/implementation.php');
+        $classFileName = $class
+            ? (new \ReflectionClass($class))->getFileName()
+            : null;
+        Process::env($class ? [self::CLASS_ENV => $class] : [])
+            ->run("vendor/bin/rector process --clear-cache --config={$implementationConfig} {$classFileName}", $withPipedOutput);
 
         return 0;
-    }
-
-    protected function annotateClass(string $className): void
-    {
-        if (! is_subclass_of($className, Enum::class)) {
-            $parentClass = Enum::class;
-            throw new \InvalidArgumentException("The given class {$className} must be an instance of {$parentClass}.");
-        }
-
-        $this->convert(new \ReflectionClass($className));
-    }
-
-    protected function convertFolder(): void
-    {
-        foreach (ClassMapGenerator::createMap($this->searchDirectory()) as $class => $_) {
-            $reflection = new \ReflectionClass($class);
-
-            if ($reflection->isSubclassOf(Enum::class)) {
-                $this->convert($reflection);
-            }
-        }
-    }
-
-    /** @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass */
-    protected function convert(\ReflectionClass $reflectionClass): void
-    {
-        $type = null;
-        $constants = $reflectionClass->getConstants();
-        $className = $reflectionClass->name;
-        foreach ($constants as $name => $value) {
-            $valueType = gettype($value);
-            if ($valueType === 'integer') {
-                $valueType = 'int';
-            }
-
-            if ($type === null) {
-                $type = $valueType;
-                continue;
-            }
-
-            if ($type !== $valueType) {
-                throw new \Exception("Cannot convert class {$className} with mixed constant value types to native enum.");
-            }
-        }
-
-        if ($type === null) {
-            throw new \Exception("Cannot convert class {$className} with no constants to native enum.");
-        }
-
-        if ($type !== 'int' && $type !== 'string') {
-            throw new \Exception("Cannot convert class {$className} with constant values of type {$type} to native enum, only 'int' or 'string' are allowed.");
-        }
-
-        $fileName = $reflectionClass->getFileName();
-
-        // @phpstan-ignore-next-line fails when missing laminas/laminas-code 4 and on lower PHPStan versions
-        $enum = EnumGenerator::withConfig([
-            'name' => $className,
-            'backedCases' => [
-                'type' => $type,
-                'cases' => $constants,
-            ],
-        ])->generate();
-        $contents = <<<PHP
-        <?php declare(strict_types=1);
-
-        {$enum}
-        PHP;
-
-        $this->filesystem->put($fileName, $contents);
-        $this->info("Converted {$className} to native enum.");
-    }
-
-    protected function searchDirectory(): string
-    {
-        return $this->option('folder')
-            ?? app_path('Enums');
     }
 }
