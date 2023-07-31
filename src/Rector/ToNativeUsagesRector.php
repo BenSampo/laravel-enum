@@ -850,7 +850,7 @@ CODE_SAMPLE,
     {
         $convertedDim = $this->convertToValueFetch($arrayDimFetch->dim);
         if ($convertedDim) {
-            return new ArrayDimFetch($arrayDimFetch->var, $convertedDim, $arrayDimFetch->getAttributes());
+            return new ArrayDimFetch($arrayDimFetch->var, $convertedDim);
         }
 
         return null;
