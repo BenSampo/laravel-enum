@@ -674,6 +674,22 @@ CODE_SAMPLE,
                 return null;
             }
 
+            if (
+                ($left instanceof PropertyFetch || $left instanceof NullsafePropertyFetch)
+                && $this->inConfiguredClasses($left->var)
+                && $this->willBeEnumInstance($right)
+            ) {
+                return new $binaryOp($left->var, $right, $binaryOp->getAttributes());
+            }
+
+            if (
+                ($right instanceof PropertyFetch || $right instanceof NullsafePropertyFetch)
+                && $this->inConfiguredClasses($right->var)
+                && $this->willBeEnumInstance($left)
+            ) {
+                return new $binaryOp($left, $right->var, $binaryOp->getAttributes());
+            }
+
             // If either side of the comparison is an enum, do not convert
             if ($this->inConfiguredClasses($left) || $this->inConfiguredClasses($right)) {
                 return null;
