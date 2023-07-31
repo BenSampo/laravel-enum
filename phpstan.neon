@@ -15,6 +15,10 @@ parameters:
   treatPhpDocTypesAsCertain: false
   ignoreErrors:
   - '#Unsafe usage of new static.*#' # This is a library, so it should be extendable
+  # The Process API is only available in newer Laravel versions
+  - '#unknown class Illuminate\\Support\\Facades\\Process#'
+  - '#unknown class Illuminate\\Process#'
+  - '#invalid type Illuminate\\Process#'
   excludePaths:
   - tests/Enums/ToNativeFixtures # Fails with PHP < 8.1
   # Install https://plugins.jetbrains.com/plugin/7677-awesome-console to make those links clickable
