@@ -39,20 +39,32 @@ class EnumToNativeCommand extends Command
             ->timeout(0) // Unlimited, rector can take quite a while
             ->run($command, $withPipedOutput);
 
-        $usagesConfig = realpath(__DIR__ . '/../Rector/usages.php');
+        if ($class) {
+            if (! class_exists($class)) {
+                $this->error("Class does not exist: {$class}.");
 
-        $convertUsages = "vendor/bin/rector process --clear-cache --config={$usagesConfig}";
-        $this->info("Converting usages, running: {$convertUsages}");
-        $run($convertUsages);
+                return 1;
+            }
 
-        $implementationConfig = realpath(__DIR__ . '/../Rector/implementation.php');
-        $classFileName = $class
-            ? (new \ReflectionClass($class))->getFileName()
-            : null;
+            // If a specific class is given, we can do both conversion steps at once
+            // since the usages can still be recognized by the class name.
+            $usagesAndImplementationConfig = realpath(__DIR__ . '/../Rector/usages-and-implementation.php');
+            $convertUsagesAndImplementation = "vendor/bin/rector process --clear-cache --config={$usagesAndImplementationConfig}";
+            $this->info("Converting {$class}, running: {$convertUsagesAndImplementation}");
+            $run($convertUsagesAndImplementation);
+        } else {
+            // If not, we have to do two steps to avoid partial conversion,
+            // since the usages conversion relies on the enums extending BenSampo\Enum\Enum.
+            $usagesConfig = realpath(__DIR__ . '/../Rector/usages.php');
+            $convertUsages = "vendor/bin/rector process --clear-cache --config={$usagesConfig}";
+            $this->info("Converting usages, running: {$convertUsages}");
+            $run($convertUsages);
 
-        $convertImplementation = "vendor/bin/rector process --clear-cache --config={$implementationConfig} {$classFileName}";
-        $this->info("Converting implementation, running: {$convertImplementation}");
-        $run($convertImplementation);
+            $implementationConfig = realpath(__DIR__ . '/../Rector/implementation.php');
+            $convertImplementation = "vendor/bin/rector process --clear-cache --config={$implementationConfig}";
+            $this->info("Converting implementation, running: {$convertImplementation}");
+            $run($convertImplementation);
+        }
 
         return 0;
     }
