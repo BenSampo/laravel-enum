@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 6.6.1
+
+### Fixed
+
+- Disable timeout of rector calls in `php artisan enum:to-native`
+
 ## 6.6.0
 
 ### Changed
