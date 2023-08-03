@@ -36,6 +36,7 @@ class EnumToNativeCommand extends Command
             echo $output;
         };
         $run = fn (string $command) => Process::env($env)
+            ->timeout(0) // Unlimited, rector can take quite a while
             ->run($command, $withPipedOutput);
 
         $usagesConfig = realpath(__DIR__ . '/../Rector/usages.php');
