@@ -79,12 +79,16 @@ You can migrate your usages of `BenSampo\Enum\Enum` to native PHP enums using th
 Make sure you meet the following requirements:
 - PHP 8.1 or higher
 - Laravel 10 or higher
+- Rector 0.17 or higher, your `rector.php` includes all relevant files
 - Latest version of this library
 
 Depending on the size of your project, you may choose to migrate all enums at once,
 or migrate just a couple or one enum at a time.
 - Convert all enums at once: `php artisan enum:to-native`
 - Pass the fully qualified class name of an enum to limit the conversion: `php artisan enum:to-native "\App\Enums\UserType"`
+
+  This is necessary if any enums are used during the bootstrap phase of Laravel,
+  the conversion of their usages interferes with Larastan and prevents a second run of Rector from working.
 
 Review and validate the code changes for missed edge cases:
 - See [Unimplemented](tests/Rector/Unimplemented)
