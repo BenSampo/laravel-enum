@@ -36,7 +36,7 @@ final class EnumToNativeCommandTest extends ApplicationTestCase
             $this->assertMatchesRegularExpression(
                 match ($count) {
                     1 => '#^vendor/bin/rector process --clear-cache --config=/.+/src/Rector/usages\.php$#',
-                    2 => '#^vendor/bin/rector process --clear-cache --config=/.+/src/Rector/implementation\.php $#',
+                    2 => '#^vendor/bin/rector process --clear-cache --config=/.+/src/Rector/implementation\.php$#',
                     default => throw new \Exception('Only expected 2 processes'),
                 },
                 $process->command
@@ -53,23 +53,27 @@ final class EnumToNativeCommandTest extends ApplicationTestCase
         $this->artisan('enum:to-native', ['class' => UserType::class])
             ->assertExitCode(0);
 
-        $count = 0;
-        $process->assertRan(function (PendingProcess $process) use (&$count): bool {
-            ++$count;
+        $process->assertRan(function (PendingProcess $process): bool {
             $this->assertSame([
                 EnumToNativeCommand::TO_NATIVE_CLASS_ENV => UserType::class,
                 EnumToNativeCommand::BASE_RECTOR_CONFIG_PATH_ENV => base_path('rector.php'),
             ], $process->environment);
             $this->assertMatchesRegularExpression(
-                match ($count) {
-                    1 => '#^vendor/bin/rector process --clear-cache --config=/.+/src/Rector/usages\.php$#',
-                    2 => '#^vendor/bin/rector process --clear-cache --config=/.+/src/Rector/implementation\.php /.+/tests/Enums/UserType.php$#',
-                    default => throw new \Exception('Only expected 2 processes'),
-                },
+                '#^vendor/bin/rector process --clear-cache --config=/.+/src/Rector/usages-and-implementation\.php$#',
                 $process->command
             );
 
             return true;
         });
+    }
+
+    public function testClassDoesNotExist(): void
+    {
+        $process = Process::fake();
+
+        $this->artisan('enum:to-native', ['class' => 'does-not-exist'])
+            ->assertExitCode(1);
+
+        $process->assertNothingRan();
     }
 }
