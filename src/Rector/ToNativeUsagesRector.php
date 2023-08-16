@@ -25,6 +25,7 @@ use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
@@ -43,6 +44,7 @@ use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\Case_;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\VariadicPlaceholder;
@@ -179,6 +181,10 @@ CODE_SAMPLE,
 
                 if ($this->isName($node->name, 'getValues')) {
                     return $this->refactorGetValues($node);
+                }
+
+                if ($this->isName($node->name, 'asArray')) {
+                    return $this->refactorAsArray($node);
                 }
 
                 if ($this->isName($node->name, 'getRandomInstance')) {
@@ -382,6 +388,49 @@ CODE_SAMPLE,
                         new Arg(
                             new StaticCall($class, 'cases')
                         ),
+                    ],
+                );
+            }
+        }
+
+        return null;
+    }
+
+    /** @see Enum::asArray() */
+    protected function refactorAsArray(StaticCall $node): ?Node
+    {
+        $class = $node->class;
+        if ($class instanceof Name) {
+            $args = $node->args;
+            if ($args === []) {
+                $resultVariable = new Variable('result');
+
+                $itemName = lcfirst($class->getLast());
+                $itemVariable = new Variable($itemName);
+
+                return new FuncCall(
+                    new Name('array_reduce'),
+                    [
+                        new Arg(
+                            new StaticCall($class, 'cases')
+                        ),
+                        new Arg(
+                            new Closure([
+                                'static' => true,
+                                'params' => [
+                                    new Param($resultVariable, null, 'array'),
+                                    new Param($itemVariable, null, $class),
+                                ],
+                                'stmts' => [
+                                    new Expression(new Assign(
+                                        new ArrayDimFetch($resultVariable, new PropertyFetch($itemVariable, 'name')),
+                                        new PropertyFetch($itemVariable, 'value'),
+                                    )),
+                                    new Return_($resultVariable),
+                                ],
+                            ])
+                        ),
+                        new Arg(new Array_()),
                     ],
                 );
             }
