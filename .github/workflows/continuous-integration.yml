@@ -9,11 +9,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        php: [8.0, 8.1]
+        php: [8.0, 8.1, 8.2]
         dependency-versions: [lowest, highest]
 
-    name: Tests - P${{ matrix.php }} - ${{ matrix.dependency-versions }} - ${{ matrix.os }}
+    name: Tests - PHP ${{ matrix.php }} - ${{ matrix.dependency-versions }} dependencies
 
     steps:
       - uses: actions/checkout@v2
@@ -41,10 +40,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.0, 8.1]
+        php: [8.0, 8.1, 8.2]
         dependency-versions: [lowest, highest]
 
-    name: Static Analysis - P${{ matrix.php }} - ${{ matrix.dependency-versions }}
+    name: Static Analysis - PHP ${{ matrix.php }} - ${{ matrix.dependency-versions }} dependencies
 
     steps:
       - uses: actions/checkout@v2
