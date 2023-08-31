@@ -33,6 +33,7 @@ class EnumValue implements Rule
                 assert(is_int($enumValue), 'Flagged enum values must be int');
                 $value &= ~$enumValue;
             }
+
             // All bits should be unset
             return $value === 0;
         }

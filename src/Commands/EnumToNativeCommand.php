@@ -27,6 +27,9 @@ class EnumToNativeCommand extends Command
     public function handle(): int
     {
         $class = $this->argument('class');
+        if ($class) {
+            $class = ltrim($class, '\\');
+        }
 
         $env = [
             self::TO_NATIVE_CLASS_ENV => $class ?? Enum::class,
