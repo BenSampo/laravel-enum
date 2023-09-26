@@ -191,7 +191,7 @@ Once you have an enum instance, you can access the `key`, `value` and `descripti
 $userType = UserType::fromValue(UserType::SuperAdministrator);
 
 $userType->key; // SuperAdministrator
-$userType->value; // 0
+$userType->value; // 3
 $userType->description; // Super Administrator
 ```
 
@@ -205,7 +205,7 @@ This also means they can be echoed in blade views, for example.
 ```php
 $userType = UserType::fromValue(UserType::SuperAdministrator);
 
-(string) $userType // '0'
+(string) $userType // '3'
 ```
 
 ### Instance Equality
