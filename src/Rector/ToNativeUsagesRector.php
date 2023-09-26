@@ -4,6 +4,7 @@ namespace BenSampo\Enum\Rector;
 
 use BenSampo\Enum\Enum;
 use BenSampo\Enum\Tests\Enums\UserType;
+use Illuminate\Support\Arr;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -41,7 +42,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\EncapsedStringPart;
-use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
@@ -291,7 +291,13 @@ CODE_SAMPLE,
                     ],
                 );
 
-                return new ArrayDimFetch($arrayMatching, new LNumber(0));
+                return new StaticCall(
+                    new Name(Arr::class),
+                    'first',
+                    [
+                        new Arg($arrayMatching),
+                    ],
+                );
             };
 
             if ($call->isFirstClassCallable()) {
