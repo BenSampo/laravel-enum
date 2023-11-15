@@ -859,11 +859,11 @@ Use the [nova-enum-field](https://github.com/simplesquid/nova-enum-field) packag
 
 ## PHPStan Integration
 
-If you are using [PHPStan](https://github.com/phpstan/phpstan) for static
-analysis, you can enable the extension for proper recognition of the
-magic instantiation methods.
+If you are using [PHPStan](https://github.com/phpstan/phpstan) for static analysis, enable the extension for:
+- proper recognition of the magic instantiation methods
+- detection of duplicate enum values
 
-Add the following to your projects `phpstan.neon` includes:
+Use [PHPStan Extension Installer](https://github.com/phpstan/extension-installer) or add the following to your projects `phpstan.neon` includes:
 
 ```neon
 includes:
