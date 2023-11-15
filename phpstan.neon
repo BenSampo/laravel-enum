@@ -21,6 +21,7 @@ parameters:
   - '#invalid type Illuminate\\Process#'
   excludePaths:
   - tests/Enums/ToNativeFixtures # Fails with PHP < 8.1
+  - tests/PHPStan/Fixtures
   # Install https://plugins.jetbrains.com/plugin/7677-awesome-console to make those links clickable
   editorUrl: '%%relFile%%:%%line%%'
   editorUrlTitle: '%%relFile%%:%%line%%'
