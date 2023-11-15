@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace BenSampo\Enum\Tests;
+namespace BenSampo\Enum\Tests\PHPStan;
 
 use BenSampo\Enum\PHPStan\EnumMethodsClassReflectionExtension;
 use BenSampo\Enum\Tests\Enums\AnnotatedConstants;
@@ -9,7 +9,7 @@ use PHPStan\Reflection\ClassReflection as PHPStanClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Testing\PHPStanTestCase;
 
-final class PHPStanTest extends PHPStanTestCase
+final class EnumMethodsClassReflectionExtensionTest extends PHPStanTestCase
 {
     private EnumMethodsClassReflectionExtension $reflectionExtension;
 
