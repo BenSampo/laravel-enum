@@ -31,9 +31,18 @@ final class UniqueValuesRule implements Rule
             $constants[$constant->name] = $constant->getValue();
         }
 
-        if (count($constants) !== count(array_unique($constants))) {
+        $duplicateConstants = [];
+        foreach ($constants as $name => $value) {
+            $constantsWithValue = array_filter($constants, fn (mixed $v): bool => $v === $value);
+            if (count($constantsWithValue) > 1) {
+                $duplicateConstants []= array_keys($constantsWithValue);
+            }
+        }
+        $duplicateConstants = array_unique($duplicateConstants);
+
+        if (count($duplicateConstants) > 0) {
             $fqcn = $reflection->getName();
-            $constantsString = json_encode($constants);
+            $constantsString = json_encode($duplicateConstants);
 
             return [
                 RuleErrorBuilder::message("Enum class {$fqcn} contains constants with duplicate values: {$constantsString}.")
