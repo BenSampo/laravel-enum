@@ -32,8 +32,9 @@ Created by [Ben Sampson](https://sampo.co.uk)
   - [Enum Definition](#enum-definition)
   - [Instantiation](#instantiation)
   - [Instance Properties](#instance-properties)
+  - [Instance Casting](#instance-casting)
   - [Instance Equality](#instance-equality)
-  - [Type Hinting](#instance-equality)
+  - [Type Hinting](#type-hinting)
 - [Flagged/Bitwise Enum](#flaggedbitwise-enum)
 - [Attribute Casting](#attribute-casting)
 - [Migrations](#migrations)
@@ -210,10 +211,11 @@ $userType = UserType::fromValue(UserType::SuperAdministrator);
 
 ### Instance Equality
 
-You can check the equality of an instance against any value by passing it to the `is` method. For convenience, there is also an `isNot` method which is the exact reverse of the `is` method.
+You can check the equality of an instance against any value by passing it to the `is` method.
+For convenience, there is also an `isNot` method which is the exact reverse of the `is` method.
 
 ```php
-$admin = UserType::fromValue(UserType::Administrator);
+$admin = UserType::Administrator();
 
 $admin->is(UserType::Administrator);   // true
 $admin->is($admin);                    // true
@@ -224,10 +226,12 @@ $admin->is(UserType::Moderator());     // false
 $admin->is('random-value');            // false
 ```
 
-You can also check to see if the instance's value matches against an array of possible values using the `in` method, and use `notIn` to check if instance value is not in an array of values. Iterables can also be checked against.
+You can also check to see if the instance's value matches against an array of possible values using the `in` method,
+and use `notIn` to check if instance value is not in an array of values.
+Iterables can also be checked against.
 
 ```php
-$admin = UserType::fromValue(UserType::Administrator);
+$admin = UserType::Administrator();
 
 $admin->in([UserType::Moderator, UserType::Administrator]);     // true
 $admin->in([UserType::Moderator(), UserType::Administrator()]); // true
@@ -240,6 +244,26 @@ $admin->notIn([UserType::Moderator(), UserType::Administrator()]); // false
 
 $admin->notIn([UserType::Moderator, UserType::Subscriber]);        // true
 $admin->notIn(['random-value']);                                   // true
+```
+
+The instantiated enums are not singletons, rather a new object is created every time.
+Thus, strict comparison `===` of different enum instances will always return `false`, no matter the value.
+In contrast, loose comparison `==` will depend on the value.
+
+```php
+$admin = UserType::Administrator();
+
+$admin === UserType::Administrator();                    // false
+UserType::Administrator() === UserType::Administrator(); // false
+$admin === UserType::Moderator();                        // false
+
+$admin === $admin;                                       // true
+
+$admin == UserType::Administrator(); // true
+$admin == UserType::Administrator;   // true
+
+$admin == UserType::Moderator();     // false
+$admin == UserType::Moderator;       // false
 ```
 
 ### Type Hinting
