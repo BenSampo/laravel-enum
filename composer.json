@@ -36,14 +36,15 @@
         "ergebnis/composer-normalize": "^2.28.3",
         "mll-lab/php-cs-fixer-config": "^5.4",
         "mockery/mockery": "^1.5",
-        "nunomaduro/larastan": "^2.6.3",
+        "larastan/larastan": "^2.6.3",
         "orchestra/testbench": "^7.6.1 || ^8",
         "phpstan/phpstan": "^1.8.2",
+        "phpstan/extension-installer": "^1",
         "phpstan/phpstan-mockery": "^1.1",
         "phpstan/phpstan-phpunit": "^1.1.1",
         "phpunit/phpunit": "^9.5.21 || ^10",
-        "rector/rector": "^0.17.6",
-        "symplify/rule-doc-generator": "^11"
+        "rector/rector": "^0.19",
+        "symplify/rule-doc-generator": "^11 || ^12"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -59,7 +60,8 @@
     },
     "config": {
         "allow-plugins": {
-            "ergebnis/composer-normalize": true
+            "ergebnis/composer-normalize": true,
+            "phpstan/extension-installer": true
         },
         "sort-packages": true
     },

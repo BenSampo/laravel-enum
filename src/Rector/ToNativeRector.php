@@ -4,8 +4,8 @@ namespace BenSampo\Enum\Rector;
 
 use PhpParser\Node;
 use PHPStan\Type\ObjectType;
-use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Rector\AbstractRector;
 
 /**
  * Conversion of enums and their usages can not be done in a single run of Rector,

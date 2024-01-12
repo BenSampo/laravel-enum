@@ -14,18 +14,20 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\MethodTagValueNode;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * @see \BenSampo\Enum\Tests\Rector\ToNativeRectorImplementationTest
- */
+/** @see \BenSampo\Enum\Tests\Rector\ToNativeRectorImplementationTest */
 class ToNativeImplementationRector extends ToNativeRector
 {
     public function __construct(
         protected PhpDocInfoPrinter $phpDocInfoPrinter,
+        protected PhpDocInfoFactory $phpDocInfoFactory,
+        protected ValueResolver $valueResolver,
     ) {}
 
     public function getRuleDefinition(): RuleDefinition
