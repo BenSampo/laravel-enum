@@ -35,7 +35,7 @@ final class UniqueValuesRule implements Rule
         foreach ($constants as $name => $value) {
             $constantsWithValue = array_filter($constants, fn (mixed $v): bool => $v === $value);
             if (count($constantsWithValue) > 1) {
-                $duplicateConstants []= array_keys($constantsWithValue);
+                $duplicateConstants[] = array_keys($constantsWithValue);
             }
         }
         $duplicateConstants = array_unique($duplicateConstants);

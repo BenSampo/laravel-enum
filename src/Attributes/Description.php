@@ -2,8 +2,6 @@
 
 namespace BenSampo\Enum\Attributes;
 
-use Attribute;
-
 #[\Attribute(\Attribute::TARGET_CLASS_CONSTANT | \Attribute::TARGET_CLASS)]
 class Description
 {

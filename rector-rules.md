@@ -8,24 +8,6 @@ Convert usages of `BenSampo\Enum\Enum` to native PHP enums
 
 - class: [`BenSampo\Enum\Rector\ToNativeImplementationRector`](src/Rector/ToNativeImplementationRector.php)
 
-```php
-<?php
-
-declare(strict_types=1);
-
-use BenSampo\Enum\Rector\ToNativeImplementationRector;
-use BenSampo\Enum\Tests\Enums\UserType;
-use Rector\Config\RectorConfig;
-
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->ruleWithConfiguration(ToNativeImplementationRector::class, [
-        UserType::class,
-    ]);
-};
-```
-
-↓
-
 ```diff
 -/**
 - * @method static static ADMIN()
@@ -52,24 +34,6 @@ Convert usages of `BenSampo\Enum\Enum` to native PHP enums
 :wrench: **configure it!**
 
 - class: [`BenSampo\Enum\Rector\ToNativeUsagesRector`](src/Rector/ToNativeUsagesRector.php)
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use BenSampo\Enum\Rector\ToNativeUsagesRector;
-use BenSampo\Enum\Tests\Enums\UserType;
-use Rector\Config\RectorConfig;
-
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->ruleWithConfiguration(ToNativeUsagesRector::class, [
-        UserType::class,
-    ]);
-};
-```
-
-↓
 
 ```diff
 -$user = UserType::ADMIN();

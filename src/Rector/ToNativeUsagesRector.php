@@ -51,9 +51,7 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * @see \BenSampo\Enum\Tests\Rector\ToNativeRectorUsagesTest
- */
+/** @see \BenSampo\Enum\Tests\Rector\ToNativeRectorUsagesTest */
 class ToNativeUsagesRector extends ToNativeRector
 {
     public const COMPARED_AGAINST_ENUM_INSTANCE = ToNativeUsagesRector::class . '@compared-against-enum-instance';

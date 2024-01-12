@@ -1,10 +1,5 @@
 includes:
 - extension.neon
-- vendor/nunomaduro/larastan/extension.neon
-- vendor/phpstan/phpstan/conf/bleedingEdge.neon
-- vendor/phpstan/phpstan-mockery/extension.neon
-- vendor/phpstan/phpstan-phpunit/extension.neon
-- vendor/phpstan/phpstan-phpunit/rules.neon
 parameters:
   level: 6 # TODO level up to max
   paths:
