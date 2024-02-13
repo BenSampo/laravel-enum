@@ -16,6 +16,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
@@ -427,12 +428,30 @@ CODE_SAMPLE,
 
             if ($call->isFirstClassCallable()) {
                 $valueVariable = new Variable('value');
+                $valueVariableArg = new Arg($valueVariable);
+
+                $tryFromNotNull = $makeTryFromNotNull($valueVariableArg);
+
+                $enumScalarType = $this->enumScalarTypeFromClassName($class);
+                if ($enumScalarType === 'int') {
+                    $expr = new BooleanAnd(
+                        new FuncCall(new Name('is_int'), [$valueVariableArg]),
+                        $tryFromNotNull
+                    );
+                } elseif ($enumScalarType === 'string') {
+                    $expr = new BooleanAnd(
+                        new FuncCall(new Name('is_string'), [$valueVariableArg]),
+                        $tryFromNotNull
+                    );
+                } else {
+                    $expr = $tryFromNotNull;
+                }
 
                 return new ArrowFunction([
                     'static' => true,
                     'params' => [new Param($valueVariable, null, 'mixed')],
                     'returnType' => 'bool',
-                    'expr' => $makeTryFromNotNull(new Arg($valueVariable)),
+                    'expr' => $expr,
                 ]);
             }
 
@@ -440,6 +459,7 @@ CODE_SAMPLE,
             $firstArg = $args[0] ?? null;
             if ($firstArg instanceof Arg) {
                 $firstArgValue = $firstArg->value;
+
                 if (
                     $firstArgValue instanceof ClassConstFetch
                     && $firstArgValue->class->toString() === $class->toString()
@@ -447,11 +467,65 @@ CODE_SAMPLE,
                     return new ConstFetch(new Name('true'));
                 }
 
+                $firstArgType = $this->getType($firstArgValue);
+
+                $enumScalarType = $this->enumScalarTypeFromClassName($class);
+                if ($enumScalarType === 'int') {
+                    $firstArgTypeIsInt = $firstArgType->isInteger();
+                    if ($firstArgTypeIsInt->yes()) {
+                        return $makeTryFromNotNull($firstArg);
+                    }
+
+                    if ($firstArgTypeIsInt->no()) {
+                        return new ConstFetch(new Name('false'));
+                    }
+
+                    return new BooleanAnd(
+                        new FuncCall(new Name('is_int'), [$firstArg]),
+                        $makeTryFromNotNull($firstArg)
+                    );
+                }
+                if ($enumScalarType === 'string') {
+                    $firstArgTypeIsString = $firstArgType->isString();
+                    if ($firstArgTypeIsString->yes()) {
+                        return $makeTryFromNotNull($firstArg);
+                    }
+
+                    if ($firstArgTypeIsString->no()) {
+                        return new ConstFetch(new Name('false'));
+                    }
+
+                    return new BooleanAnd(
+                        new FuncCall(new Name('is_string'), [$firstArg]),
+                        $makeTryFromNotNull($firstArg)
+                    );
+                }
+
                 return $makeTryFromNotNull($firstArg);
             }
         }
 
         return null;
+    }
+
+    protected function enumScalarTypeFromClassName(Name $class): ?string
+    {
+        $type = $this->getType($class);
+        if (! $type instanceof FullyQualifiedObjectType) {
+            return null;
+        }
+
+        $classReflection = $type->getClassReflection();
+        if (! $classReflection) {
+            return null;
+        }
+
+        $nativeReflection = $classReflection->getNativeReflection();
+        if (! $nativeReflection instanceof \ReflectionClass) {
+            return null;
+        }
+
+        return $this->enumScalarType($nativeReflection->getConstants());
     }
 
     /**

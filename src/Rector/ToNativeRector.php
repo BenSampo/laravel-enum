@@ -2,9 +2,11 @@
 
 namespace BenSampo\Enum\Rector;
 
+use Illuminate\Support\Arr;
 use PhpParser\Node;
 use PHPStan\Type\ObjectType;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 
 /**
@@ -18,6 +20,10 @@ abstract class ToNativeRector extends AbstractRector implements ConfigurableRect
 {
     /** @var array<ObjectType> */
     protected array $classes;
+
+    public function __construct(
+        protected ValueResolver $valueResolver
+    ) {}
 
     /** @param array<class-string> $configuration */
     public function configure(array $configuration): void
@@ -37,5 +43,25 @@ abstract class ToNativeRector extends AbstractRector implements ConfigurableRect
         }
 
         return false;
+    }
+
+    /** @param array<mixed> $constantValues */
+    protected function enumScalarType(array $constantValues): ?string
+    {
+        if ($constantValues === []) {
+            return null;
+        }
+
+        // Assume the first constant value has the correct type
+        $value = Arr::first($constantValues);
+        if (is_string($value)) {
+            return 'string';
+        }
+
+        if (is_int($value)) {
+            return 'int';
+        }
+
+        return null;
     }
 }
