@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 6.9.1
+
+### Fixed
+
+- Check if value is `int` or `string` in conversion of `Enum::hasValue()` to native enum 
+
 ## 6.9.0
 
 ### Added
