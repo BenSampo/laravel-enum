@@ -26,6 +26,7 @@ use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\MethodCall;
@@ -183,6 +184,10 @@ CODE_SAMPLE,
                     return $this->refactorGetRandomInstance($node);
                 }
 
+                if ($this->isName($node->name, 'hasValue')) {
+                    return $this->refactorHasValue($node);
+                }
+
                 return $this->refactorMaybeMagicStaticCall($node);
             }
 
@@ -321,9 +326,9 @@ CODE_SAMPLE,
     }
 
     /** @see Enum::getInstances() */
-    protected function refactorGetInstances(StaticCall $node): ?StaticCall
+    protected function refactorGetInstances(StaticCall $call): ?StaticCall
     {
-        $class = $node->class;
+        $class = $call->class;
         if ($class instanceof Name) {
             return new StaticCall($class, 'cases');
         }
@@ -332,11 +337,11 @@ CODE_SAMPLE,
     }
 
     /** @see Enum::getKeys() */
-    protected function refactorGetKeys(StaticCall $node): ?Node
+    protected function refactorGetKeys(StaticCall $call): ?Node
     {
-        $class = $node->class;
+        $class = $call->class;
         if ($class instanceof Name) {
-            $args = $node->args;
+            $args = $call->args;
             if ($args === []) {
                 $paramName = lcfirst($class->getLast());
                 $paramVariable = new Variable($paramName);
@@ -364,11 +369,11 @@ CODE_SAMPLE,
     }
 
     /** @see Enum::getValues() */
-    protected function refactorGetValues(StaticCall $node): ?Node
+    protected function refactorGetValues(StaticCall $call): ?Node
     {
-        $class = $node->class;
+        $class = $call->class;
         if ($class instanceof Name) {
-            $args = $node->args;
+            $args = $call->args;
             if ($args === []) {
                 $paramName = lcfirst($class->getLast());
                 $paramVariable = new Variable($paramName);
@@ -395,27 +400,72 @@ CODE_SAMPLE,
     }
 
     /** @see Enum::getRandomInstance() */
-    protected function refactorGetRandomInstance(StaticCall $staticCall): ?Node
+    protected function refactorGetRandomInstance(StaticCall $call): ?Node
     {
         return new MethodCall(
             new FuncCall(new Name('fake')),
             'randomElement',
-            [new Arg(new StaticCall($staticCall->class, 'cases'))]
+            [new Arg(new StaticCall($call->class, 'cases'))]
         );
+    }
+
+    /** @see Enum::hasValue() */
+    protected function refactorHasValue(StaticCall $call): ?Node
+    {
+        $class = $call->class;
+        if ($class instanceof Name) {
+            $makeTryFromNotNull = function (Arg $arg) use ($class): NotIdentical {
+                $tryFrom = new StaticCall(
+                    $class,
+                    'tryFrom',
+                    [$arg]
+                );
+                $null = new ConstFetch(new Name('null'));
+
+                return new NotIdentical($tryFrom, $null);
+            };
+
+            if ($call->isFirstClassCallable()) {
+                $valueVariable = new Variable('value');
+
+                return new ArrowFunction([
+                    'static' => true,
+                    'params' => [new Param($valueVariable, null, 'mixed')],
+                    'returnType' => 'bool',
+                    'expr' => $makeTryFromNotNull(new Arg($valueVariable)),
+                ]);
+            }
+
+            $args = $call->args;
+            $firstArg = $args[0] ?? null;
+            if ($firstArg instanceof Arg) {
+                $firstArgValue = $firstArg->value;
+                if (
+                    $firstArgValue instanceof ClassConstFetch
+                    && $firstArgValue->class->toString() === $class->toString()
+                ) {
+                    return new ConstFetch(new Name('true'));
+                }
+
+                return $makeTryFromNotNull($firstArg);
+            }
+        }
+
+        return null;
     }
 
     /**
      * @see Enum::__callStatic()
      * @see Enum::__call()
      */
-    protected function refactorMaybeMagicStaticCall(StaticCall $node): ?Node
+    protected function refactorMaybeMagicStaticCall(StaticCall $call): ?Node
     {
-        $name = $node->name;
+        $name = $call->name;
         if ($name instanceof Expr) {
             return null;
         }
 
-        $class = $node->class;
+        $class = $call->class;
         if ($class instanceof Name) {
             if ($class->isSpecialClassName()) {
                 $type = $this->getType($class);
@@ -473,11 +523,11 @@ CODE_SAMPLE,
      * @see Enum::in()
      * @see Enum::notIn()
      */
-    protected function refactorInOrNotIn(MethodCall|NullsafeMethodCall $node, bool $in): ?Node
+    protected function refactorInOrNotIn(MethodCall|NullsafeMethodCall $call, bool $in): ?Node
     {
-        $args = $node->args;
+        $args = $call->args;
         if (isset($args[0]) && $args[0] instanceof Arg) {
-            $needle = new Arg($node->var);
+            $needle = new Arg($call->var);
             $haystack = $args[0];
 
             $haystackValue = $haystack->value;
@@ -502,17 +552,17 @@ CODE_SAMPLE,
     }
 
     /** @see Enum::__toString() */
-    protected function refactorMagicToString(MethodCall|NullsafeMethodCall $node): Cast
+    protected function refactorMagicToString(MethodCall|NullsafeMethodCall $call): Cast
     {
         return new String_(
-            $this->createValueFetch($node->var, $node instanceof NullsafeMethodCall)
+            $this->createValueFetch($call->var, $call instanceof NullsafeMethodCall)
         );
     }
 
     /** @see Enum::$key */
-    protected function refactorKey(PropertyFetch $node): ?Node
+    protected function refactorKey(PropertyFetch $fetch): ?Node
     {
-        return new PropertyFetch($node->var, 'name');
+        return new PropertyFetch($fetch->var, 'name');
     }
 
     protected function refactorMatch(Match_ $match): ?Node
@@ -611,13 +661,13 @@ CODE_SAMPLE,
         return new Switch_($cond, $cases, $switch->getAttributes());
     }
 
-    protected function refactorArrayItem(ArrayItem $node): ?Node
+    protected function refactorArrayItem(ArrayItem $arrayItem): ?Node
     {
-        $key = $node->key;
+        $key = $arrayItem->key;
         $convertedKey = $this->convertConstToValueFetch($key);
 
-        $value = $node->value;
-        $hasAttribute = $node->hasAttribute(self::COMPARED_AGAINST_ENUM_INSTANCE);
+        $value = $arrayItem->value;
+        $hasAttribute = $arrayItem->hasAttribute(self::COMPARED_AGAINST_ENUM_INSTANCE);
         $convertedValue = $hasAttribute
             ? null
             : $this->convertConstToValueFetch($value);
@@ -626,9 +676,9 @@ CODE_SAMPLE,
             return new ArrayItem(
                 $convertedValue ?? $value,
                 $convertedKey ?? $key,
-                $node->byRef,
-                $node->getAttributes(),
-                $node->unpack,
+                $arrayItem->byRef,
+                $arrayItem->getAttributes(),
+                $arrayItem->unpack,
             );
         }
 
