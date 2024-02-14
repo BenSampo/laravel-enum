@@ -5,6 +5,13 @@
 <a href="LICENSE.txt"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT Software License"></a>
 </p>
 
+## Using this library is no longer recommended
+
+Using this library is no longer recommended, especially for new projects.
+PHP 8.1 supports enums natively.
+
+See https://github.com/BenSampo/laravel-enum/issues/332.
+
 ## About Laravel Enum
 
 Simple, extensible and powerful enumeration implementation for Laravel.
