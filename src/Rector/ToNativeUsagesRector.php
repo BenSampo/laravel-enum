@@ -280,7 +280,7 @@ CODE_SAMPLE,
 
                 $enumInstanceMatchesKey = new ArrowFunction([
                     'params' => [new Param($paramVariable, null, $class)],
-                    'returnType' => 'bool',
+                    'returnType' => new Identifier('bool'),
                     'expr' => new Identical(
                         new PropertyFetch($paramVariable, 'name'),
                         $key,
@@ -309,7 +309,7 @@ CODE_SAMPLE,
 
                 return new ArrowFunction([
                     'static' => true,
-                    'params' => [new Param($keyVariable, null, 'string')],
+                    'params' => [new Param($keyVariable, null, new Identifier('string'))],
                     'returnType' => $class,
                     'expr' => $makeFromKey($keyVariable),
                 ]);
@@ -354,7 +354,7 @@ CODE_SAMPLE,
                             new ArrowFunction([
                                 'static' => true,
                                 'params' => [new Param($paramVariable, null, $class)],
-                                'returnType' => 'string',
+                                'returnType' => new Identifier('string'),
                                 'expr' => new PropertyFetch($paramVariable, 'name'),
                             ])
                         ),
@@ -449,8 +449,8 @@ CODE_SAMPLE,
 
                 return new ArrowFunction([
                     'static' => true,
-                    'params' => [new Param($valueVariable, null, 'mixed')],
-                    'returnType' => 'bool',
+                    'params' => [new Param($valueVariable, null, new Identifier('mixed'))],
+                    'returnType' => new Identifier('bool'),
                     'expr' => $expr,
                 ]);
             }
@@ -571,8 +571,8 @@ CODE_SAMPLE,
             $param = new Variable('value');
 
             return new ArrowFunction([
-                'params' => [new Param($param, null, 'mixed')],
-                'returnType' => 'bool',
+                'params' => [new Param($param, null, new Identifier('mixed'))],
+                'returnType' => new Identifier('bool'),
                 'expr' => new $comparison($call->var, $param, [self::COMPARED_AGAINST_ENUM_INSTANCE => true]),
             ]);
         }
@@ -607,7 +607,7 @@ CODE_SAMPLE,
             $haystackValue = $haystack->value;
             if ($haystackValue instanceof Array_) {
                 foreach ($haystackValue->items as $item) {
-                    $item?->setAttribute(self::COMPARED_AGAINST_ENUM_INSTANCE, true);
+                    $item->setAttribute(self::COMPARED_AGAINST_ENUM_INSTANCE, true);
                 }
             }
 
