@@ -149,7 +149,7 @@ class EnumAnnotateCommand extends Command
      *
      * @return array<\Laminas\Code\Generator\DocBlock\Tag\TagInterface>
      */
-    protected function getDocblockTags(DocBlockGenerator|null $originalDocblock, \ReflectionClass $reflectionClass): array
+    protected function getDocblockTags(?DocBlockGenerator $originalDocblock, \ReflectionClass $reflectionClass): array
     {
         $constants = $reflectionClass->getConstants();
         $constantKeys = array_keys($constants);
