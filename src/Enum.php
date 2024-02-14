@@ -273,7 +273,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, \JsonSerializa
      *
      * @return array<int, TValue>
      */
-    public static function getValues(string|array $keys = null): array
+    public static function getValues(string|array|null $keys = null): array
     {
         if ($keys === null) {
             return array_values(static::getConstants());
