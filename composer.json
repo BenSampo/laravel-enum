@@ -26,8 +26,8 @@
     "require": {
         "php": "^8",
         "composer/class-map-generator": "^1",
-        "illuminate/contracts": "^9 || ^10",
-        "illuminate/support": "^9 || ^10",
+        "illuminate/contracts": "^11",
+        "illuminate/support": "^9 || ^10 || ^11",
         "laminas/laminas-code": "^3.4 || ^4",
         "nikic/php-parser": "^4.13 || ^5"
     },
@@ -37,14 +37,14 @@
         "larastan/larastan": "^2.6.3",
         "mll-lab/php-cs-fixer-config": "^5.4",
         "mockery/mockery": "^1.5",
-        "orchestra/testbench": "^7.6.1 || ^8",
+        "orchestra/testbench": "^7.6.1 || ^8 || ^9",
         "phpstan/extension-installer": "^1",
         "phpstan/phpstan": "^1.8.2",
         "phpstan/phpstan-mockery": "^1.1",
         "phpstan/phpstan-phpunit": "^1.1.1",
         "phpunit/phpunit": "^9.5.21 || ^10 || ^11",
-        "rector/rector": "^0.19",
-        "symplify/rule-doc-generator": "^11 || ^12"
+        "rector/rector": "^1",
+        "symplify/rule-doc-generator": "^11 || ^12 || ^13"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
