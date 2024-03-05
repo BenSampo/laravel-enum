@@ -4,6 +4,7 @@ namespace BenSampo\Enum\Rector;
 
 use Illuminate\Support\Arr;
 use PhpParser\Node;
+use PHPStan\Type\NeverType;
 use PHPStan\Type\ObjectType;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -36,6 +37,10 @@ abstract class ToNativeRector extends AbstractRector implements ConfigurableRect
 
     protected function inConfiguredClasses(Node $node): bool
     {
+        if ($this->getType($node) instanceof NeverType) {
+            return false;
+        }
+
         foreach ($this->classes as $class) {
             if ($this->isObjectType($node, $class)) {
                 return true;
