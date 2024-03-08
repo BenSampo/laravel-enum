@@ -4,6 +4,7 @@ namespace BenSampo\Enum\Rector;
 
 use Illuminate\Support\Arr;
 use PhpParser\Node;
+use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\ObjectType;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -36,6 +37,12 @@ abstract class ToNativeRector extends AbstractRector implements ConfigurableRect
 
     protected function inConfiguredClasses(Node $node): bool
     {
+        // I don't understand why, but get_class(<non-object>) is used in concat: '' . get_class(0)
+        // Somehow isObjectType produces true - thus leading rector to make this: '' . get_class(ß)->value
+        if ($this->getType($node) instanceof ConstantBooleanType) {
+            return false;
+        }
+
         foreach ($this->classes as $class) {
             if ($this->isObjectType($node, $class)) {
                 return true;
