@@ -16,7 +16,8 @@ final class ToNativeUsagesRectorTest extends AbstractRectorTestCase
     /** @return iterable<string> */
     public static function provideData(): iterable
     {
-        yield [__DIR__. '/Usages/never.php.inc'];
+        yield [__DIR__ . '/Usages/never.php.inc'];
+
         return self::yieldFilesFromDirectory(__DIR__ . '/Usages');
     }
 
