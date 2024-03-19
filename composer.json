@@ -29,7 +29,7 @@
         "illuminate/contracts": "^9 || ^10 || ^11",
         "illuminate/support": "^9 || ^10 || ^11",
         "laminas/laminas-code": "^3.4 || ^4",
-        "nikic/php-parser": "^4.13 || ^5"
+        "nikic/php-parser": "^4.13.2 || ^5"
     },
     "require-dev": {
         "doctrine/dbal": "^3.4",
