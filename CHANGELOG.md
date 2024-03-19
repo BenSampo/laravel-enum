@@ -7,11 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-## 6.10.0
+## 6.11.0
 
 ### Added
 
 - Support Laravel 11
+
+## 6.10.0
+
+### Added
+
+- Allow Allow installation alongside PHPUnit 11
 
 ## 6.9.1
 
