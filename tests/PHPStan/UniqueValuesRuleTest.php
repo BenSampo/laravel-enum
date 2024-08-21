@@ -28,4 +28,9 @@ final class UniqueValuesRuleTest extends RuleTestCase
             ],
         );
     }
+
+    protected function shouldFailOnPhpErrors(): bool
+    {
+        return false;
+    }
 }

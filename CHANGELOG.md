@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 6.11.1
+
+### Fixed
+
+- Fix conversion of `in()` and `notIn()` to native enums when called with non-arrays
+
 ## 6.11.0
 
 ### Added

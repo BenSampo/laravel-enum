@@ -2,12 +2,14 @@
 
 namespace BenSampo\Enum\Tests\Rector;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 /** @see \BenSampo\Enum\Rector\ToNativeUsagesRector */
 final class ToNativeUsagesRectorTest extends AbstractRectorTestCase
 {
     /** @dataProvider provideData */
+    #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
         $this->doTestFile($filePath);
