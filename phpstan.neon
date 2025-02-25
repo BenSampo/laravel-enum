@@ -8,6 +8,7 @@ parameters:
   checkOctaneCompatibility: true
   reportUnmatchedIgnoredErrors: false # As long as we support multiple Laravel versions at once, there will be some dead spots
   treatPhpDocTypesAsCertain: false
+  noEnvCallsOutsideOfConfig: false
   ignoreErrors:
   - '#Unsafe usage of new static.*#' # This is a library, so it should be extendable
   # The Process API is only available in newer Laravel versions
@@ -16,7 +17,6 @@ parameters:
   - '#invalid type Illuminate\\Process#'
   - '#^Attribute class PHPUnit\\Framework\\Attributes\\DataProvider does not exist\.$#' # Only available with newer PHPUnit versions
   excludePaths:
-  - tests/Enums/ToNativeFixtures # Fails with PHP < 8.1
   - tests/PHPStan/Fixtures
   # Install https://plugins.jetbrains.com/plugin/7677-awesome-console to make those links clickable
   editorUrl: '%%relFile%%:%%line%%'

@@ -22,7 +22,7 @@ final class UniqueValuesRuleTest extends RuleTestCase
             ],
             [
                 [
-                    'Enum class BenSampo\Enum\Tests\PHPStan\Fixtures\DuplicateValue contains constants with duplicate values: [["A","B"]].',
+                    'Enum class BenSampo\Enum\Tests\PHPStan\Fixtures\DuplicateValue contains constants with duplicate values: ["A","B"].',
                     13,
                 ],
             ],

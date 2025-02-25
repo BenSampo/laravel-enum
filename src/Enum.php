@@ -85,7 +85,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, \JsonSerializa
             return $enumValue;
         }
 
-        return new static($enumValue);
+        return new static($enumValue); // @phpstan-ignore return.type (generic variance)
     }
 
     /**
