@@ -35,17 +35,18 @@ final class UniqueValuesRule implements Rule
         foreach ($constants as $name => $value) {
             $constantsWithValue = array_filter($constants, fn (mixed $v): bool => $v === $value);
             if (count($constantsWithValue) > 1) {
-                $duplicateConstants[] = array_keys($constantsWithValue);
+                $duplicateConstants[] = json_encode(array_keys($constantsWithValue));
             }
         }
         $duplicateConstants = array_unique($duplicateConstants);
 
         if (count($duplicateConstants) > 0) {
             $fqcn = $reflection->getName();
-            $constantsString = json_encode($duplicateConstants);
+            $constantsString = implode(',', $duplicateConstants);
 
             return [
                 RuleErrorBuilder::message("Enum class {$fqcn} contains constants with duplicate values: {$constantsString}.")
+                    ->identifier('enum.duplicateValues')
                     ->build(),
             ];
         }

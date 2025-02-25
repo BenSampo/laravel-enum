@@ -50,6 +50,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Type\ObjectType;
+use PHPStan\Node\Expr\AlwaysRememberedExpr;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -664,6 +665,9 @@ CODE_SAMPLE,
     protected function refactorMatch(Match_ $match): ?Node
     {
         $cond = $match->cond;
+        while ($cond instanceof AlwaysRememberedExpr) { // @phpstan-ignore phpstanApi.class (backwards compatibility not guaranteed)
+            $cond = $cond->getExpr(); // @phpstan-ignore phpstanApi.method (backwards compatibility not guaranteed)
+        }
         if (($cond instanceof PropertyFetch || $cond instanceof NullsafePropertyFetch)
             && $this->inConfiguredClasses($cond->var)
         ) {

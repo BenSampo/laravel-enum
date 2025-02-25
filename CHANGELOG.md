@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 6.12.0
+
+### Added
+
+- Support Laravel 11
+- Support Rector 2
+
 ## 6.11.1
 
 ### Fixed
