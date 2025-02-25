@@ -26,8 +26,8 @@
     "require": {
         "php": "^8",
         "composer/class-map-generator": "^1",
-        "illuminate/contracts": "^9 || ^10 || ^11",
-        "illuminate/support": "^9 || ^10 || ^11",
+        "illuminate/contracts": "^9 || ^10 || ^11 || ^12",
+        "illuminate/support": "^9 || ^10 || ^11 || ^12",
         "laminas/laminas-code": "^3.4 || ^4",
         "nikic/php-parser": "^4.13.2 || ^5"
     },
