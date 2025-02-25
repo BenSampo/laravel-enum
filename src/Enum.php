@@ -13,9 +13,10 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
+use TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule;
 
 /**
- * @template TValue
+ * @template-covariant  TValue
  *
  * @implements Arrayable<array-key, mixed>
  */
@@ -77,7 +78,10 @@ abstract class Enum implements EnumContract, Castable, Arrayable, \JsonSerializa
     /**
      * Make a new instance from an enum value.
      *
-     * @param  TValue  $enumValue
+     * @param TValue $enumValue
+     *
+     * @return static<TValue>
+     * @throws InvalidEnumMemberException
      */
     public static function fromValue(mixed $enumValue): static
     {
@@ -103,7 +107,10 @@ abstract class Enum implements EnumContract, Castable, Arrayable, \JsonSerializa
     /**
      * Make an enum instance from a given key.
      *
-     * @throws \BenSampo\Enum\Exceptions\InvalidEnumKeyException
+     * @param string $key
+     * @return static
+     * @throws InvalidEnumKeyException
+     * @throws InvalidEnumMemberException
      */
     public static function fromKey(string $key): static
     {
@@ -213,7 +220,12 @@ abstract class Enum implements EnumContract, Castable, Arrayable, \JsonSerializa
         );
     }
 
-    /** Attempt to instantiate a new Enum using the given key or value. */
+    /** Attempt to instantiate a new Enum using the given key or value.
+     * @param mixed $enumKeyOrValue
+     *
+     * @return static<TValue>|null
+     * @throws InvalidEnumMemberException
+     */
     public static function coerce(mixed $enumKeyOrValue): ?static
     {
         if ($enumKeyOrValue === null) {
@@ -221,6 +233,7 @@ abstract class Enum implements EnumContract, Castable, Arrayable, \JsonSerializa
         }
 
         if ($enumKeyOrValue instanceof static) {
+            /** @var static<TValue> */
             return $enumKeyOrValue;
         }
 
