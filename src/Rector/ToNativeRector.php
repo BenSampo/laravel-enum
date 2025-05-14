@@ -37,8 +37,9 @@ abstract class ToNativeRector extends AbstractRector implements ConfigurableRect
 
     protected function inConfiguredClasses(Node $node): bool
     {
-        // I don't understand why, but get_class(<non-object>) is used in concat: '' . get_class(0)
-        // Somehow isObjectType produces true - thus leading rector to make this: '' . get_class(ß)->value
+        // When `get_class(<non-object>)` is used as a string, e.g. `get_class(0) . ''`,
+        // isObjectType produces true - thus triggering a refactor: `get_class(0)->value . ''`.
+        // To avoid this, we check if the node is constant a boolean type (true or false).
         $nodeType = $this->getType($node);
         if ($nodeType->isTrue()->yes() || $nodeType->isFalse()->yes()) {
             return false;
