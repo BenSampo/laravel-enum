@@ -39,7 +39,8 @@ abstract class ToNativeRector extends AbstractRector implements ConfigurableRect
     {
         // I don't understand why, but get_class(<non-object>) is used in concat: '' . get_class(0)
         // Somehow isObjectType produces true - thus leading rector to make this: '' . get_class(ß)->value
-        if ($this->getType($node) instanceof ConstantBooleanType) {
+        $nodeType = $this->getType($node);
+        if ($nodeType->isTrue()->yes() || $nodeType->isFalse()->yes()) {
             return false;
         }
 
