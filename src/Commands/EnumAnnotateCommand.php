@@ -75,7 +75,7 @@ class EnumAnnotateCommand extends Command
         }
     }
 
-    /** @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass */
+    /** @param  \ReflectionClass<*>  $reflectionClass */
     protected function annotate(\ReflectionClass $reflectionClass): void
     {
         $docBlock = $this->getDocBlock($reflectionClass);
@@ -111,7 +111,7 @@ class EnumAnnotateCommand extends Command
         $this->info("Wrote new phpDocBlock to {$fileName}.");
     }
 
-    /** @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass */
+    /** @param  \ReflectionClass<*>  $reflectionClass */
     protected function getDocBlock(\ReflectionClass $reflectionClass): DocBlockGenerator
     {
         $docBlock = DocBlockGenerator::fromArray([])
@@ -145,7 +145,7 @@ class EnumAnnotateCommand extends Command
     }
 
     /**
-     * @param  \ReflectionClass<\BenSampo\Enum\Enum<mixed>> $reflectionClass
+     * @param  \ReflectionClass<*>  $reflectionClass
      *
      * @return array<\Laminas\Code\Generator\DocBlock\Tag\TagInterface>
      */

@@ -5,6 +5,7 @@ namespace BenSampo\Enum\Rector;
 use BenSampo\Enum\Enum;
 use BenSampo\Enum\Tests\Enums\UserType;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Enumerable;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -49,6 +50,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Type\ObjectType;
+use PHPStan\Node\Expr\AlwaysRememberedExpr;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -565,7 +567,9 @@ CODE_SAMPLE,
      */
     protected function refactorIsOrIsNot(MethodCall|NullsafeMethodCall $call, bool $is): ?Node
     {
-        $comparison = $is ? Identical::class : NotIdentical::class;
+        $comparison = $is
+            ? Identical::class
+            : NotIdentical::class;
 
         if ($call->isFirstClassCallable()) {
             $param = new Variable('value');
@@ -601,19 +605,38 @@ CODE_SAMPLE,
     {
         $args = $call->args;
         if (isset($args[0]) && $args[0] instanceof Arg) {
-            $needle = new Arg($call->var);
-            $haystack = $args[0];
+            $enumArg = new Arg($call->var);
+            $valuesArg = $args[0];
 
-            $haystackValue = $haystack->value;
-            if ($haystackValue instanceof Array_) {
-                foreach ($haystackValue->items as $item) {
+            $valuesValue = $valuesArg->value;
+            if ($valuesValue instanceof Array_) {
+                foreach ($valuesValue->items as $item) {
                     $item->setAttribute(self::COMPARED_AGAINST_ENUM_INSTANCE, true);
                 }
             }
 
+            if ($this->isObjectType($valuesValue, new ObjectType(Enumerable::class))) {
+                return new MethodCall(
+                    $valuesValue,
+                    new Identifier($in
+                        ? 'contains'
+                        : 'doesntContain'),
+                    [$enumArg],
+                );
+            }
+
+            $haystackArg = $this->getType($valuesValue)->isArray()->yes()
+                ? $valuesArg
+                : new Arg(
+                    new FuncCall(
+                        new Name('iterator_to_array'),
+                        [$valuesArg],
+                    ),
+                );
+
             $inArray = new FuncCall(
                 new Name('in_array'),
-                [$needle, $haystack],
+                [$enumArg, $haystackArg],
                 [self::COMPARED_AGAINST_ENUM_INSTANCE => true],
             );
 
@@ -642,6 +665,9 @@ CODE_SAMPLE,
     protected function refactorMatch(Match_ $match): ?Node
     {
         $cond = $match->cond;
+        while ($cond instanceof AlwaysRememberedExpr) { // @phpstan-ignore phpstanApi.class (backwards compatibility not guaranteed)
+            $cond = $cond->getExpr(); // @phpstan-ignore phpstanApi.method (backwards compatibility not guaranteed)
+        }
         if (($cond instanceof PropertyFetch || $cond instanceof NullsafePropertyFetch)
             && $this->inConfiguredClasses($cond->var)
         ) {

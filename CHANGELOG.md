@@ -7,17 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-## 6.10.1
-
 ### Fixed
 
 - Avoid false-positive addition of `->value` in `enum:to-native`
+
+## 6.12.0
+
+### Added
+
+- Support Laravel 11
+- Support Rector 2
+
+## 6.11.1
+
+### Fixed
+
+- Fix conversion of `in()` and `notIn()` to native enums when called with non-arrays
+
+## 6.11.0
+
+### Added
+
+- Support Laravel 11
 
 ## 6.10.0
 
 ### Added
 
-- Allow installation alongside PHPUnit 11
+- Allow Allow installation alongside PHPUnit 11
 
 ## 6.9.1
 

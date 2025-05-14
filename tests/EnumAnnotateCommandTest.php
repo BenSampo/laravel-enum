@@ -3,10 +3,12 @@
 namespace BenSampo\Enum\Tests;
 
 use Illuminate\Filesystem\Filesystem;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class EnumAnnotateCommandTest extends ApplicationTestCase
 {
     /** @dataProvider classes */
+    #[DataProvider('classes')]
     public function testAnnotateClass(string $class): void
     {
         $filesystem = $this->filesystem();
@@ -19,6 +21,7 @@ final class EnumAnnotateCommandTest extends ApplicationTestCase
     }
 
     /** @dataProvider classes */
+    #[DataProvider('classes')]
     public function testAnnotateClassAlreadyAnnotated(string $class): void
     {
         $filesystem = $this->filesystem();
@@ -48,6 +51,7 @@ final class EnumAnnotateCommandTest extends ApplicationTestCase
     }
 
     /** @dataProvider sources */
+    #[DataProvider('sources')]
     public function testAnnotateFolder(string $source): void
     {
         $filesystem = $this->filesystem();
