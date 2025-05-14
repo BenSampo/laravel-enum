@@ -7,7 +7,8 @@ help: ## Displays this list of targets with descriptions
 
 .PHONY: fix
 fix: vendor ## Apply automatic code fixes
-	vendor/bin/php-cs-fixer fix
+	# TODO fix PHP Fatal error:  Class PhpCsFixer\Fixer\Operator\AssignNullCoalescingToCoalesceEqualFixer contains 4 abstract methods and must therefore be declared abstract or implement the remaining methods (PhpCsFixer\Fixer\FixerInterface::isRisky, PhpCsFixer\Fixer\FixerInterface::fix, PhpCsFixer\Fixer\FixerInterface::getName, ...) in /home/bfranke/projects/laravel-enum/vendor/friendsofphp/php-cs-fixer/src/Fixer/Operator/AssignNullCoalescingToCoalesceEqualFixer.php on line 24
+	#vendor/bin/php-cs-fixer fix
 
 .PHONY: stan
 stan: vendor ## Runs a static analysis with phpstan
