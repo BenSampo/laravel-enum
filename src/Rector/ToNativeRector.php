@@ -4,6 +4,7 @@ namespace BenSampo\Enum\Rector;
 
 use Illuminate\Support\Arr;
 use PhpParser\Node;
+use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\ObjectType;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -36,6 +37,14 @@ abstract class ToNativeRector extends AbstractRector implements ConfigurableRect
 
     protected function inConfiguredClasses(Node $node): bool
     {
+        // When `get_class(<non-object>)` is used as a string, e.g. `get_class(0) . ''`,
+        // isObjectType produces true - thus triggering a refactor: `get_class(0)->value . ''`.
+        // To avoid this, we check if the node is constant a boolean type (true or false).
+        $nodeType = $this->getType($node);
+        if ($nodeType->isTrue()->yes() || $nodeType->isFalse()->yes()) {
+            return false;
+        }
+
         foreach ($this->classes as $class) {
             if ($this->isObjectType($node, $class)) {
                 return true;

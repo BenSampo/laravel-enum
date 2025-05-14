@@ -33,7 +33,7 @@ abstract class FlaggedEnum extends Enum
      */
     public function __construct(mixed $flags = [])
     {
-        unset($this->key, $this->description);
+        unset($this->key, $this->description); // @phpstan-ignore unset.possiblyHookedProperty,unset.possiblyHookedProperty (latest PHPStan on PHP 8.4)
 
         if (is_array($flags)) {
             $this->setFlags($flags);
