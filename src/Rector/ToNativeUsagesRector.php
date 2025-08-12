@@ -277,6 +277,10 @@ CODE_SAMPLE,
         $class = $call->class;
         if ($class instanceof Name) {
             $makeFromKey = function (Expr $key) use ($class): Expr {
+                if (version_compare(PHP_VERSION, '8.3.0', '>=')) {
+                    return $this->createEnumCaseAccess($class, $key);
+                }
+
                 $paramName = lcfirst($class->getLast());
                 $paramVariable = new Variable($paramName);
 
@@ -1061,11 +1065,11 @@ CODE_SAMPLE,
         return null;
     }
 
-    protected function createEnumCaseAccess(Name $class, string $constName): ClassConstFetch
+    protected function createEnumCaseAccess(Name $class, Expr|string $name): ClassConstFetch
     {
         return new ClassConstFetch(
             $class,
-            $constName,
+            $name,
             [self::CONVERTED_INSTANTIATION => true],
         );
     }

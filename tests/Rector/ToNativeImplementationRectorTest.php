@@ -15,7 +15,7 @@ final class ToNativeImplementationRectorTest extends AbstractRectorTestCase
         $this->doTestFile($filePath);
     }
 
-    /** @return iterable<string> */
+    /** @return iterable<array{string}> */
     public static function provideData(): iterable
     {
         return self::yieldFilesFromDirectory(__DIR__ . '/Implementation');

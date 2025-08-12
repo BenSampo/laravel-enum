@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 6.12.2
+
+### Changed
+
+- Simplify implementation of `Enum::fromKey` to native enum with dynamic class const fetch
+
 ## 6.12.1
 
 ### Fixed

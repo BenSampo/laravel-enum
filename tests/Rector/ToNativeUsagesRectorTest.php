@@ -15,10 +15,25 @@ final class ToNativeUsagesRectorTest extends AbstractRectorTestCase
         $this->doTestFile($filePath);
     }
 
-    /** @return iterable<string> */
+    /** @return iterable<array{string}> */
     public static function provideData(): iterable
     {
-        return self::yieldFilesFromDirectory(__DIR__ . '/Usages');
+        foreach (self::yieldFilesFromDirectory(__DIR__ . '/Usages') as $fileArray) {
+            [$file] = $fileArray;
+
+            // See https://wiki.php.net/rfc/dynamic_class_constant_fetch
+            if (version_compare(PHP_VERSION, '8.3.0', '<')) {
+                if ($file === __DIR__ . '/Usages/fromKey.dynamic_class_constant_fetch.php.inc') {
+                    continue;
+                }
+            } else {
+                if ($file === __DIR__ . '/Usages/fromKey.php.inc') {
+                    continue;
+                }
+            }
+
+            yield $fileArray;
+        }
     }
 
     public function provideConfigFilePath(): string
