@@ -73,7 +73,7 @@ I wrote a blog post about using laravel-enum: https://sampo.co.uk/blog/using-enu
 
 ## Installation
 
-Requires PHP 8, and Laravel 9 or 10.
+Requires PHP 8, and Laravel 9 through 13.
 
 ```sh
 composer require bensampo/laravel-enum
