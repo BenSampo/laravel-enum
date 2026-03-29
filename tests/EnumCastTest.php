@@ -74,6 +74,7 @@ final class EnumCastTest extends ApplicationTestCase
         $model->save();
 
         $this->assertEquals(UserType::Moderator(), $model->user_type);
+        // @phpstan-ignore method.alreadyNarrowedType (intentionally asserting model has no changes after save)
         $this->assertEmpty($model->getChanges());
     }
 }

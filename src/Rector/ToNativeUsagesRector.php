@@ -28,6 +28,7 @@ use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Match_;
@@ -46,6 +47,7 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Stmt\Case_;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\VariadicPlaceholder;
@@ -181,6 +183,10 @@ CODE_SAMPLE,
 
                 if ($this->isName($node->name, 'getValues')) {
                     return $this->refactorGetValues($node);
+                }
+
+                if ($this->isName($node->name, 'asArray')) {
+                    return $this->refactorAsArray($node);
                 }
 
                 if ($this->isName($node->name, 'getRandomInstance')) {
@@ -406,6 +412,49 @@ CODE_SAMPLE,
         return null;
     }
 
+    /** @see Enum::asArray() */
+    protected function refactorAsArray(StaticCall $node): ?Node
+    {
+        $class = $node->class;
+        if ($class instanceof Name) {
+            $args = $node->args;
+            if ($args === []) {
+                $resultVariable = new Variable('result');
+
+                $itemName = lcfirst($class->getLast());
+                $itemVariable = new Variable($itemName);
+
+                return new FuncCall(
+                    new Name('array_reduce'),
+                    [
+                        new Arg(
+                            new StaticCall($class, 'cases')
+                        ),
+                        new Arg(
+                            new Closure([
+                                'static' => true,
+                                'params' => [
+                                    new Param($resultVariable, null, new Identifier('array')),
+                                    new Param($itemVariable, null, $class),
+                                ],
+                                'stmts' => [
+                                    new Expression(new Assign(
+                                        new ArrayDimFetch($resultVariable, new PropertyFetch($itemVariable, 'name')),
+                                        new PropertyFetch($itemVariable, 'value'),
+                                    )),
+                                    new Return_($resultVariable),
+                                ],
+                            ])
+                        ),
+                        new Arg(new Array_()),
+                    ],
+                );
+            }
+        }
+
+        return null;
+    }
+
     /** @see Enum::getRandomInstance() */
     protected function refactorGetRandomInstance(StaticCall $call): ?Node
     {
@@ -591,14 +640,42 @@ CODE_SAMPLE,
             $right = $arg->value;
 
             $var = $call->var;
-            $left = $this->willBeEnumInstance($right)
-                ? $var
-                : new PropertyFetch($var, 'value');
+            if ($this->willBeEnumInstance($right)) {
+                $left = $var;
+            } else {
+                $left = new PropertyFetch($var, 'value');
+                $right = $this->convertCoalesceEnumRefsToValues($right);
+            }
 
             return new $comparison($left, $right, [self::COMPARED_AGAINST_ENUM_INSTANCE => true]);
         }
 
         return null;
+    }
+
+    /** Converts enum references inside a Coalesce to value fetches when comparing values. */
+    protected function convertCoalesceEnumRefsToValues(Expr $expr): Expr
+    {
+        if (! $expr instanceof Coalesce) {
+            return $this->convertConstToValueFetch($expr)
+                ?? $this->convertMagicStaticCallToValueFetch($expr)
+                ?? $expr;
+        }
+
+        $convertedLeft = $this->convertConstToValueFetch($expr->left)
+            ?? $this->convertMagicStaticCallToValueFetch($expr->left);
+        $convertedRight = $this->convertConstToValueFetch($expr->right)
+            ?? $this->convertMagicStaticCallToValueFetch($expr->right);
+
+        if ($convertedLeft || $convertedRight) {
+            return new Coalesce(
+                $convertedLeft ?? $expr->left,
+                $convertedRight ?? $expr->right,
+                $expr->getAttributes(),
+            );
+        }
+
+        return $expr;
     }
 
     /**
@@ -831,6 +908,32 @@ CODE_SAMPLE,
             && $expr->name->name !== 'class'
         ) {
             return $this->createValueFetch($expr, false);
+        }
+
+        return null;
+    }
+
+    /** Handles magic enum StaticCalls that haven't been converted to ClassConstFetch yet due to traversal order. */
+    protected function convertMagicStaticCallToValueFetch(?Expr $expr): ?Expr
+    {
+        if (! $expr instanceof StaticCall
+            || ! $expr->class instanceof Name
+            || ! $expr->name instanceof Identifier
+            || ! $this->inConfiguredClasses($expr->class)
+        ) {
+            return null;
+        }
+
+        $className = $expr->class->isSpecialClassName()
+            ? null
+            : $expr->class->toString();
+        $constName = $expr->name->toString();
+
+        if ($className !== null && defined("{$className}::{$constName}")) {
+            return $this->createValueFetch(
+                $this->createEnumCaseAccess($expr->class, $constName),
+                false,
+            );
         }
 
         return null;

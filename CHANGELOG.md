@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Convert `asArray()` to native enum automatically
+
 ## 6.12.2
 
 ### Changed
