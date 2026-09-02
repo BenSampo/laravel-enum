@@ -762,7 +762,9 @@ CODE_SAMPLE,
                 }
 
                 foreach ($arm->conds as $armCond) {
-                    $isEnum = $varType->equals($this->getType($armCond))
+                    // Not $varType->equals(), that also compares the PHP class of the type instances,
+                    // and Rector hands out its own ObjectType subclasses for some nodes.
+                    $isEnum = $varType->isSuperTypeOf($this->getType($armCond))->yes()
                         || ($armCond instanceof ClassConstFetch && $this->inConfiguredClasses($armCond->class));
                     $isNull = $this->getType($armCond)->isNull()->yes();
 
@@ -811,7 +813,8 @@ CODE_SAMPLE,
                     continue;
                 }
 
-                $isEnum = $varType->equals($this->getType($caseCond))
+                // Not $varType->equals(), see refactorMatch().
+                $isEnum = $varType->isSuperTypeOf($this->getType($caseCond))->yes()
                     || ($caseCond instanceof ClassConstFetch && $this->inConfiguredClasses($caseCond->class));
                 $isNull = $this->getType($caseCond)->isNull()->yes();
 
