@@ -753,7 +753,7 @@ CODE_SAMPLE,
             && $this->inConfiguredClasses($cond->var)
         ) {
             $var = $cond->var;
-            $varType = $this->getType($var);
+            $varClassNames = $this->getType($var)->getObjectClassNames();
 
             $armsAreExclusivelyEnumsOrNull = true;
             foreach ($match->arms as $arm) {
@@ -762,9 +762,9 @@ CODE_SAMPLE,
                 }
 
                 foreach ($arm->conds as $armCond) {
-                    // Not $varType->equals(), that also compares the PHP class of the type instances,
-                    // and Rector hands out its own ObjectType subclasses for some nodes.
-                    $isEnum = $varType->isSuperTypeOf($this->getType($armCond))->yes()
+                    // Compare class names, as Type::equals() also compares the PHP class of the type instances, which Rector varies.
+                    $armClassNames = $this->getType($armCond)->getObjectClassNames();
+                    $isEnum = ($varClassNames !== [] && $varClassNames === $armClassNames)
                         || ($armCond instanceof ClassConstFetch && $this->inConfiguredClasses($armCond->class));
                     $isNull = $this->getType($armCond)->isNull()->yes();
 
@@ -804,7 +804,7 @@ CODE_SAMPLE,
             && $this->inConfiguredClasses($cond->var)
         ) {
             $var = $cond->var;
-            $varType = $this->getType($var);
+            $varClassNames = $this->getType($var)->getObjectClassNames();
 
             $casesAreExclusivelyEnumsOrNull = true;
             foreach ($switch->cases as $case) {
@@ -813,8 +813,9 @@ CODE_SAMPLE,
                     continue;
                 }
 
-                // Not $varType->equals(), see refactorMatch().
-                $isEnum = $varType->isSuperTypeOf($this->getType($caseCond))->yes()
+                // Compare class names, see refactorMatch().
+                $caseClassNames = $this->getType($caseCond)->getObjectClassNames();
+                $isEnum = ($varClassNames !== [] && $varClassNames === $caseClassNames)
                     || ($caseCond instanceof ClassConstFetch && $this->inConfiguredClasses($caseCond->class));
                 $isNull = $this->getType($caseCond)->isNull()->yes();
 
