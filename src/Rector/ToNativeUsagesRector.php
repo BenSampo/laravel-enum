@@ -762,9 +762,9 @@ CODE_SAMPLE,
                 }
 
                 foreach ($arm->conds as $armCond) {
-                    // Compare class names, as Type::equals() also compares the PHP class of the type instances, which Rector varies.
+                    // Use class names, not Type::equals(), since Rector varies the type instance's class.
                     $armClassNames = $this->getType($armCond)->getObjectClassNames();
-                    $isEnum = ($varClassNames !== [] && $varClassNames === $armClassNames)
+                    $isEnum = $varClassNames === $armClassNames
                         || ($armCond instanceof ClassConstFetch && $this->inConfiguredClasses($armCond->class));
                     $isNull = $this->getType($armCond)->isNull()->yes();
 
@@ -815,7 +815,7 @@ CODE_SAMPLE,
 
                 // Compare class names, see refactorMatch().
                 $caseClassNames = $this->getType($caseCond)->getObjectClassNames();
-                $isEnum = ($varClassNames !== [] && $varClassNames === $caseClassNames)
+                $isEnum = $varClassNames === $caseClassNames
                     || ($caseCond instanceof ClassConstFetch && $this->inConfiguredClasses($caseCond->class));
                 $isNull = $this->getType($caseCond)->isNull()->yes();
 
