@@ -813,7 +813,7 @@ CODE_SAMPLE,
                     continue;
                 }
 
-                // Compare class names, see refactorMatch().
+                // See refactorMatch() for rationale.
                 $caseClassNames = $this->getType($caseCond)->getObjectClassNames();
                 $isEnum = (count($varClassNames) === 1 && $varClassNames === $caseClassNames)
                     || ($caseCond instanceof ClassConstFetch && $this->inConfiguredClasses($caseCond->class));
