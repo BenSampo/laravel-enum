@@ -753,7 +753,7 @@ CODE_SAMPLE,
             && $this->inConfiguredClasses($cond->var)
         ) {
             $var = $cond->var;
-            $varType = $this->getType($var);
+            $varClassNames = $this->getType($var)->getObjectClassNames();
 
             $armsAreExclusivelyEnumsOrNull = true;
             foreach ($match->arms as $arm) {
@@ -762,7 +762,9 @@ CODE_SAMPLE,
                 }
 
                 foreach ($arm->conds as $armCond) {
-                    $isEnum = $varType->equals($this->getType($armCond))
+                    // One class name only: Type::equals() varies by instance class, and a union subject may hold another enum.
+                    $armClassNames = $this->getType($armCond)->getObjectClassNames();
+                    $isEnum = (count($varClassNames) === 1 && $varClassNames === $armClassNames)
                         || ($armCond instanceof ClassConstFetch && $this->inConfiguredClasses($armCond->class));
                     $isNull = $this->getType($armCond)->isNull()->yes();
 
@@ -802,7 +804,7 @@ CODE_SAMPLE,
             && $this->inConfiguredClasses($cond->var)
         ) {
             $var = $cond->var;
-            $varType = $this->getType($var);
+            $varClassNames = $this->getType($var)->getObjectClassNames();
 
             $casesAreExclusivelyEnumsOrNull = true;
             foreach ($switch->cases as $case) {
@@ -811,7 +813,9 @@ CODE_SAMPLE,
                     continue;
                 }
 
-                $isEnum = $varType->equals($this->getType($caseCond))
+                // See refactorMatch() for rationale.
+                $caseClassNames = $this->getType($caseCond)->getObjectClassNames();
+                $isEnum = (count($varClassNames) === 1 && $varClassNames === $caseClassNames)
                     || ($caseCond instanceof ClassConstFetch && $this->inConfiguredClasses($caseCond->class));
                 $isNull = $this->getType($caseCond)->isNull()->yes();
 
