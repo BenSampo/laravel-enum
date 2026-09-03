@@ -5,6 +5,8 @@ use BenSampo\Enum\Tests\Enums\UserType;
 
 /** @var UserType $userType */
 /** @var StringValues|UserType $union */
+/** @var UserType|null $nullableUserType */
+/** @var StringValues|UserType $sameUnion */
 
 match ($userType->value) {
     UserType::Administrator => 1,
@@ -38,6 +40,14 @@ match ($userType->value) {
     (fn (): never => throw new \Exception())() => 1,
     default => 2,
 };
+match ($nullableUserType->value) {
+    'foo' => 1,
+    default => 2,
+};
+match ($union->value) {
+    $sameUnion => 1,
+    default => 2,
+};
 -----
 <?php
 
@@ -46,6 +56,8 @@ use BenSampo\Enum\Tests\Enums\UserType;
 
 /** @var UserType $userType */
 /** @var StringValues|UserType $union */
+/** @var UserType|null $nullableUserType */
+/** @var StringValues|UserType $sameUnion */
 
 match ($userType) {
     UserType::Administrator => 1,
@@ -77,5 +89,13 @@ match ($union->value) {
 };
 match ($userType->value) {
     (fn (): never => throw new \Exception())() => 1,
+    default => 2,
+};
+match ($nullableUserType->value) {
+    'foo' => 1,
+    default => 2,
+};
+match ($union->value) {
+    $sameUnion->value => 1,
     default => 2,
 };

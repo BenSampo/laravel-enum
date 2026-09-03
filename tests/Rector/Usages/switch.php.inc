@@ -5,6 +5,7 @@ use BenSampo\Enum\Tests\Enums\UserType;
 
 /** @var UserType $userType */
 /** @var StringValues|UserType $union */
+/** @var UserType|null $nullableUserType */
 
 switch ($userType->value) {
     case UserType::Administrator:
@@ -35,6 +36,10 @@ switch ($union->value) {
     case $userType:
     default:
 }
+switch ($nullableUserType->value) {
+    case 'foo':
+    default:
+}
 -----
 <?php
 
@@ -43,6 +48,7 @@ use BenSampo\Enum\Tests\Enums\UserType;
 
 /** @var UserType $userType */
 /** @var StringValues|UserType $union */
+/** @var UserType|null $nullableUserType */
 
 switch ($userType) {
     case UserType::Administrator:
@@ -71,5 +77,9 @@ switch ('foo') {
 }
 switch ($union->value) {
     case $userType->value:
+    default:
+}
+switch ($nullableUserType->value) {
+    case 'foo':
     default:
 }
