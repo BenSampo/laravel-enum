@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 6.14.1
+
 ### Fixed
 
 - Keep converting `match`/`switch` over an enum to the native enum instead of appending `->value` to every arm
