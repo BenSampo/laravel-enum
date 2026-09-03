@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Keep converting `match`/`switch` over an enum to the native enum instead of appending `->value` to every arm
+- Append `->value` instead of converting `match`/`switch` over a nullable or union-typed enum, where comparing native enum instances would not preserve the original value comparison
 
 ## 6.14.0
 
