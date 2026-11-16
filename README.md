@@ -88,6 +88,7 @@ Make sure you meet the following requirements:
 - PHP 8.1 or higher
 - Laravel 10 or higher
 - Rector 0.17 or higher, your `rector.php` includes all relevant files
+- [rector-laravel](https://github.com/driftingly/rector-laravel)
 - Latest version of this library
 
 Depending on the size of your project, you may choose to migrate all enums at once,
